@@ -6,7 +6,6 @@ Portal de dados de biodiversidade do Sistema de Informação sobre a Biodiversid
 Este portal exibe os dados e metadados sobre conjuntos de dados e listas de espécies publicados na rede SiBbr.
 
 Este portal é baseado em um fork do software do [Canadensys-explorer](https://github.com/Canadensys/canadensys-explorer), o explorador de dados da rede Canadensys de biodiversidade.
-------------
 
 Para saber mais, visite nossa [wiki](https://github.com/sibbr/portal-biodiversidade/wiki)
 
