@@ -1,17 +1,27 @@
-canadensys-explorer
-===================
+portal-biodiversidade
+=====================
 
-Canadensys data portal.
+Portal de dados de biodiversidade do Sistema de Informação sobre a Biodiversidade Brasileira.
 
-Documentation
--------------
-Visit our [wiki](https://github.com/Canadensys/canadensys-explorer/wiki)
+Este portal exibe os dados e metadados sobre conjuntos de dados e listas de espécies publicados na rede SiBbr.
 
-Dependencies
+Este portal é baseado em um fork do software do [Canadensys-explorer](https://github.com/Canadensys/canadensys-explorer), o explorador de dados da rede Canadensys de biodiversidade.
 ------------
+
+Para saber mais, visite nossa [wiki](https://github.com/sibbr/portal-biodiversidade/wiki)
+
+Dependências
+------------
+
+### Projects
+* [canadensys-explorer](https://github.com/Canadensys/canadensys-explorer)
+* [canadensys tile-server](https://github.com/Canadensys/tile-server)
+* [canadensys-web-theme](https://github.com/Canadensys/canadensys-web-theme)
+* [canadensys-web-core](https://github.com/Canadensys/canadensys-web-core)
+
 ### Softwares
 * [Apache Server 2.2](http://httpd.apache.org/)
-* [Tomcat 6](http://tomcat.apache.org/)
+* [Tomcat 8](http://tomcat.apache.org/)
 * [Postgresql 9.1](http://www.postgresql.org/)
 * [Windshaft](https://github.com/CartoDB/Windshaft)
 
@@ -26,20 +36,16 @@ Dependencies
 * [H2 Database 1.3.175](http://www.h2database.com) (for unit testing only)
 * [Selenium Client 2.39](http://docs.seleniumhq.org/download/) (for integration testing)
 
-### Projects
-* [canadensys-web-theme](https://github.com/Canadensys/canadensys-web-theme)
-* [canadensys-web-core](https://github.com/Canadensys/canadensys-web-core)
-
 Build
 -----
-Please follow instruction on our [wiki](https://github.com/Canadensys/canadensys-explorer/wiki).
+Para construir a aplicação, por favor siga as instruções detalhadas em [wiki](https://github.com/sibbr/portal-biodiversidade/wiki).
 ```
 gradle clean buildProduction
 ```
 
-Tests
+Testes
 -----
-Unit tests
+Testes unitários
 
 ```
 gradle clean test
