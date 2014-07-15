@@ -1,3 +1,5 @@
+i18n.supportedKanguages=en,fr,pt-br
+
 url.useMinified=false
 
 database.driver=org.h2.Driver
@@ -14,17 +16,17 @@ database.password=
 hibernate.dialect=org.hibernate.dialect.H2Dialect
 hibernate.show_sql=false
 
-email.smtpServer=smtp.mydomain.com
+email.smtpServer=iota.lncc.br
 email.port=25
 
 tiler.protocol=http
-tiler.domain=tiles.canadensys.net
+tiler.domain=buriti.lncc.br/tiles
 tiler.port=80
 
 feedback.url=http://code.google.com/p/canadensys/issues/entry?template=Explorer%20-%20Interface%20issue
 
 searchServiceConfig.generatedContentFolder=/tmp/explorer-test
-searchServiceConfig.publicDownloadURL=http://data.canadensys.net/downloads/explorer/
+searchServiceConfig.publicDownloadURL=/downloads/explorer/
 searchServiceConfig.emailFrom=noreply@mydomain.net
 
 dwca.termUsed=acceptednameusage,associatedmedia,associatedoccurrences,associatedreferences,associatedsequences,associatedtaxa,basisofrecord,behavior,bibliographiccitation,catalognumber,class,collectioncode,collectionid,continent,coordinateuncertaintyinmeters,country,countrycode,county,datasetid,datasetname,dateidentified,decimallatitude,decimallongitude,disposition,dynamicproperties,establishmentmeans,eventdate,eventremarks,eventtime,family,fieldnotes,footprintwkt,genus,geodeticdatum,georeferencedby,georeferenceddate,georeferenceprotocol,georeferenceremarks,georeferencesources,georeferenceverificationstatus,habitat,higherclassification,highergeography,identificationqualifier,identificationreferences,identificationremarks,identifiedby,individualcount,infraspecificepithet,institutioncode,islandgroup,kingdom,language,lifestage,locality,locationaccordingto,locationremarks,maximumelevationinmeters,minimumelevationinmeters,modified,municipality,nomenclaturalcode,occurrenceremarks,order,othercatalognumbers,ownerinstitutioncode,phylum,preparations,previousidentifications,recordedby,recordnumber,references,reproductivecondition,rights,rightsholder,samplingprotocol,scientificname,scientificnameauthorship,sex,specificepithet,stateprovince,subgenus,taxonrank,taxonremarks,type,typestatus,verbatimcoordinates,verbatimcoordinatesystem,verbatimdepth,verbatimelevation,verbatimeventdate,verbatimlatitude,verbatimlocality,verbatimlongitude,verbatimsrs,vernacularname,waterbody,year

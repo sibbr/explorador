@@ -1,5 +1,6 @@
 package net.canadensys.dataportal.occurrence.controller;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -42,6 +43,10 @@ public class OccurrenceController {
 	private static final Logger LOGGER = Logger.getLogger(OccurrenceController.class);
 	private static final ConfigurableMimeFileTypeMap MIME_TYPE_MAP = new ConfigurableMimeFileTypeMap();
 	
+	//separators
+	private static final String ASSOCIATED_SEQUENCES_SEPARATOR = "|";
+	private static final String ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR = ":";
+	
 	private static String VIEW_PARAM = "view";
 	private static String DWC_VIEW_NAME = "dwc";
 	
@@ -67,14 +72,14 @@ public class OccurrenceController {
 			throw new ResourceNotFoundException();
 		}
 		//Set common stuff
-		ControllerHelper.setPageHeaderVariables(appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request,"occurrence",new String[]{iptResource,dwcaId},appConfig, modelRoot);
 		
 		//handle view stuff
 		String view = request.getParameter(VIEW_PARAM);
 		if(DWC_VIEW_NAME.equalsIgnoreCase(view)){
-			return new ModelAndView("occurrence-dwc","root",modelRoot);
+			return new ModelAndView("occurrence-dwc",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 		}
-		return new ModelAndView("occurrence","root",modelRoot);
+		return new ModelAndView("occurrence",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 	}
 	
 	/**
@@ -95,9 +100,9 @@ public class OccurrenceController {
 			throw new ResourceNotFoundException();
 		}
 		//Set common stuff
-		ControllerHelper.setPageHeaderVariables(appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request,"contact",new String[]{iptResource},appConfig, modelRoot);
 
-		return new ModelAndView("resource-contact","root",modelRoot);
+		return new ModelAndView("resource-contact",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 	}
 	
 	/**
@@ -125,9 +130,10 @@ public class OccurrenceController {
 	 * @param occModel
 	 * @return OccurrenceViewModel instance, never null
 	 */
-	public static OccurrenceViewModel buildOccurrenceViewModel(OccurrenceModel occModel){
+	public OccurrenceViewModel buildOccurrenceViewModel(OccurrenceModel occModel){
 		OccurrenceViewModel occViewModel = new OccurrenceViewModel();
 		
+		//handle media
 		if(StringUtils.isNotEmpty(occModel.getAssociatedmedia())){
 			//assumes that data are coming from harvester
 			String[] media = occModel.getAssociatedmedia().split("; ");
@@ -140,6 +146,36 @@ public class OccurrenceController {
 				}
 			}
 		}
+		
+		//handle associated sequences
+		if(StringUtils.isNotEmpty(occModel.getAssociatedsequences())){
+			String[] sequences = StringUtils.split(occModel.getAssociatedsequences(), ASSOCIATED_SEQUENCES_SEPARATOR);
+			
+			String seqProvider, seqId, seqProviderUrlFormat;
+			for(String currentSequence : sequences){
+				seqProvider = StringUtils.substringBefore(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim().toLowerCase();
+				seqId = StringUtils.substringAfter(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
+				seqProviderUrlFormat = appConfig.getSequenceProviderUrlFormat(seqProvider);
+				
+				//set display name if defined, otherwise keep extracted name
+				if(appConfig.getSequenceProviderDisplayName(seqProvider) != null){
+					seqProvider = appConfig.getSequenceProviderDisplayName(seqProvider);
+				}
+				
+				if(seqProvider != null && seqId != null){
+					if(StringUtils.isBlank(seqProviderUrlFormat)){
+						occViewModel.addAssociatedSequenceLink(seqProvider, seqId, "");
+					}
+					else{
+						occViewModel.addAssociatedSequenceLink(seqProvider,seqId,MessageFormat.format(seqProviderUrlFormat, seqId));
+					}
+				}
+				else{
+					LOGGER.warn("associatedSequences [" + occModel.getAssociatedsequences() + "] cannot be parsed." );
+				}
+			}
+		}
+		
 		return occViewModel;
 	}
 }

@@ -1,5 +1,13 @@
 Version History
 ===============
+
+Version 2.2.0 2014-??-??
+
+* Controllers are now responsible to provide 'otherLanguage' map
+* Added associatedSequences to occurrence view.
+* Renamed Freemarker root model from 'root' to 'page'
+* New way to deal with web-theme in Gradle
+
 Version 2.1.0 2014-06-02
 * Geospatial filters
 * Better zoom on the map after query

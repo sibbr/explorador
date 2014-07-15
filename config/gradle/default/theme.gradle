@@ -1,0 +1,14 @@
+ext {
+	webThemeVersion = '0.2'
+}
+
+dependencies {
+	compile("br.gov.sibbr:portal-web-theme:${webThemeVersion}@war")
+}
+
+//include our layout.ftl to the root of 'decorators' as defined in sitemesh3.xml
+war {
+	from("${webAppDirName}/decorators/layouts/sibbr"){
+        into("decorators")
+	}
+}
