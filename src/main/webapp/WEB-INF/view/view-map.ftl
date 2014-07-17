@@ -52,10 +52,10 @@ $(function() {
     mapCanvasId : "map_canvas",
     tilerProtocol : "${tilerProtocol}",
     tilerDomain : "${tilerDomain}",
-    tilerPort : ${tilerPort},
-    mapQuery : "${page.embeddedMapQuery}",
-    mapCenter : [-17, -49],
-    mapZoom : 2
+   	tilerPort : ${tilerPort},
+   	mapQuery : "${page.embeddedMapQuery}",
+    mapCenter : [-18, -50],
+    mapZoom : 3
   });
   <@controlJavaScriptInit/>
 });

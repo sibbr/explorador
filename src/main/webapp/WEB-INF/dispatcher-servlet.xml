@@ -48,7 +48,7 @@
 
 	<!-- Locale/language configuration -->
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<property name="defaultLocale" value="en" />
+		<property name="defaultLocale" value="pt" />
 	</bean>
 	<mvc:interceptors>
     	<!-- Changes the locale when a 'lang' request parameter is sent; e.g. /?lang=fr -->
@@ -87,7 +87,7 @@
 		<property name="dwcaTermUsed" value="${dwca.termUsed}" />
 		<property name="hashEmailAddress" value="${email.hashAddress:false}" />
 		<property name="emailSalt" value="${email.salt:null}" />
-		<property name="supportedLanguages" value="${i18n.supportedLanguages:pt-br, en, fr}" />
+		<property name="supportedLanguages" value="${i18n.supportedLanguages:pt, en, fr}" />
 		<property name="sequenceProvidersProperties" ref="sequenceProvidersProperties" />
 	</bean>
 

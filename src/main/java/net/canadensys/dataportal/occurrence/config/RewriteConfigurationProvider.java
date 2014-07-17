@@ -47,6 +47,8 @@ public class RewriteConfigurationProvider extends HttpConfigurationProvider {
 	private static final Logger LOGGER = Logger
 			.getLogger(RewriteConfigurationProvider.class);
 
+	private String defaultLanguage;
+	
 	private static final String LANG_PARAM = "lang";
 
 	private final Set<String> supportedLocale = new HashSet<String>();
@@ -145,6 +147,7 @@ public class RewriteConfigurationProvider extends HttpConfigurationProvider {
 		Properties configProperties = new Properties();
 		try {
 			configProperties.load(is);
+			defaultLanguage = StringUtils.defaultString(configProperties.getProperty(OccurrencePortalConfig.DEFAULT_LANGUAGE_KEY), Locale.ENGLISH.getLanguage());
 			String supportedLanguages = configProperties
 					.getProperty(OccurrencePortalConfig.SUPPORTED_LANGUAGES_KEY);
 
@@ -176,7 +179,7 @@ public class RewriteConfigurationProvider extends HttpConfigurationProvider {
 				EvaluationContext context) {
 			String reqLanguage = event.getRequest().getLocale().getLanguage();
 			if (!supportedLocale.contains(reqLanguage)) {
-				reqLanguage = Locale.ENGLISH.getLanguage();
+				reqLanguage = defaultLanguage;
 			}
 			String landingUrl = I18nUrlBuilder.generateI18nResourcePath(
 					reqLanguage,

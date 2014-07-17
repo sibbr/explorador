@@ -28,6 +28,7 @@ public class OccurrencePortalConfig {
 	
 	public static final String CONFIG_FILENAME = "/WEB-INF/portal-config.properties";
 	public static final String SUPPORTED_LANGUAGES_KEY = "i18n.supportedLanguages";
+	public static final String DEFAULT_LANGUAGE_KEY = "i18n.defaultLanguage";
 	
 	//Associated sequences properties related
 	public static final String SEQ_URL_FORMAT_SUFFIX = ".urlFormat";

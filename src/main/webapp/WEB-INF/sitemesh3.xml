@@ -1,5 +1,5 @@
 <sitemesh>
-    <mapping path="/*" decorator="/decorators/sibbr/layout.ftl"/>
+    <mapping path="/*" decorator="/decorators/layout.ftl"/>
     <mapping path="/occurrence-preview/*" exclude="true" />
     
     <content-processor>

@@ -1,17 +1,5 @@
 #!/bin/bash
 
-echo "*** Building application with gradle..."
-gradle clean -x test buildProduction
-
-# export Java JDK:
-export JAVA_HOME="/opt/jdk1.7.0_51/"
-
-#Tomcat base diretory:
-TOMCAT_DIR="/opt/canadensys/apache-tomcat-8.0.9"
-
-echo "*** Stopping tomcat:"
-sh $TOMCAT_DIR/bin/shutdown.sh
-
 # Check for parameters:
 if test -n $1 ; then
   case $1 in 
@@ -40,6 +28,18 @@ if test -n $1 ; then
     ;;
     esac
 fi
+
+# export Java JDK:
+export JAVA_HOME="/opt/jdk1.7.0_51/"
+
+#Tomcat base diretory:
+TOMCAT_DIR="/opt/canadensys/apache-tomcat-8.0.9"
+
+echo "*** Stopping tomcat:"
+sh $TOMCAT_DIR/bin/shutdown.sh
+
+echo "*** Building application with gradle..."
+gradle clean -x test buildProduction
 
 echo "*** Tomcat directory set to: $TOMCAT_DIR"
 echo "*** Cleaning old data from tomcat ***"

@@ -1,4 +1,4 @@
-i18n.supportedKanguages=en,fr,pt-br
+i18n.supportedLanguages=en,fr,pt
 
 url.useMinified=false
 

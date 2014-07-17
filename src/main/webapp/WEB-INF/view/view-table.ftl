@@ -105,3 +105,4 @@ $(function() {
  <@controlJavaScriptInit/>
 });
 </script>
+</content>
