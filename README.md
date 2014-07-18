@@ -7,7 +7,7 @@ Este portal exibe os dados e metadados sobre conjuntos de dados e listas de esp�
 
 Este portal é baseado em um fork do software do [Canadensys-explorer](https://github.com/Canadensys/canadensys-explorer), o explorador de dados da rede Canadensys de biodiversidade.
 
-### Para saber mais sobre detalhes de implementação, visite nossa [Wiki](https://github.com/sibbr/portal-biodiversidade/wiki)
+### Para saber mais sobre detalhes de instalação e implementação, visite nossa [Wiki](https://github.com/sibbr/portal-biodiversidade/wiki)!
 
 Dependências
 ------------
@@ -31,6 +31,6 @@ Dependências
 * [Freemarker 2.3.20](http://freemarker.sourceforge.net/)
 * [SiteMesh 3.0.0](https://github.com/sitemesh/sitemesh2/)
 * [Rewrite 2.0.12](https://github.com/ocpsoft/rewrite)
-* [H2 Database 1.3.175](http://www.h2database.com) (for unit testing only)
-* [Selenium Client 2.39](http://docs.seleniumhq.org/download/) (for integration testing)
+* [H2 Database 1.3.175](http://www.h2database.com) (testes unitários)
+* [Selenium Client 2.39](http://docs.seleniumhq.org/download/) (testes de integração)
 
