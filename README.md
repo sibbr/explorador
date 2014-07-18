@@ -1,5 +1,4 @@
 ## portal-biodiversidade
-=====================
 
 Portal de dados de biodiversidade do Sistema de Informação sobre a Biodiversidade Brasileira.
 
@@ -8,7 +7,6 @@ Este portal exibe os dados e metadados sobre conjuntos de dados e listas de esp�
 Este portal é baseado em um fork do software do [Canadensys-explorer](https://github.com/Canadensys/canadensys-explorer), o explorador de dados da rede Canadensys de biodiversidade.
 
 ## Dependências
-------------
 
 ### Projetos
 * [tile-server](https://github.com/sibbr/tile-server)
@@ -32,4 +30,4 @@ Este portal é baseado em um fork do software do [Canadensys-explorer](https://g
 * [H2 Database 1.3.175](http://www.h2database.com) (testes unitários)
 * [Selenium Client 2.39](http://docs.seleniumhq.org/download/) (testes de integração)
 
-### Para saber mais sobre detalhes de instalação e implementação, visite nossa [Wiki](https://github.com/sibbr/portal-biodiversidade/wiki)!
+## Para saber mais sobre detalhes de instalação e implementação, visite nossa [Wiki](https://github.com/sibbr/portal-biodiversidade/wiki)!
