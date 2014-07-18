@@ -22,7 +22,7 @@ Dependências
 * [Postgresql 9.1](http://www.postgresql.org/)
 * [Windshaft](https://github.com/CartoDB/Windshaft)
 
-### Libraries
+### Bibliotecas
 * [Apache Maven 3](http://maven.apache.org/)
 * [Spring Framework 4.0.2](http://www.springsource.org/spring-framework)
 * [Canadensys Data Access 2.7.0](https://github.com/Canadensys/canadensys-data-access)
