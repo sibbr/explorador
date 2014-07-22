@@ -104,7 +104,7 @@
 <!-- Partial match -->
 <script type="text/template" id="filter_template_partial_match">
 <p id="partial_match" class="clear_fix">
-<button type="button">${rc.getMessage("control.search.button.add")}</button> ${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span id="partial_match_value"></span>
+<!-- button type="button">${rc.getMessage("control.search.button.add")}</button --> ${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span id="partial_match_value"></span>
 </p>
 </script>
 
