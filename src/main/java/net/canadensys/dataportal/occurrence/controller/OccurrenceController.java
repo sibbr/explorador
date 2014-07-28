@@ -29,6 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
+import br.gov.sibbr.json.response.model.BHLResponse;
+
 /**
  * Controller of all occurrence related features of the occurrence portal.
  * Occurrence related excludes the search functionality.
@@ -46,9 +48,11 @@ public class OccurrenceController {
 	//separators
 	private static final String ASSOCIATED_SEQUENCES_SEPARATOR = "|";
 	private static final String ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR = ":";
-	
+
+	// Add views here for every new page related to occurrence:
 	private static String VIEW_PARAM = "view";
 	private static String DWC_VIEW_NAME = "dwc";
+	private static String OTHER_VIEW_NAME = "other";
 	
 	@Autowired
 	private OccurrenceService occurrenceService;
@@ -62,11 +66,10 @@ public class OccurrenceController {
 	public ModelAndView handleOccurrencePerResource(@PathVariable String iptResource,@PathVariable String dwcaId, HttpServletRequest request){
 		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(iptResource,dwcaId,true);
 		HashMap<String,Object> modelRoot = new HashMap<String,Object>();
-		
 		if(occModel != null){
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel",occModel.getRawModel());
-			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));
+			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));		
 		}
 		else{
 			throw new ResourceNotFoundException();
@@ -78,6 +81,13 @@ public class OccurrenceController {
 		String view = request.getParameter(VIEW_PARAM);
 		if(DWC_VIEW_NAME.equalsIgnoreCase(view)){
 			return new ModelAndView("occurrence-dwc",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
+		}
+		if(OTHER_VIEW_NAME.equalsIgnoreCase(view)){
+			// Add BHL data related to the taxon:
+			if (occModel != null) {
+				modelRoot.put("occBHL", new BHLResponse(occModel.getScientificname().replace(' ', '+')).getResults());
+			}
+			return new ModelAndView("occurrence-other",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 		}
 		return new ModelAndView("occurrence",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 	}

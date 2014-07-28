@@ -20,7 +20,7 @@
 		<#if page.occViewModel.imageList?has_content>
 			<div id="occpage_image">
 				<#list page.occViewModel.imageList as currImg>
-				<a class="round" href="${currImg}"><span><img src="${currImg}" alt="${page.occModel.scientificname?if_exists} (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})"/></span></a>
+				<a class="round" href="${currImg}"><span><img src="${currImg}" alt="<i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})"/></span></a>
 				</#list>
 			</div>
 		</#if>
@@ -36,12 +36,13 @@
 	</div>
 	
 	<div id="content" class="clear_fix">
-		<h1>${page.occModel.scientificname?if_exists} (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})</h1>
+		<h1><i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})</h1>
 		<p class="details">${rc.getMessage("occpage.header.details")}: ${page.occModel.sourcefileid?if_exists}/${page.occModel.dwcaid?if_exists}</p>
 		<div class="nav_container" id="occpage_navigation">
 		<ul class="buttons">
 			<li><a href="?view=normal" class="selected">${rc.getMessage("occpage.header.button.normal")}</a></li>
 			<li><a href="?view=dwc">${rc.getMessage("occpage.header.button.dwc")}</a></li>
+			<li><a href="?view=other">${rc.getMessage("occpage.header.button.other")}</a></li>
 		</ul>
 		</div>
 
@@ -59,7 +60,7 @@
 			<tr><th scope="row">${rc.getMessage("occ._order")}</th><td>${page.occModel._order?if_exists}</td></tr>
 			<tr><th scope="row">${rc.getMessage("occ.family")}</th><td>${page.occModel.family?if_exists}</td></tr>
 			<tr><th scope="row">${rc.getMessage("occ.genus")}</th><td>${page.occModel.genus?if_exists}</td></tr>
-			<tr><th scope="row">${rc.getMessage("occ.scientificname")}</th><td>${page.occModel.scientificname?if_exists} <span class="remark">(${rc.getMessage("occpage.remark.interpretedfrom")}: ${page.occRawModel.scientificname?if_exists})</span></td></tr>
+			<tr><th scope="row">${rc.getMessage("occ.scientificname")}</th><td><i>${page.occModel.scientificname?if_exists}</i> <span class="remark">(${rc.getMessage("occpage.remark.interpretedfrom")}: ${page.occRawModel.scientificname?if_exists})</span></td></tr>
 			<tr><th scope="row">${rc.getMessage("occ.scientificnameauthorship")}</th><td>${page.occModel.scientificnameauthorship?if_exists}</td></tr>
 		</tbody>
 		</table>

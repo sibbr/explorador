@@ -44,8 +44,8 @@ gradle clean -x test buildProduction
 echo "*** Tomcat directory set to: $TOMCAT_DIR"
 echo "*** Cleaning old data from tomcat ***"
 echo ""
-rm -r $TOMCAT_DIR/work/Catalina/localhost/portal-biodiversidade/
-rm -r $TOMCAT_DIR/webapps/portal-biodiversidade
+rm -r $TOMCAT_DIR/work/Catalina/localhost/*
+rm -r $TOMCAT_DIR/webapps/portal-biodiversidade/
 rm $TOMCAT_DIR/webapps/portal-biodiversidade.war
 echo ""
 echo "*** Moving recently built portal.web file to tomcat webapps directory ***"
