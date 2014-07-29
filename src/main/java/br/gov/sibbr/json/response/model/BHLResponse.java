@@ -31,36 +31,37 @@ public class BHLResponse {
 		// Fetch json from API given a taxon name:
 		JSONObject json = JSONProcessor.fetchBHLFromTaxa(scientificName);
 
-		parseBHLJSONForTaxa(json);
+		parseBHLJSONForTaxa(scientificName, json);
 	}
 
 	/**
 	 * Process JSON data filling POJO objects for the result items
 	 * @param json
 	 */
-	private void parseBHLJSONForTaxa(JSONObject json) {
+	private void parseBHLJSONForTaxa(String scientificName, JSONObject json) {
 		JSONArray results;
 		try {
 			results = (JSONArray) json.get("Result");
-			for (int i = 0; i < results.length(); i++) {
+			// Limit to 5 results, normally one exact match and other 4:
+			for (int i = 0; i < results.length() && i < 3 ; i++) {
 				JSONObject element = (JSONObject) results.get(i);
-
-				String nameBankId = "";
-				if (!element.isNull("NameBankID"))
-					nameBankId = (String) element.get("NameBankID");
 
 				String nameConfirmed = "";
 				if (!element.isNull("NameConfirmed"))
 					nameConfirmed = (String) element.get("NameConfirmed");
-
+				
+				String nameBankId = "";
+				if (!element.isNull("NameBankID"))
+					nameBankId = (String) element.get("NameBankID");
+	
 				String eolid = "";
 				if (!element.isNull("EOLID"))
 					eolid = (String) element.get("EOLID");
-
+	
 				String titles = "";
 				if (!element.isNull("Titles"))
 					titles = (String) element.get("Titles");
-
+	
 				getResults().add(
 						new BHLResultsElement(nameBankId, nameConfirmed, eolid,
 								titles));

@@ -79,7 +79,7 @@ public class JSONProcessor {
 	 */
 	public static void main(String args[]) {
 		// Teste de consulta dos dados a partir da taxonomia:
-		BHLResponse bhlresp = new BHLResponse("Phoradendron%20crassifolium");
+		BHLResponse bhlresp = new BHLResponse("Lafoensia");
 		System.out.println("Before page processing:");
 		System.out.println(bhlresp.toString());
 		System.out.println("After page processing:");

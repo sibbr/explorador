@@ -85,7 +85,16 @@ public class OccurrenceController {
 		if(OTHER_VIEW_NAME.equalsIgnoreCase(view)){
 			// Add BHL data related to the taxon:
 			if (occModel != null) {
-				modelRoot.put("occBHL", new BHLResponse(occModel.getScientificname().replace(' ', '+')).getResults());
+				String scientificName = occModel.getScientificname().replace(' ', '+');
+				// When register has no scientificName, use Genus:
+				if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
+					String genus = occModel.getGenus().replace(' ', '+');
+					modelRoot.put("occBHL", new BHLResponse(genus).getResults());
+				}
+				// Defaults to use scientific name:
+				else {
+					modelRoot.put("occBHL", new BHLResponse(scientificName).getResults());
+				}	
 			}
 			return new ModelAndView("occurrence-other",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 		}

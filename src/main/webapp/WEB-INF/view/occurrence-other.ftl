@@ -23,16 +23,23 @@
 			</a>
 		</h2>
 		<ul>
-			<#list page.occBHL as item>
-				<li><h3>${rc.getMessage("occpage.confirmedname")}: ${item.getNameConfirmed()}</h3></li>
+			<#if page.occBHL?has_content>			
+				<#list page.occBHL?if_exists as item>
+					<li><h3>${rc.getMessage("occpage.other.confirmedname")}: ${item.getNameConfirmed()}</h3></li>
+					<ul>
+						<#list item.getBhlPages() as page>
+							<li><a href="http://www.biodiversitylibrary.org/page/${page.getPageId()}" target="_blank">${page.getShortTitle()} - ${page.getPublisherName()} [${page.getPublicationDate()}]</a></li>  
+						</#list>
+					</ul>	
+				</#list>
+			<#else>
 				<ul>
-					<#list item.getBhlPages() as page>
-						<li><a href="http://www.biodiversitylibrary.org/page/${page.getPageId()}" target="_blank">${page.getShortTitle()} - ${page.getPublisherName()} [${page.getPublicationDate()}]</a></li>  
-					</#list>
+					<li> ${rc.getMessage("occpage.other.bhl.taxonnotfound")}</li>
 				</ul>	
-			</#list>
+			</#if>
+			
 		</ul>
- 		<h2>${rc.getMessage("occpage.enciclopedia.of.life")}</h2>
+ 		<h2>${rc.getMessage("occpage.other.enciclopedia.of.life")}</h2>
 		<ul>
 			<li>
 				<a href="http://eol.org/search?q=${page.occModel.scientificname?if_exists}" target="_blank">

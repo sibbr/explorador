@@ -10,7 +10,8 @@ import org.json.JSONObject;
 import br.gov.sibbr.util.JSONProcessor;
 
 /**
- * Controller for modelling a JSON "Results" object to the BHL API response adding corresponding pages.
+ * Controller for modelling a JSON "Results" object to the BHL API response
+ * adding corresponding pages.
  * 
  * @author Pedro GUimarães
  * 
@@ -26,7 +27,9 @@ public class BHLResultsElement {
 	private List<BHLPage> bhlPages;
 
 	/**
-	 * Constructor to build the object with the given parameters and load related pages
+	 * Constructor to build the object with the given parameters and load
+	 * related pages
+	 * 
 	 * @param nameBankID
 	 * @param nameConfirmed
 	 * @param EOLID
@@ -44,7 +47,8 @@ public class BHLResultsElement {
 	}
 
 	/**
-	 * Load all related pages data by making a secondary call to the BHL API and filling the pages list to the given object's nameBankId
+	 * Load all related pages data by making a secondary call to the BHL API and
+	 * filling the pages list to the given object's nameBankId
 	 */
 	public void loadPages() {
 		String nameBankId = getNameBankID();
@@ -57,30 +61,48 @@ public class BHLResultsElement {
 			String publicationDate = "";
 			String pageId = "";
 			try {
-				result = (JSONObject) json.get("Result");
-				titles = result.getJSONArray("Titles");
-				// Set titles data loop:
-				for (int i = 0; i < titles.length(); i++) {
-					JSONObject element = (JSONObject) titles.get(i);
-					if (!element.isNull("ShortTitle"))
-						shortTitle = (String) element.get("ShortTitle");
+				if (!json.isNull("Result")) {
+					result = (JSONObject) json.get("Result");
+					if (!result.isNull("Titles")) {
+						titles = result.getJSONArray("Titles");
+						// Set titles data loop:
+						for (int i = 0; i < titles.length(); i++) {
+							JSONObject element = (JSONObject) titles.get(i);
+							if (!element.isNull("ShortTitle"))
+								shortTitle = (String) element.get("ShortTitle");
 
-					if (!element.isNull("PublisherName"))
-						publisherName = (String) element.get("PublisherName");
+							if (!element.isNull("PublisherName"))
+								publisherName = (String) element
+										.get("PublisherName");
 
-					if (!element.isNull("PublicationDate"))
-						publicationDate = (String) element
-								.get("PublicationDate");
+							if (!element.isNull("PublicationDate"))
+								publicationDate = (String) element
+										.get("PublicationDate");
 
-					// Set items data loop for titles:
-					if (!element.isNull("Items")) {
-						items = element.getJSONArray("Items");
-						for (int j = 0; j < items.length(); j++) {
-							JSONObject item = items.getJSONObject(j);
-							pages = item.getJSONArray("Pages");
-							// Set pages data loop for items:
-							for (int k = 0; k < pages.length(); k++) {
-								JSONObject page = pages.getJSONObject(k);
+							// Set items data loop for titles:
+							if (!element.isNull("Items")) {
+								items = element.getJSONArray("Items");
+								/**
+								 * Change loop to fetch only one page in a given
+								 * document: for (int j = 0; j < items.length();
+								 * j++) { JSONObject item =
+								 * items.getJSONObject(j); pages =
+								 * item.getJSONArray("Pages"); // Set pages data
+								 * loop for items: for (int k = 0; k <
+								 * pages.length(); k++) { JSONObject page =
+								 * pages.getJSONObject(k); if
+								 * (!page.isNull("PageID")) { pageId =
+								 * page.get("PageID").toString(); // Add BHLPage
+								 * to BHLResultsElement // (BankNameId)
+								 * getBhlPages().add( new BHLPage(pageId,
+								 * shortTitle, publisherName, publicationDate));
+								 * } }
+								 */
+								// Get link only for the first page for each
+								// document:
+								JSONObject item = items.getJSONObject(0);
+								pages = item.getJSONArray("Pages");
+								JSONObject page = pages.getJSONObject(0);
 								if (!page.isNull("PageID")) {
 									pageId = page.get("PageID").toString();
 									// Add BHLPage to BHLResultsElement
@@ -102,6 +124,7 @@ public class BHLResultsElement {
 
 	/**
 	 * Getters and setters for class objects:
+	 * 
 	 * @return
 	 */
 	public String getNameBankID() {
@@ -162,4 +185,4 @@ public class BHLResultsElement {
 		output += "\n";
 		return output;
 	}
-}//EOF
+}// EOF
