@@ -67,6 +67,9 @@ public class OccurrenceSearchServiceImpl implements OccurrenceSearchService {
 	
 	//TODO allow to customize this through configuration
 	static{
+		// Adding PT_BT locale:
+		Locale localePT = new Locale.Builder().setLanguage("pt").build();
+		DOWNLOAD_EMAIL_TEMPLATE_PER_LOCALE.put(localePT, "download-email-pt.ftl");
 		DOWNLOAD_EMAIL_TEMPLATE_PER_LOCALE.put(Locale.ENGLISH, "download-email-en.ftl");
 		DOWNLOAD_EMAIL_TEMPLATE_PER_LOCALE.put(Locale.FRENCH, "download-email-fr.ftl");
 	}
@@ -247,6 +250,7 @@ public class OccurrenceSearchServiceImpl implements OccurrenceSearchService {
 					templateData.put("requestURL", extraProperties.get(DownloadPropertiesEnum.SEARCH_URL));
 					
 					String templateName = DOWNLOAD_EMAIL_TEMPLATE_PER_LOCALE.get(locale);
+					
 					if(!mailSender.sendMessage(emailAddress, bundle.getString("download.dwca.email.subject"), templateData, templateName)){
 						LOGGER.fatal("Supposed to send DarwinCore archive by email to " + md5emailAddress + " but it failed.");
 					}

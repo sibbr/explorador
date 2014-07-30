@@ -34,7 +34,7 @@ public class TemplateMailSender {
 	public boolean sendMessage(final String toEmail, final String subject, final Map<String,Object> model, final String templateName){
 		
 		if(templateName == null){
-			LOGGER.fatal("FTL tempale is null. Maybe a wrong locale?");
+			LOGGER.fatal("FTL template is null. Maybe a wrong locale?");
 			return false;
 		}
 		
