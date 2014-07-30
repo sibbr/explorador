@@ -63,7 +63,6 @@ public class OccurrenceSearchServiceImpl implements OccurrenceSearchService {
 	private static final Logger LOGGER = Logger.getLogger(OccurrenceSearchServiceImpl.class);
 	private static final Map<Locale,String> DOWNLOAD_EMAIL_TEMPLATE_PER_LOCALE = new HashMap<Locale,String>();
 	private static final String EMAIL_DATE_FORMAT = "EEEE, yyyy-MM-dd HH:mm:ss z";
-	private static final int MAX_STATS_PER_FIELD = 10;
 	
 	//TODO allow to customize this through configuration
 	static{
@@ -250,7 +249,6 @@ public class OccurrenceSearchServiceImpl implements OccurrenceSearchService {
 					templateData.put("requestURL", extraProperties.get(DownloadPropertiesEnum.SEARCH_URL));
 					
 					String templateName = DOWNLOAD_EMAIL_TEMPLATE_PER_LOCALE.get(locale);
-					
 					if(!mailSender.sendMessage(emailAddress, bundle.getString("download.dwca.email.subject"), templateData, templateName)){
 						LOGGER.fatal("Supposed to send DarwinCore archive by email to " + md5emailAddress + " but it failed.");
 					}
