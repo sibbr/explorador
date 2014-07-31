@@ -65,17 +65,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Controller of all search related features of the occurrence portal. This
- * controller must be stateless.
- * 
+ * Controller of all search related features of the occurrence portal.
+ * This controller must be stateless.
  * @author canadensys
- * 
+ *
  */
 @Controller
 public class SearchController {
-	// get log4j handler
-	private static final Logger LOGGER = Logger
-			.getLogger(SearchController.class);
+	//get log4j handler
+	private static final Logger LOGGER = Logger.getLogger(SearchController.class);
 
 	public static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 	public static final String DEFAULT_VIEW = "map";
@@ -95,10 +93,8 @@ public class SearchController {
 	public static final ObjectMapper JACKSON_MAPPER = new ObjectMapper();
 	static {
 		// avoid sending irrelevant data on the client side
-		JACKSON_MAPPER.addMixInAnnotations(SearchQueryPart.class,
-				SearchQueryPartMixIn.class);
-		JACKSON_MAPPER.addMixInAnnotations(OccurrenceSearchableField.class,
-				OccurrenceSearchableFieldMixIn.class);
+		JACKSON_MAPPER.addMixInAnnotations(SearchQueryPart.class,SearchQueryPartMixIn.class);
+		JACKSON_MAPPER.addMixInAnnotations(OccurrenceSearchableField.class,OccurrenceSearchableFieldMixIn.class);
 		JACKSON_MAPPER.setSerializationInclusion(Include.NON_NULL);
 	}
 	private String availableSearchFieldsMap;
@@ -155,8 +151,7 @@ public class SearchController {
 	public void init() {
 
 		// keep this in memory since it is used in each "search" call
-		availableSearchFieldsMap = beanAsJSONString(searchServiceConfig
-				.getSearchableFieldMap());
+		availableSearchFieldsMap = beanAsJSONString(searchServiceConfig.getSearchableFieldMap());
 
 		// load dynamic language resources for all locale
 		languageResourcesByLocale = new HashMap<Locale, String>();
@@ -189,39 +184,28 @@ public class SearchController {
 		}
 		modelRoot.put("currentView", currentView);
 		modelRoot.put("contextURL", extractContextURL(request));
-
-		// Handle locale
+		
+		//Handle locale
 		Locale locale = RequestContextUtils.getLocale(request);
-
-		// Set common stuff (version,minified, ...)
-		ControllerHelper.setPageHeaderVariables(request, "search", null,
-				appConfig, modelRoot);
-
-		modelRoot.put("languageResources", ObjectUtils.defaultIfNull(
-				languageResourcesByLocale.get(locale),
-				languageResourcesByLocale.get(Locale.ENGLISH)));
-		modelRoot.put("availableFilters",
-				searchServiceConfig.getFreemarkerSearchableFieldMap());
+		
+		//Set common stuff (version,minified, ...)
+		ControllerHelper.setPageHeaderVariables(request,"search",null,appConfig, modelRoot);
+		
+		modelRoot.put("languageResources", ObjectUtils.defaultIfNull(languageResourcesByLocale.get(locale),languageResourcesByLocale.get(Locale.ENGLISH)));
+		modelRoot.put("availableFilters", searchServiceConfig.getFreemarkerSearchableFieldMap());
 		modelRoot.put("availableFiltersMap", availableSearchFieldsMap);
 
 		// handle search related parameters
-		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler
-				.getSearchQueryPartCollection(request.getParameterMap());
+		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler.getSearchQueryPartCollection(request.getParameterMap());
 
 		// handle alias parameters e.g. 'dataset','iptresource'
-		handleSearchParameterAlias(
-				request.getParameter(SearchURLHelper.DATASET_PARAM),
-				"datasetname", searchRelatedParams);
-		handleSearchParameterAlias(
-				request.getParameter(SearchURLHelper.IPT_RESOURCE_PARAM),
-				"sourcefileid", searchRelatedParams);
+		handleSearchParameterAlias(request.getParameter(SearchURLHelper.DATASET_PARAM),"datasetname", searchRelatedParams);
+		handleSearchParameterAlias(request.getParameter(SearchURLHelper.IPT_RESOURCE_PARAM),"sourcefileid", searchRelatedParams);
 
 		// keep search related query string
-		modelRoot.put("searchParameters",
-				searchParamHandler.toQueryStringMap(searchRelatedParams));
+		modelRoot.put("searchParameters",searchParamHandler.toQueryStringMap(searchRelatedParams));
 
-		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler
-				.asMap(searchRelatedParams);
+		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler.asMap(searchRelatedParams);
 
 		handleGeospatialQuery(searchCriteria);
 		// handling data related to the view
@@ -251,17 +235,14 @@ public class SearchController {
 
 		modelRoot.put("debug", locale.toString());
 
-		if (currentView.equals(ViewNameEnum.MAP_VIEW_NAME.getViewName())) {
-			return new ModelAndView("view-map",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-		} else if (currentView.equals(ViewNameEnum.STATS_VIEW_NAME
-				.getViewName())) {
-			return new ModelAndView("view-stats",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		if(currentView.equals(ViewNameEnum.MAP_VIEW_NAME.getViewName())){
+			return new ModelAndView("view-map",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
+		}
+		else if(currentView.equals(ViewNameEnum.STATS_VIEW_NAME.getViewName())){
+			return new ModelAndView("view-stats",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 		}
 
-		return new ModelAndView("view-table",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("view-table",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
 	}
 
 	/**
@@ -271,29 +252,22 @@ public class SearchController {
 	 * @param searchCriteria
 	 * @param searchSortPart
 	 */
-	private void handleSearchMapView(HashMap<String, Object> model,
-			Map<String, List<SearchQueryPart>> searchCriteria) {
-
-		// get regular count
-		model.put("occurrenceCount",
-				occurrenceSearchService.getOccurrenceCount(searchCriteria));
-		model.put("embeddedMapQuery",
-				occurrenceSearchService.getMapQuery(searchCriteria));
-		int georeferencedOccurrenceCount = occurrenceSearchService
-				.getGeoreferencedOccurrenceCount(searchCriteria);
+	private void handleSearchMapView(HashMap<String,Object> model,Map<String,List<SearchQueryPart>> searchCriteria){
+		
+		//get regular count
+		model.put("occurrenceCount", occurrenceSearchService.getOccurrenceCount(searchCriteria));
+		model.put("embeddedMapQuery",occurrenceSearchService.getMapQuery(searchCriteria));
+		int georeferencedOccurrenceCount = occurrenceSearchService.getGeoreferencedOccurrenceCount(searchCriteria);
 		model.put("georeferencedOccurrenceCount", georeferencedOccurrenceCount);
 	}
 
 	/**
 	 * Handle table-view specific data.
-	 * 
 	 * @param model
 	 * @param searchCriteria
 	 * @param searchSortPart
 	 */
-	private void handleSearchTableView(HashMap<String, Object> model,
-			Map<String, List<SearchQueryPart>> searchCriteria,
-			SearchSortPart searchSortPart) {
+	private void handleSearchTableView(HashMap<String,Object> model,Map<String,List<SearchQueryPart>> searchCriteria, SearchSortPart searchSortPart){
 		// Handle search
 		List<Map<String, String>> searchResult = new ArrayList<Map<String, String>>();
 		LimitedResult<List<Map<String, String>>> qr = occurrenceSearchService

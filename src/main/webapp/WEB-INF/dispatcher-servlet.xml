@@ -24,14 +24,14 @@
 	<import resource="data-source.xml" />
 
 	<context:component-scan base-package="net.canadensys.dataportal.occurrence"/>
-
+	
 	<!-- use to return JSON -->
 	<mvc:annotation-driven/>
-
+	
 	<!-- use for async annotation -->
 	<task:annotation-driven executor="executor"/>
 	<task:executor id="executor" pool-size="3"/>
-
+	
 	<tx:annotation-driven transaction-manager="hibernateTransactionManager"/>
 
 	<!-- Handles GET requests for static content  --> 
@@ -40,15 +40,15 @@
 	<mvc:resources mapping="/assets/images/**" location="/images/" />
 	<mvc:resources mapping="/download/**" location="/download/" />
 	<mvc:resources mapping="/error.html" location="/error.html" />
-
+	
 	<bean id="searchServiceConfig" class="net.canadensys.dataportal.occurrence.search.config.SearchServiceConfig">
 		<property name="generatedContentFolder" value="${searchServiceConfig.generatedContentFolder}"/>
 		<property name="publicDownloadURL" value="${searchServiceConfig.publicDownloadURL}"/>
 	</bean>
-
+	
 	<!-- Locale/language configuration -->
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<property name="defaultLocale" value="pt" />
+		<property name="defaultLocale" value="${i18n.defaultLanguage:pt}" />
 	</bean>
 	<mvc:interceptors>
     	<!-- Changes the locale when a 'lang' request parameter is sent; e.g. /?lang=fr -->
@@ -66,6 +66,7 @@
 			</list>
         </property>
 	    <property name="defaultEncoding" value="UTF-8"/>
+	    <property name="fallbackToSystemLocale" value="false"/>
 	</bean>
 
 	<!-- Load reference resources -->
@@ -109,22 +110,22 @@
 		<property name="tableUsed" value="occurrence"/>
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-
+	
 	<bean id="templateMailSender" class="net.canadensys.mail.TemplateMailSender">
 		<property name="mailSender" ref="mailSender" />
 		<property name="freemarkerConfig" ref="freemarkerMailConfiguration" />
 		<property name="from" value="${searchServiceConfig.emailFrom}" />
 	</bean>
-
+	
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="${email.smtpServer}" />
 		<property name="port" value="${email.port}" />
 	</bean>
-
+	
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-		<property name="templateLoaderPath" value="/WEB-INF/email/" />
+		<property name="templateLoaderPath" value="${email.templateFolder:/WEB-INF/email/}" />
 	</bean>
-
+		
 	<!-- Warning, those 2 ViewResolver are based on UrlBasedViewResolver. That means that the
 	 JSP must be in a separate folder than the ftl otherwise, 2 files with jsp and ftl extensions will
 	 always be resolved as the first ViewResolver : FreeMarker-->
@@ -136,7 +137,7 @@
 	  <property name="contentType" value="text/html;charset=UTF-8"/>
 	  <property name="requestContextAttribute" value="rc"/>
 	</bean>
-
+	
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix">

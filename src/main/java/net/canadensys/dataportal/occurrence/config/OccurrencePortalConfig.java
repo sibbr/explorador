@@ -27,8 +27,10 @@ public class OccurrencePortalConfig {
 	private static final Logger LOGGER = Logger.getLogger(OccurrencePortalConfig.class);
 	
 	public static final String CONFIG_FILENAME = "/WEB-INF/portal-config.properties";
-	public static final String SUPPORTED_LANGUAGES_KEY = "i18n.supportedLanguages";
 	public static final String DEFAULT_LANGUAGE_KEY = "i18n.defaultLanguage";
+	public static final String SUPPORTED_LANGUAGES_KEY = "i18n.supportedLanguages";
+	
+	public static final String DOWNLOAD_EMAIL_TEMPLATE_FORMAT = "download-email_%s.ftl";
 	
 	//Associated sequences properties related
 	public static final String SEQ_URL_FORMAT_SUFFIX = ".urlFormat";
@@ -42,7 +44,6 @@ public class OccurrencePortalConfig {
 	
 	private String currentVersion;
 	private Boolean useMinified;
-	
 	
 	//List of all terms to use in our DarwinCore archive
 	private String dwcaTermUsed;
@@ -61,12 +62,18 @@ public class OccurrencePortalConfig {
 		
 	public static final I18nTranslationHandler I18N_TRANSLATION_HANDLER = new I18nTranslationHandler("net.canadensys.dataportal.occurrence.controller");
 
-	public OccurrencePortalConfig(){}
+
+	public OccurrencePortalConfig(){
+	}
 	
+	/**
+	 * Set supported languages with a comma separated list of languages.
+	 * @param supportedLanguages
+	 */
 	public void setSupportedLanguages(String supportedLanguages) {
 		supportedLanguagesList = new ArrayList<String>();
 		resourceBundleByLocale = new HashMap<Locale, ResourceBundle>();
-
+		
 		String[] languages = supportedLanguages.split(",");
 
 		Locale currLocale;
@@ -154,7 +161,7 @@ public class OccurrencePortalConfig {
 	public void setEmailSalt(String emailSalt) {
 		this.emailSalt = emailSalt;
 	}
-	
+
 	/**
 	 * 
 	 * @param sequenceProviderProperties
@@ -166,8 +173,17 @@ public class OccurrencePortalConfig {
 	public String getSequenceProviderUrlFormat(String sequenceProvider) {
 		return sequenceProvidersProperties.getProperty(sequenceProvider + SEQ_URL_FORMAT_SUFFIX);
 	}
-	
 	public String getSequenceProviderDisplayName(String sequenceProvider) {
 		return sequenceProvidersProperties.getProperty(sequenceProvider + SEQ_DISPLAY_NAME_SUFFIX);
 	}
+	
+	/**
+	 * Get download Email Freemarker template name for a Locale.
+	 * @param locale
+	 * @return
+	 */
+	public String getDownloadEmailTemplateName(Locale locale){
+		return String.format(DOWNLOAD_EMAIL_TEMPLATE_FORMAT, locale.getLanguage());
+	}
+	
 }
