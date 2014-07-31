@@ -17,20 +17,22 @@
 			</ul>
 		</div>
 
-		<h2>${rc.getMessage("occpage.other.references")}
-			<a href="http://www.biodiversitylibrary.org/name/${page.occModel.scientificname?if_exists}" target="_blank">
-				[${rc.getMessage("occpage.other.search.bhl")}]					
-			</a>
-		</h2>
+		<h2>${rc.getMessage("occpage.other.references")}</h2>
+			<i>
+				<a href="http://www.biodiversitylibrary.org/name/${page.occModel.scientificname?if_exists}" target="_blank">
+				${rc.getMessage("occpage.other.search.bhl")}					
+				</a>
+			</i>
 		<ul>
 			<#if page.occBHL?has_content>			
 				<#list page.occBHL?if_exists as item>
 					<li><h3>${rc.getMessage("occpage.other.confirmedname")}: ${item.getNameConfirmed()}</h3></li>
-					<ul>
-						<#list item.getBhlPages() as page>
-							<li><a href="http://www.biodiversitylibrary.org/page/${page.getPageId()}" target="_blank">${page.getShortTitle()} - ${page.getPublisherName()} [${page.getPublicationDate()}]</a></li>  
-						</#list>
-					</ul>	
+					<#list item.getBhlPages() as page>
+						${page_index + 1}. ${page.getShortTitle()}</a> 
+						<a href="http://www.biodiversitylibrary.org/page/${page.getPageId()}" target="_blank">[${page.getPublisherName()}
+						<#if page.getPublicationDate()?? && page.getPublicationDate()?has_content>${page.getPublicationDate()}</#if>]</a>
+						</br>
+					</#list>
 				</#list>
 			<#else>
 				<ul>
