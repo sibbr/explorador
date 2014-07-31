@@ -1,4 +1,4 @@
-package net.canadensys.dataportal.occurrence.search;
+package net.canadensys.dataportal.occurrence.cache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
+import net.canadensys.dataportal.occurrence.search.OccurrenceSearchService;
+import net.canadensys.dataportal.occurrence.search.OccurrenceSearchableField;
 import net.canadensys.dataportal.occurrence.search.config.SearchServiceConfig;
 import net.canadensys.dataportal.occurrence.search.config.SearchServiceConfig.SearchableFieldEnum;
 import net.canadensys.query.SearchQueryPart;

@@ -54,7 +54,7 @@ $(function() {
     tilerDomain : "${tilerDomain}",
    	tilerPort : ${tilerPort},
    	mapQuery : "${page.embeddedMapQuery}",
-    mapCenter : [-18, -50],
+    mapCenter : [-16, -49],
     mapZoom : 3
   });
   <@controlJavaScriptInit/>

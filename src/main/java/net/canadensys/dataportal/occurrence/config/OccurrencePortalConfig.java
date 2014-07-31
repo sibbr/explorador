@@ -53,13 +53,13 @@ public class OccurrencePortalConfig {
 	
 	//Associated sequences related
 	private Properties sequenceProvidersProperties;
-		
+	
 	//Unique key that is managed by the portal
 	public static final String OCCURRENCE_MANAGED_ID_FIELD = "auto_id";
 	
 	//Key used for models in view
 	public static final String PAGE_ROOT_MODEL_KEY = "page";
-		
+	
 	public static final I18nTranslationHandler I18N_TRANSLATION_HANDLER = new I18nTranslationHandler("net.canadensys.dataportal.occurrence.controller");
 
 

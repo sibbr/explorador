@@ -152,7 +152,7 @@
 			<tr class="unused"><td>115</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/namePublishedInID">namePublishedInID</a></td><td>${page.occRawModel.namepublishedinid?if_exists}</td><td class="unused"></td></tr>
 			<tr class="unused"><td>116</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/namePublishedInYear">namePublishedInYear</a></td><td>${page.occRawModel.namepublishedinyear?if_exists}</td><td class="unused"></td></tr>
 			<tr class="unused"><td>117</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/taxonConceptID">taxonConceptID</a></td><td>${page.occRawModel.taxonconceptid?if_exists}</td><td class="unused"></td></tr>
-			<tr><td>118</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/scientificName">scientificName</a></td><td>${page.occRawModel.scientificname?if_exists}</td><td><i>${page.occModel.scientificname?if_exists}</i></td></tr>
+			<tr><td>118</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/scientificName">scientificName</a></td><td>${page.occRawModel.scientificname?if_exists}</td><td>${page.occModel.scientificname?if_exists}</td></tr>
 			<tr><td>119</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/acceptedNameUsage">acceptedNameUsage</a></td><td>${page.occRawModel.acceptednameusage?if_exists}</td><td class="unused"></td></tr>
 			<tr class="unused"><td>120</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/parentNameUsage">parentNameUsage</a></td><td>${page.occRawModel.parentnameusage?if_exists}</td><td class="unused"></td></tr>
 			<tr class="unused"><td>121</td><td>taxon</td><td><a href="http://rs.tdwg.org/dwc/terms/originalNameUsage">originalNameUsage</a></td><td>${page.occRawModel.originalnameusage?if_exists}</td><td class="unused"></td></tr>
