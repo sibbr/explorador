@@ -1,4 +1,4 @@
-package br.gov.sibbr.json.response.model;
+package br.gov.sibbr.json.response.bhl;
 
 public class BHLPage {
 	

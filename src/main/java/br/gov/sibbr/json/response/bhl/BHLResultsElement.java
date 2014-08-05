@@ -1,4 +1,4 @@
-package br.gov.sibbr.json.response.model;
+package br.gov.sibbr.json.response.bhl;
 
 import java.util.ArrayList;
 import java.util.List;

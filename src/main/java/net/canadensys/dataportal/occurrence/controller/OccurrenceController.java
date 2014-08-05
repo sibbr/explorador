@@ -30,12 +30,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
-import br.gov.sibbr.json.response.model.BHLResponse;
+import br.gov.sibbr.json.response.bhl.BHLResponse;
+import br.gov.sibbr.json.response.eol.EOLResponse;
 
 /**
  * Controller of all occurrence related features of the occurrence portal.
- * Occurrence related excludes the search functionality. 
- * This controller must be stateless.
+ * Occurrence related excludes the search functionality. This controller must be
+ * stateless.
+ * 
  * @author canadensys
  * 
  */
@@ -43,7 +45,8 @@ import br.gov.sibbr.json.response.model.BHLResponse;
 public class OccurrenceController {
 
 	// get log4j handler
-	private static final Logger LOGGER = Logger.getLogger(OccurrenceController.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(OccurrenceController.class);
 	private static final ConfigurableMimeFileTypeMap MIME_TYPE_MAP = new ConfigurableMimeFileTypeMap();
 
 	// separators
@@ -66,11 +69,14 @@ public class OccurrenceController {
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
 
-	@RequestMapping(value="/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.GET)
-	@I18nTranslation(resourceName="occurrence", translateFormat = "/resources/{}/occurrences/{}")
-	public ModelAndView handleOccurrencePerResource(@PathVariable String iptResource,@PathVariable String dwcaId, HttpServletRequest request) {
-		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(iptResource, dwcaId, true);
-		HashMap<String, Object> modelRoot = new HashMap<String,Object>();
+	@RequestMapping(value = "/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.GET)
+	@I18nTranslation(resourceName = "occurrence", translateFormat = "/resources/{}/occurrences/{}")
+	public ModelAndView handleOccurrencePerResource(
+			@PathVariable String iptResource, @PathVariable String dwcaId,
+			HttpServletRequest request) {
+		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(
+				iptResource, dwcaId, true);
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		if (occModel != null) {
 			modelRoot.put("occModel", occModel);
@@ -80,7 +86,8 @@ public class OccurrenceController {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "occurrence",new String[] { iptResource, dwcaId }, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "occurrence",
+				new String[] { iptResource, dwcaId }, appConfig, modelRoot);
 
 		// handle view stuff
 		String view = request.getParameter(VIEW_PARAM);
@@ -89,7 +96,7 @@ public class OccurrenceController {
 					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 		}
 		if (OTHER_VIEW_NAME.equalsIgnoreCase(view)) {
-			// Add BHL data related to the taxon:
+			// Add BHL/EOL data related to the taxon:
 			if (occModel != null) {
 				String scientificName = occModel.getScientificname().replace(
 						' ', '+');
@@ -99,22 +106,29 @@ public class OccurrenceController {
 					String genus = occModel.getGenus().replace(' ', '+');
 					modelRoot
 							.put("occBHL", new BHLResponse(genus).getResults());
+					modelRoot
+							.put("occEOL", new EOLResponse(genus).getResults());
 				}
 				// Defaults to use scientific name:
 				else {
 					modelRoot.put("occBHL",
 							new BHLResponse(scientificName).getResults());
+					modelRoot.put("occEOL",
+							new EOLResponse(scientificName).getResults());
 				}
 			}
 			return new ModelAndView("occurrence-other",
 					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 		}
-		return new ModelAndView("occurrence",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("occurrence",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
 	 * Resource contact page.
-	 * @param ipt resource identifier (sourcefileid).
+	 * 
+	 * @param ipt
+	 *            resource identifier (sourcefileid).
 	 * @return
 	 */
 	@RequestMapping(value = "/resources/{iptResource}/contact", method = RequestMethod.GET)
@@ -131,9 +145,11 @@ public class OccurrenceController {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "contact",new String[] { iptResource }, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "contact",
+				new String[] { iptResource }, appConfig, modelRoot);
 
-		return new ModelAndView("resource-contact",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("resource-contact",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
