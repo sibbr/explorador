@@ -140,7 +140,9 @@ public class JSONProcessor {
 			params.put("id", id);
 			params.put("common_names", "true");
 			params.put("synonyms", "true");
-			params.put("images", "10");
+			params.put("images", "100");
+			params.put("videos", "100");
+			params.put("sounds", "100");
 			params.put("details", "true");
 			url = mountUrl(url, params);
 			try {

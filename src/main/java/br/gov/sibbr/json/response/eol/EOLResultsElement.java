@@ -54,7 +54,8 @@ public class EOLResultsElement {
 				// Fetch pages JSON result for given id:
 				JSONObject json = JSONProcessor.fetchEOLPages(getId());
 				// Fetch richness_score:
-				String richnessScore = (String) json.get("richness_score").toString();
+				String richnessScore = (String) json.get("richness_score")
+						.toString();
 				// Fetch and process synonyms:
 				ArrayList<EOLSynonym> synonyms = EOLSynonym
 						.processJSON(((JSONArray) json.get("synonyms")));
@@ -64,11 +65,17 @@ public class EOLResultsElement {
 				// Fetch and process synonyms:
 				ArrayList<EOLTaxonConcept> taxonConcepts = EOLTaxonConcept
 						.processJSON((JSONArray) json.get("taxonConcepts"));
-				// Fetch and process synonyms:
-				ArrayList<EOLDataObject> dataObjects = EOLDataObject
-						.processJSON((JSONArray) json.get("dataObjects"));
+				/** Process Data Objects according to data type: **/
+				// Fetch and process images:
+				JSONArray dataObjects = (JSONArray) json.get("dataObjects");
+				ArrayList<EOLImage> images = EOLImage.processJSON(dataObjects);
+				ArrayList<EOLText> texts = EOLText.processJSON(dataObjects);
+				ArrayList<EOLAudio> audio = EOLAudio.processJSON(dataObjects);
+
 				// Add new EOLPage to the object page list:
-				getPages().add(new EOLPage(id, richnessScore, synonyms , vernacularNames, taxonConcepts, dataObjects));
+				getPages().add(
+						new EOLPage(id, richnessScore, synonyms,
+								vernacularNames, taxonConcepts, images, texts, audio));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

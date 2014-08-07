@@ -38,7 +38,6 @@
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.dataset")}">
 							<option value="${page.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
-							<option value="${page.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option>
 							<option value="${page.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.specimen")}">

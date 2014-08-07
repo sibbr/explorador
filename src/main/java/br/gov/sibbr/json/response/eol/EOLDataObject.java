@@ -3,10 +3,6 @@ package br.gov.sibbr.json.response.eol;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * POJO for EOL Data Object
  * @author pedro
@@ -17,134 +13,18 @@ public class EOLDataObject {
 	private String identifier;
 	private String dataObjectVersionID;
 	private String dataType;
-	private String dataSubtype;
 	private String vettedStatus;
 	private String dataRating;
-	private String subject;
 	private String mimeType;
+	private String title;
 	private String language;
 	private String license;
+	private String rights;
 	private String rightsHolder;
-	private String description;
-	private String eolThumbnail;
 	private String source;
-	private String mediaURL;
-	private String title;
+	private String description;
 	private List<EOLAgent> agents = new ArrayList<EOLAgent>();
 
-	/**
-	 * Class base constructor
-	 * @param identifier
-	 * @param dataObjectVersionID
-	 * @param dataType
-	 * @param subject
-	 * @param mimeType
-	 * @param language
-	 * @param license
-	 * @param rightsHolder
-	 * @param description
-	 * @param eolThumbnail
-	 * @param source
-	 * @param mediaURL
-	 * @param agents
-	 */
-	public EOLDataObject(String identifier, String dataObjectVersionID,
-			String dataType, String dataRating, String subject, String mimeType,
-			String language, String license, String rightsHolder,
-			String description, String eolThumbnail, String source, String mediaURL, String title, List<EOLAgent> agents) {
-		setIdentifier(identifier);
-		setDataObjectVersionID(dataObjectVersionID);
-		setDataType(dataType);
-		setDataRating(dataRating);
-		setSubject(subject);
-		setMimeType(mimeType);
-		setLanguage(language);
-		setLicense(license);
-		setRightsHolder(rightsHolder);
-		setDescription(description);
-		setEolThumbnail(eolThumbnail);
-		setSource(source);
-		setMediaURL(mediaURL);
-		setTitle(title);
-		setAgents(agents);
-	}
-
-	public static ArrayList<EOLDataObject> processJSON(JSONArray json) {
-		ArrayList<EOLDataObject> dataObjects = new ArrayList<EOLDataObject>();
-		try {
-			for (int i = 0; i < json.length(); i++) {
-				JSONObject item = (JSONObject) json.get(i);
-
-				String identifier = "";
-				if (!item.isNull("identifier"))
-					identifier = (String) item.get("identifier");
-
-				String dataObjectVersionID = "";
-				if (!item.isNull("dataObjectVersionID"))
-					dataObjectVersionID = item.get("dataObjectVersionID").toString();
-
-				String dataType = "";
-				if (!item.isNull("dataType"))
-					dataType = (String) item.get("dataType");
-
-				String dataRating = "";
-				if (!item.isNull("dataRating"))
-					dataRating = item.get("dataRating").toString();
-				
-				String subject = "";
-				if (!item.isNull("subject"))
-					subject = (String) item.get("subject");
-
-				String mimeType = "";
-				if (!item.isNull("mimeType"))
-					mimeType = (String) item.get("mimeType");
-
-				String language = "";
-				if (!item.isNull("language"))
-					language = (String) item.get("language");
-				
-				String license = "";
-				if (!item.isNull("license"))
-					license = (String) item.get("license");
-
-				String rightsHolder = "";
-				if (!item.isNull("rightsHolder"))
-					rightsHolder = (String) item.get("rightsHolder");
-
-				String description = "";
-				if (!item.isNull("description"))
-					description = (String) item.get("description");
-				
-				String thumb = "";
-				if (!item.isNull("eolThumbnailURL"))
-					thumb = (String) item.get("eolThumbnailURL");
-				
-				String source = "";
-				if (!item.isNull("source"))
-					source = (String) item.get("source");
-				
-				String mediaUrl = "mediaURL";
-				if (!item.isNull("mediaURL"))
-					mediaUrl = (String) item.get("mediaURL");
-				
-				String title= "title";
-				if (!item.isNull("title"))
-					title = (String) item.get("title");
-				
-				List<EOLAgent> agents = null;
-				if(!item.isNull("agents"))
-					agents = EOLAgent.processJSON((JSONArray) item.getJSONArray("agents"));
-				
-				// Create new Data Object and add to list:
-				dataObjects.add(new EOLDataObject(identifier,
-						dataObjectVersionID, dataType, dataRating, subject, mimeType, language, license, rightsHolder, description, thumb, source, mediaUrl, title, agents));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return dataObjects;
-	}
-	
 	/**
 	 * Default toString method
 	 */
@@ -153,17 +33,16 @@ public class EOLDataObject {
 		output += " identifier: " + getIdentifier();
 		output += " dataObjectVersionID: " + getDataObjectVersionID();
 		output += " dataType: " + getDataType();
+		output += " vettedStatus " + getVettedStatus();
 		output += " dataRating: " + getDataRating();
-		output += " subject: " + getSubject();
 		output += " mimeType: " + getMimeType();
+		output += " title: " + getTitle();
 		output += " language: " + getLanguage();
 		output += " license: " + getLicense();
+		output += " rights: " + getRights();
 		output += " rightsHolder: " + getRightsHolder();
-		output += " description: " + getDescription();
-		output += " eolThumbnailURL: " + getEolThumbnail();
 		output += " source: " + getSource();
-		output += " mediaURL: " + getMediaURL();
-		output += " title: " + getTitle();
+		output += " description: " + getDescription();
 		output += "\n Agents:";
 		for (EOLAgent a: getAgents())
 			output += a.toString();
@@ -216,21 +95,6 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @return the dataSubtype
-	 */
-	public String getDataSubtype() {
-		return dataSubtype;
-	}
-
-	/**
-	 * @param dataSubtype
-	 *            the dataSubtype to set
-	 */
-	public void setDataSubtype(String dataSubtype) {
-		this.dataSubtype = dataSubtype;
-	}
-
-	/**
 	 * @return the vettedStatus
 	 */
 	public String getVettedStatus() {
@@ -258,36 +122,6 @@ public class EOLDataObject {
 	 */
 	public void setDataRating(String dataRating) {
 		this.dataRating = dataRating;
-	}
-
-	/**
-	 * @return the subject
-	 */
-	public String getSubject() {
-		return subject;
-	}
-
-	/**
-	 * @param subject
-	 *            the subject to set
-	 */
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-
-	/**
-	 * @return the mimeType
-	 */
-	public String getMimeType() {
-		return mimeType;
-	}
-
-	/**
-	 * @param mimeType
-	 *            the mimeType to set
-	 */
-	public void setMimeType(String mimeType) {
-		this.mimeType = mimeType;
 	}
 
 	/**
@@ -366,17 +200,17 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @return the eolThumbnail
+	 * @return the rights
 	 */
-	public String getEolThumbnail() {
-		return eolThumbnail;
+	public String getRights() {
+		return rights;
 	}
 
 	/**
-	 * @param eolThumbnail the eolThumbnail to set
+	 * @param rights the rights to set
 	 */
-	public void setEolThumbnail(String eolThumbnail) {
-		this.eolThumbnail = eolThumbnail;
+	public void setRights(String rights) {
+		this.rights = rights;
 	}
 
 	/**
@@ -394,17 +228,17 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @return the mediaURL
+	 * @return the mimeType
 	 */
-	public String getMediaURL() {
-		return mediaURL;
+	public String getMimeType() {
+		return mimeType;
 	}
 
 	/**
-	 * @param mediaURL the mediaURL to set
+	 * @param mimeType the mimeType to set
 	 */
-	public void setMediaURL(String mediaURL) {
-		this.mediaURL = mediaURL;
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
 	}
 
 	/**
@@ -420,5 +254,4 @@ public class EOLDataObject {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
 }
