@@ -26,7 +26,7 @@
 				</a>
 				<#list page.occBHL?if_exists as item>
 					<#if (item.getBhlPages()?size > 0)>
-						<li><h3>${rc.getMessage("occpage.other.confirmedname")}: ${item.getNameConfirmed()}</h3></li>
+						<li><h3>${rc.getMessage("occpage.other.confirmedname")}: <i>${item.getNameConfirmed()}</i></h3></li>
 						<#list item.getBhlPages() as page>
 							${page_index + 1}. ${page.getShortTitle()}</a> 
 							<a href="http://www.biodiversitylibrary.org/page/${page.getPageId()}" target="_blank">[${page.getPublisherName()}
@@ -81,7 +81,7 @@
 								<#list page.getSynonyms() as synonym>
 									<tr>
 										<td>${synonym_index+1}.</td>
-										<td>${synonym.getSynonym()}</td>
+										<td><i>${synonym.getSynonym()}</i></td>
 										<td>${synonym.getRelationship()}</td>
 									</tr>
 								</#list>
