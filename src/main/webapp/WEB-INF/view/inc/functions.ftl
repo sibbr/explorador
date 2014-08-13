@@ -33,8 +33,8 @@
 	<#return rc.getContextUrl(URLHelper.getUriWithLanguage(uri,rc.getLocale().getLanguage()))>
 </#function>
 
-<#macro i18nResource resourceName params=[]>
-${rc.getContextUrl(URLHelper.toI18nResource(rc.getLocale().getLanguage(),resourceName,params))}
+<#macro i18nResource resourceName param="">
+${rc.getContextUrl(URLHelper.toI18nResource(rc.getLocale().getLanguage(),resourceName,param))}
 </#macro>
 
 <#-- page.searchParameters should exists-->

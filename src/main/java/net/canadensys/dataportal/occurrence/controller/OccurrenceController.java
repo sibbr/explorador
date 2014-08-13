@@ -80,7 +80,7 @@ public class OccurrenceController {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "occurrence",new String[] { auto_id }, appConfig, modelRoot);
+		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id , appConfig, modelRoot);
 
 		// handle view stuff
 		String view = request.getParameter(VIEW_PARAM);
