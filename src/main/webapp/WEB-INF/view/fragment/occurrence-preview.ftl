@@ -18,7 +18,7 @@
 	<dt>${rc.getMessage("occ.genus")}: </dt><dd>${page.occModel.genus!}</dd>
 	<dt>${rc.getMessage("occ.rawscientificname")}: </dt><dd>${page.occModel.rawscientificname!}</dd>
 </dl>
-<p class="occ_preview_links"><a id="viewfullrecord" href="<@i18nResource resourceName="occurrence" params=[page.occModel.sourcefileid,page.occModel.dwcaid]/>" target="_blank">${rc.getMessage("view.preview.viewfullrecord")}</a>
+<p class="occ_preview_links"><a id="viewfullrecord" href="<@i18nResource resourceName="occurrence" params=[page.occModel.auto_id]/>" target="_blank">${rc.getMessage("view.preview.viewfullrecord")}</a>
 <#if page.occModel._references??>
  | <a id="viewsourcerecord" href="${page.occModel._references}" target="_blank">${rc.getMessage("view.preview.viewsourcerecord")}</a></p>
 </#if>

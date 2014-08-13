@@ -60,6 +60,16 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 		return occModel;
 	}
 	
+	/**
+	 * Fetch occurrence given its auto_id:
+	 */
+	@Override
+	@Transactional(readOnly=true)
+	public OccurrenceModel loadOccurrenceModel(String auto_id, boolean loadRawModel) {
+		OccurrenceModel occModel = occurrenceDAO.load(auto_id, loadRawModel);
+		return occModel;
+	}
+	
 	@Override
 	@Transactional(readOnly=true)
 	public ResourceContactModel loadResourceContactModel(String sourceFileId) {

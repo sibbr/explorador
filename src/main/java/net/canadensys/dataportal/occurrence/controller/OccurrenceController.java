@@ -66,10 +66,10 @@ public class OccurrenceController {
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
 
-	@RequestMapping(value="/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.GET)
-	@I18nTranslation(resourceName="occurrence", translateFormat = "/resources/{}/occurrences/{}")
-	public ModelAndView handleOccurrencePerResource(@PathVariable String iptResource,@PathVariable String dwcaId, HttpServletRequest request) {
-		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(iptResource, dwcaId, true);
+	@RequestMapping(value="/occurrences/{auto_id}", method = RequestMethod.GET)
+	@I18nTranslation(resourceName="occurrence", translateFormat = "/occurrences/{}")
+	public ModelAndView handleOccurrencePerResource(@PathVariable String auto_id, HttpServletRequest request) {
+		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
 		HashMap<String, Object> modelRoot = new HashMap<String,Object>();
 
 		if (occModel != null) {
@@ -80,7 +80,7 @@ public class OccurrenceController {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "occurrence",new String[] { iptResource, dwcaId }, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "occurrence",new String[] { auto_id }, appConfig, modelRoot);
 
 		// handle view stuff
 		String view = request.getParameter(VIEW_PARAM);

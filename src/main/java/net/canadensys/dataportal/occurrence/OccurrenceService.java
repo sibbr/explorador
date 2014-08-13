@@ -34,6 +34,14 @@ public interface OccurrenceService {
 	public OccurrenceModel loadOccurrenceModel(String sourcefileid, String dwcaId, boolean loadRawModel);
 	
 	/**
+	 * Load an occurrence model based on the unique key auto_id
+	 * @param autoId
+	 * @param loadRawModel
+	 * @return
+	 */
+	public OccurrenceModel loadOccurrenceModel(String autoId, boolean loadRawModel);
+	
+	/**
 	 * Load a ResourceContactModel based on the sourcefileid
 	 * @param sourcefileid
 	 * @return

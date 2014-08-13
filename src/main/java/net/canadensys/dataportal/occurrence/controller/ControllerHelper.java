@@ -55,8 +55,6 @@ public class ControllerHelper {
 				languagePathMap.put(currSupportedLang, otherLanguagePath);
 			}
 		}
-		
 		modelRoot.put("otherLanguage", languagePathMap);
 	}
-
 }
