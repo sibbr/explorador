@@ -250,6 +250,8 @@ public class OccurrenceController {
 						resource.getArchive_url(), IPT_ARCHIVE_PATTERN,
 						IPT_RESOURCE_PATTERN));
 			}
+			// Add data source name to view:
+			occViewModel.setDataSourceName(resource.getName());
 		}
 		return occViewModel;
 	}
