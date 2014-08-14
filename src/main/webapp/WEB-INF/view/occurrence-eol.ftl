@@ -6,7 +6,6 @@
 </head>
 <a id="main-content"></a>
 <div id="body">
-	
 	<div id="content" class="fullscreen">
 		<#assign species = "<i>${page.occModel.scientificname?if_exists}</i>"> 
 		<h1>${rc.getMessage("occpage.other.information")} <i>${page.occModel.scientificname?if_exists}</i></h1>
@@ -14,44 +13,16 @@
 			<ul class="buttons">
 				<li><a href="?view=normal">${rc.getMessage("occpage.header.button.normal")}</a></li>
 				<li><a href="?view=dwc">${rc.getMessage("occpage.header.button.dwc")}</a></li>
-				<li><a href="?view=other" class="selected">${rc.getMessage("occpage.header.button.other")}</a></li>
 			</ul>
 		</div>
-		<!-- Biodiversity Heritage Library -->
-		<h2>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</h2>
-		<ul>
-			<#if page.occBHL?has_content>
-				<a href="http://www.biodiversitylibrary.org/name/${page.occModel.scientificname?if_exists}" target="_blank">
-					<i>${rc.getMessage("occpage.other.search.bhl")}</i>					
-				</a>
-				<#list page.occBHL?if_exists as item>
-					<#if (item.getBhlPages()?size > 0)>
-						<li><h3>${rc.getMessage("occpage.other.confirmedname")}: <i>${item.getNameConfirmed()}</i></h3></li>
-						<#list item.getBhlPages() as page>
-							${page_index + 1}. ${page.getShortTitle()}</a> 
-							<a href="http://www.biodiversitylibrary.org/page/${page.getPageId()}" target="_blank">[${page.getPublisherName()}
-							<#if page.getPublicationDate()?? && page.getPublicationDate()?has_content>${page.getPublicationDate()}</#if>]</a>
-							</br>
-						</#list>
-					</#if>
-				</#list>
-			<#else>
-				<ul>
-					<li> ${rc.getMessage("occpage.other.bhl.taxon.not.found")}</li>
-				</ul>	
-			</#if>
-		</ul>
-		<!-- Catalog of Life -->		
- 		<h2>${rc.getMessage("occpage.other.catalog.of.life")}</h2>
- 		<#if page.occCOL?has_content>
-			<a href="http://www.catalogueoflife.org/col/search/all/key/${page.occModel.scientificname?if_exists}/match/1" target="_blank">
-				<i>${rc.getMessage("occpage.other.search.col")}</i>
-			</a>
-		<#else>
-			<ul>
-				<li> ${rc.getMessage("occpage.other.col.taxon.not.found")}</li>
-			</ul>	
-		</#if>
+		<h2>${rc.getMessage("occpage.other.information")}:</h2>
+		<table>
+			<tr>
+				<td><li><a href="?view=bhl">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li></td>
+				<td><li><a href="?view=eol">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li></td>
+				<td><li><a href="?view=col">${rc.getMessage("occpage.other.catalog.of.life")}</a></li></td>
+			</tr>
+		</table>
 		<!-- Enciclopedia of Life -->
  		<h2>${rc.getMessage("occpage.other.enciclopedia.of.life")}</h2>		
 		
@@ -379,7 +350,7 @@
 			<ul>
 				<li> ${rc.getMessage("occpage.other.eol.taxon.not.found")}</li>
 			</ul>	
-		</#if>
+		</#if>		
 	</div>
 </div><#-- body -->
 <#assign coordinateuncertaintyinmeters=0>

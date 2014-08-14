@@ -1,4 +1,4 @@
- <#include "inc/functions.ftl">
+<#include "inc/functions.ftl">
 <#include "inc/global-functions.ftl">
 <head>
 <title>${rc.getMessage("page.search.title")}</title>
@@ -39,13 +39,19 @@
 		<h1><i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})</h1>
 		<p class="details">${rc.getMessage("occpage.header.details")}: ${page.occModel.sourcefileid?if_exists}/${page.occModel.dwcaid?if_exists}</p>
 		<div class="nav_container" id="occpage_navigation">
-		<ul class="buttons">
-			<li><a href="?view=normal" class="selected">${rc.getMessage("occpage.header.button.normal")}</a></li>
-			<li><a href="?view=dwc">${rc.getMessage("occpage.header.button.dwc")}</a></li>
-			<li><a href="?view=other">${rc.getMessage("occpage.header.button.other")}</a></li>
-		</ul>
+			<ul class="buttons">
+				<li><a href="?view=normal" class="selected">${rc.getMessage("occpage.header.button.normal")}</a></li>
+				<li><a href="?view=dwc">${rc.getMessage("occpage.header.button.dwc")}</a></li>
+			</ul>
 		</div>
-
+		<h2>${rc.getMessage("occpage.other.information")}:</h2>
+		<table>
+			<tr>
+				<td><li><a href="?view=bhl">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li></td>
+				<td><li><a href="?view=eol">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li></td>
+				<td><li><a href="?view=col">${rc.getMessage("occpage.other.catalog.of.life")}</a></li></td>
+			</tr>
+		</table>
 		<#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
 			<h2>${rc.getMessage("occpage.group.typestatus")}</h2>
 			<p>${page.occModel.typestatus!}</p>

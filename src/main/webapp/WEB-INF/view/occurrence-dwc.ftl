@@ -19,7 +19,6 @@
 			<ul class="buttons">
 				<li><a href="?view=normal">${rc.getMessage("occpage.header.button.normal")}</a></li>
 				<li><a href="?view=dwc" class="selected">${rc.getMessage("occpage.header.button.dwc")}</a></li>
-				<li><a href="?view=other">${rc.getMessage("occpage.header.button.other")}</a></li>
 			</ul>
 			<a id="dwc_table_toggle" href="#">${rc.getMessage("occpage.header.toggle.unused")}</a>
 		</div>
