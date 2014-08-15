@@ -22,7 +22,7 @@
 			</ul>
 			<a id="dwc_table_toggle" href="#">${rc.getMessage("occpage.header.toggle.unused")}</a>
 		</div>
-		
+		<h3><i>${rc.getMessage("occpage.heather.desc.dwc")}</i></h3>
 		<table id="dwc_table" class="sortable">
 		<thead>
 			<tr>

@@ -44,6 +44,7 @@
 				<li><a href="?view=dwc">${rc.getMessage("occpage.header.button.dwc")}</a></li>
 			</ul>
 		</div>
+		<h3><i>${rc.getMessage("occpage.heather.desc.normal")}</i></h3>
 		<h2>${rc.getMessage("occpage.other.information")}:</h2>
 		<table>
 			<tr>
