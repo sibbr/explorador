@@ -1,12 +1,16 @@
 <#-- some /WEB-INF/view/inc/.ftl can come from portal-web-core project -->
 <#include "/WEB-INF/view/inc/global-functions.ftl">
+
 <!DOCTYPE html>
 <html lang="${rc.getLocale().getLanguage()}">
 <head>
 <meta charset="UTF-8">
 <title><sitemesh:write property='title'>Title goes here</sitemesh:write></title>
-<link rel="stylesheet" href="http://data.canadensys.net/common/styles/common-1.0.min.css" media="screen,print"/>
-<link rel="shortcut icon" href="http://data.canadensys.net/common/images/favicon.png"/>
+<link rel="stylesheet" href="http://institucional.sibbr.gov.br/wp-content/themes/portal/styles/data-common.css" media="screen,print"/>
+
+<link rel="icon" href="http://institucional.sibbr.gov.br/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="http://institucional.sibbr.gov.br/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
+
 <sitemesh:write property='head'/>
 <#include "/WEB-INF/view/inc/ga.ftl">
 </head>
