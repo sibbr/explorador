@@ -38,7 +38,7 @@ public class TemplateMailSender {
 			return false;
 		}
 		
-		try {			
+		try {
 			final Template template = freemarkerConfig.getTemplate(templateName);
 			MimeMessagePreparator preparator = new MimeMessagePreparator() {
 		         public void prepare(MimeMessage mimeMessage) throws Exception {

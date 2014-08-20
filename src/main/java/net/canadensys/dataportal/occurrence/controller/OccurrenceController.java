@@ -1,8 +1,11 @@
 package net.canadensys.dataportal.occurrence.controller;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,8 +16,10 @@ import net.canadensys.dataportal.occurrence.model.OccurrenceViewModel;
 import net.canadensys.dataportal.occurrence.model.ResourceContactModel;
 import net.canadensys.dataportal.occurrence.model.ResourceModel;
 import net.canadensys.exception.web.ResourceNotFoundException;
+import net.canadensys.mail.TemplateMailSender;
 import net.canadensys.web.i18n.I18nUrlBuilder;
 import net.canadensys.web.i18n.annotation.I18nTranslation;
+import net.canadensys.web.i18n.annotation.I18nTranslationHandler;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -63,13 +68,17 @@ public class OccurrenceController {
 	private static String BHL_VIEW_NAME = "bhl";
 	private static String EOL_VIEW_NAME = "eol";
 	private static String COL_VIEW_NAME = "col";
-
+	
 	@Autowired
 	private OccurrenceService occurrenceService;
 
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
+
+	@Autowired
+	@Qualifier("templateMailSender")
+	private TemplateMailSender mailSender;
 
 	@RequestMapping(value = "/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "occurrence", translateFormat = "/resources/{}/occurrences/{}")
@@ -143,6 +152,10 @@ public class OccurrenceController {
 			return new ModelAndView("occurrence-col",
 					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 		}
+		// Set occurrence information for contact page:
+		request.getSession().setAttribute("sourceFileId", iptResource);
+		request.getSession().setAttribute("dwcaId", dwcaId);
+		request.getSession().setAttribute("occreq", request);
 		return new ModelAndView("occurrence",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
@@ -161,6 +174,38 @@ public class OccurrenceController {
 		ResourceContactModel resourceContactModel = occurrenceService
 				.loadResourceContactModel(iptResource);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		
+		String occurrenceURL = (String)request.getSession().getAttribute("occurrencepath");
+
+		if (resourceContactModel != null) {
+			modelRoot.put("data", resourceContactModel);
+			modelRoot.put("occurrence", occurrenceURL);
+		} else {
+			throw new ResourceNotFoundException();
+		}
+		// Set common stuff
+		ControllerHelper.setPageHeaderVariables(request, "contact",
+				new String[] { iptResource }, appConfig, modelRoot);
+		return new ModelAndView("resource-contact",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+	}
+
+	/**
+	 * Resource contact message sending form.
+	 * 
+	 * @param ipt
+	 *            resource identifier (sourcefileid).
+	 * @return
+	 */
+	@RequestMapping(value = "/resources/{iptResource}/contact", method = RequestMethod.POST)
+	@I18nTranslation(resourceName = "contact", translateFormat = "/resources/{}/contact")
+	public ModelAndView handleResourceContactMsg(
+			@PathVariable String iptResource, HttpServletRequest request) {
+		ResourceContactModel resourceContactModel = occurrenceService
+				.loadResourceContactModel(iptResource);
+		// URL from the previous URL accessed that led to the contact form:
+		Locale locale = RequestContextUtils.getLocale(request);		
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		if (resourceContactModel != null) {
 			modelRoot.put("data", resourceContactModel);
@@ -170,9 +215,38 @@ public class OccurrenceController {
 		// Set common stuff
 		ControllerHelper.setPageHeaderVariables(request, "contact",
 				new String[] { iptResource }, appConfig, modelRoot);
-
-		return new ModelAndView("resource-contact",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		
+		Map<String, Object> templateData = new HashMap<String, Object>();
+		String mailto = resourceContactModel.getEmail();
+		String nameto = resourceContactModel.getName();
+		
+		if (mailto != null && !mailto.equalsIgnoreCase("")) {
+			String namefrom = request.getParameter("name");
+			String mailfrom = request.getParameter("email");
+			String message = request.getParameter("message");
+			// Later change to fetch from properties file (resourcecontact.subject).
+			String subject = "SiBBr - " + namefrom + " (" + mailfrom + ")";
+			templateData.put("mailto", mailto);
+			templateData.put("nameto", nameto);
+			templateData.put("mailfrom", mailfrom);
+			templateData.put("namefrom", namefrom);
+			templateData.put("message", message);
+			templateData.put("time", new SimpleDateFormat(
+					"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+			String templateName = appConfig.getContactEmailTemplateName(locale);
+			mailSender.sendMessage(mailto, subject, templateData,templateName);			
+		}
+		// Redirect back to occurrence:
+		
+		// Get data from original request:
+		String sourceFileId = (String)request.getSession().getAttribute("sourceFileId");
+		String dwcaId = (String)request.getSession().getAttribute("dwcaId");
+		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
+				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
+				.getTranslationFormat("occurrence"), new String[]{sourceFileId, dwcaId} );
+		RedirectView rv = new RedirectView(request.getContextPath() + occurrenceUrl);
+		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+		return new ModelAndView(rv);
 	}
 
 	/**

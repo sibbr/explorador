@@ -24,5 +24,15 @@
 			<tr><th>${rc.getMessage("resourcecontact.telephone")}</th><td>${page.data.phone!}</td></tr>
 		</tbody>
 		</table>
+		
+		<h2>Send a message to the publisher about: </h2>
+		<div style="width: 100%;">
+			<form method="POST" id="sendmailform" name="sendmailform">
+				${rc.getMessage("resourcecontact.name")}: <input type="text" name="name" style="width: 45%;"/></br>
+				${rc.getMessage("resourcecontact.email")}: <input type="text" name="email" style="width: 45%;"/></br>
+				${rc.getMessage("resourcecontact.message")}: <textarea form="sendmailform" id="message" name="message" cols="100" placeholder=${rc.getMessage("resourcecontact.tip")} style="height: 250px; width: 100%;"></textarea></br>
+				<input type="submit" value=${rc.getMessage("resourcecontact.submit")} style="width:10%;float:right">
+			</form>
+		</div>	
 	</div>
 </div><#-- body -->
