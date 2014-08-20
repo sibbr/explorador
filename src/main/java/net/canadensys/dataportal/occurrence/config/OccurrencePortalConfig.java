@@ -31,6 +31,7 @@ public class OccurrencePortalConfig {
 	public static final String SUPPORTED_LANGUAGES_KEY = "i18n.supportedLanguages";
 	
 	public static final String DOWNLOAD_EMAIL_TEMPLATE_FORMAT = "download-email_%s.ftl";
+	public static final String CONTACT_EMAIL_TEMPLATE_FORMAT = "contact-email_%s.ftl";
 	
 	//Associated sequences properties related
 	public static final String SEQ_URL_FORMAT_SUFFIX = ".urlFormat";
@@ -186,4 +187,12 @@ public class OccurrencePortalConfig {
 		return String.format(DOWNLOAD_EMAIL_TEMPLATE_FORMAT, locale.getLanguage());
 	}
 	
+	/**
+	 * Get contact Email Freemarker template name for a Locale.
+	 * @param locale
+	 * @return
+	 */
+	public String getContactEmailTemplateName(Locale locale){
+		return String.format(CONTACT_EMAIL_TEMPLATE_FORMAT, locale.getLanguage());
+	}
 }
