@@ -61,7 +61,7 @@ public class TemplateMailSender {
 		}
 		return true;
 	}
-
+	
 	public void setMailSender(JavaMailSender mailSender) {
 		this.mailSender = mailSender;
 	}

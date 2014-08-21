@@ -31,6 +31,7 @@
 				${rc.getMessage("resourcecontact.name")}: <input type="text" name="name" style="width: 45%;"/></br>
 				${rc.getMessage("resourcecontact.email")}: <input type="text" name="email" style="width: 45%;"/></br>
 				${rc.getMessage("resourcecontact.message")}: <textarea form="sendmailform" id="message" name="message" cols="100" placeholder=${rc.getMessage("resourcecontact.tip")} style="height: 250px; width: 100%;"></textarea></br>
+				<input type="hidden" name ="subject" value=${rc.getMessage("resourcecontact.subject")}>
 				<input type="submit" value=${rc.getMessage("resourcecontact.submit")} style="width:10%;float:right">
 			</form>
 		</div>	

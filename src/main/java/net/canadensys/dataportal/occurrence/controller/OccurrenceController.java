@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import net.canadensys.dataportal.occurrence.OccurrenceService;
@@ -19,7 +20,6 @@ import net.canadensys.exception.web.ResourceNotFoundException;
 import net.canadensys.mail.TemplateMailSender;
 import net.canadensys.web.i18n.I18nUrlBuilder;
 import net.canadensys.web.i18n.annotation.I18nTranslation;
-import net.canadensys.web.i18n.annotation.I18nTranslationHandler;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -155,7 +155,6 @@ public class OccurrenceController {
 		// Set occurrence information for contact page:
 		request.getSession().setAttribute("sourceFileId", iptResource);
 		request.getSession().setAttribute("dwcaId", dwcaId);
-		request.getSession().setAttribute("occreq", request);
 		return new ModelAndView("occurrence",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
@@ -186,6 +185,7 @@ public class OccurrenceController {
 		// Set common stuff
 		ControllerHelper.setPageHeaderVariables(request, "contact",
 				new String[] { iptResource }, appConfig, modelRoot);
+		
 		return new ModelAndView("resource-contact",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
@@ -225,7 +225,7 @@ public class OccurrenceController {
 			String mailfrom = request.getParameter("email");
 			String message = request.getParameter("message");
 			// Later change to fetch from properties file (resourcecontact.subject).
-			String subject = "SiBBr - " + namefrom + " (" + mailfrom + ")";
+			String subject = request.getParameter("subject");
 			templateData.put("mailto", mailto);
 			templateData.put("nameto", nameto);
 			templateData.put("mailfrom", mailfrom);
@@ -351,5 +351,64 @@ public class OccurrenceController {
 			occViewModel.setDataSourceName(resource.getName());
 		}
 		return occViewModel;
+	}
+	
+	/**
+	 * Feedback page with form to receive comments
+	 * 
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/feedback", method = RequestMethod.GET)
+	@I18nTranslation(resourceName = "feedback", translateFormat = "/feedback")
+	public ModelAndView handleFeedback(HttpServletRequest request) {
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		String previousURL = (String)request.getAttribute("previousURL");
+		modelRoot.put("previousURL", previousURL);
+		request.setAttribute("previousURL",request.getRequestURL());
+		ControllerHelper.setPageHeaderVariables(request, "feedback",
+				new String[] {}, appConfig, modelRoot);
+		return new ModelAndView("feedback",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+	}
+	
+	/**
+	 * Resource contact message feedback sending form.
+	 * 
+	 * @param ipt
+	 *            resource identifier (sourcefileid).
+	 * @return
+	 */
+	@RequestMapping(value = "/feedback", method = RequestMethod.POST)
+	@I18nTranslation(resourceName = "feedback", translateFormat = "/feedback")
+	public ModelAndView handleFeedbackMsg(HttpServletRequest request) {
+		// URL from the previous URL accessed that led to the contact form:
+		Locale locale = RequestContextUtils.getLocale(request);		
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+
+		// Set common stuff
+		ControllerHelper.setPageHeaderVariables(request, "feedback",
+				new String[] { }, appConfig, modelRoot);
+		
+		Map<String, Object> templateData = new HashMap<String, Object>();
+		
+		String namefrom = request.getParameter("name");
+		String mailfrom = request.getParameter("email");
+		String message = request.getParameter("message");
+		String subject = request.getParameter("subject");
+		String mailto = request.getParameter("mailto");
+		LOGGER.error("*** " + subject);
+		templateData.put("mailfrom", mailfrom);
+		templateData.put("namefrom", namefrom);
+		templateData.put("message", message);
+		templateData.put("time", new SimpleDateFormat(
+				"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+		String templateName = appConfig.getContactEmailTemplateName(locale);
+		mailSender.sendMessage(mailto, subject, templateData,templateName);			
+	
+		// Redirect back to main page
+		RedirectView rv = new RedirectView(request.getContextPath());
+		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+		return new ModelAndView(rv);
 	}
 }
