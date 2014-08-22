@@ -67,7 +67,7 @@ public class OccurrenceController {
 	private static String BHL_VIEW_NAME = "bhl";
 	private static String EOL_VIEW_NAME = "eol";
 	private static String COL_VIEW_NAME = "col";
-	
+
 	@Autowired
 	private OccurrenceService occurrenceService;
 
@@ -86,12 +86,17 @@ public class OccurrenceController {
 			HttpServletRequest request) {
 		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(
 				iptResource, dwcaId, true);
+		// Load resource contact data:
+		ResourceContactModel resourceContactModel = occurrenceService
+				.loadResourceContactModel(iptResource);
+
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		if (occModel != null) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel", occModel.getRawModel());
 			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));
+			modelRoot.put("data", resourceContactModel);
 		} else {
 			throw new ResourceNotFoundException();
 		}
@@ -99,93 +104,29 @@ public class OccurrenceController {
 		ControllerHelper.setPageHeaderVariables(request, "occurrence",
 				new String[] { iptResource, dwcaId }, appConfig, modelRoot);
 
-		// handle view stuff
-		String view = request.getParameter(VIEW_PARAM);
-		if (DWC_VIEW_NAME.equalsIgnoreCase(view)) {
-			return new ModelAndView("occurrence-dwc",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-		}
-		if (BHL_VIEW_NAME.equalsIgnoreCase(view)) {
-			// Add BHL data related to the taxon:
-			if (occModel != null) {
-				String scientificName = occModel.getScientificname().replace(
-						' ', '+');
-				// When register has no scientificName, use Genus:
-				if (scientificName.equalsIgnoreCase(" ")
-						|| scientificName.equals(null)) {
-					String genus = occModel.getGenus().replace(' ', '+');
-					modelRoot
-							.put("occBHL", new BHLResponse(genus).getResults());
-				}
-				// Defaults to use scientific name:
-				else {
-					modelRoot.put("occBHL",
-							new BHLResponse(scientificName).getResults());
-				}
+		// Add BHL data related to the taxon:
+		if (occModel != null) {
+			String scientificName = occModel.getScientificname().replace(' ',
+					'+');
+			// When register has no scientificName, use Genus:
+			if (scientificName.equalsIgnoreCase(" ")
+					|| scientificName.equals(null)) {
+				String genus = occModel.getGenus().replace(' ', '+');
+				modelRoot.put("occBHL", new BHLResponse(genus).getResults());
+				modelRoot.put("occEOL", new EOLResponse(genus).getResults());
 			}
-			return new ModelAndView("occurrence-bhl",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-		}
-		if (EOL_VIEW_NAME.equalsIgnoreCase(view)) {
-			// Add EOL data related to the taxon:
-			if (occModel != null) {
-				String scientificName = occModel.getScientificname().replace(
-						' ', '+');
-				// When register has no scientificName, use Genus:
-				if (scientificName.equalsIgnoreCase(" ")
-						|| scientificName.equals(null)) {
-					String genus = occModel.getGenus().replace(' ', '+');
-					modelRoot
-							.put("occEOL", new EOLResponse(genus).getResults());
-				}
-				// Defaults to use scientific name:
-				else {
-					modelRoot.put("occEOL",
-							new EOLResponse(scientificName).getResults());
-				}
+			// Defaults to use scientific name:
+			else {
+				modelRoot.put("occBHL",
+						new BHLResponse(scientificName).getResults());
+				modelRoot.put("occEOL",
+						new EOLResponse(scientificName).getResults());
 			}
-			return new ModelAndView("occurrence-eol",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-		}
-		if (COL_VIEW_NAME.equalsIgnoreCase(view)) {
-			return new ModelAndView("occurrence-col",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 		}
 		// Set occurrence information for contact page:
 		request.getSession().setAttribute("sourceFileId", iptResource);
 		request.getSession().setAttribute("dwcaId", dwcaId);
 		return new ModelAndView("occurrence",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-	}
-
-	/**
-	 * Resource contact page.
-	 * 
-	 * @param ipt
-	 *            resource identifier (sourcefileid).
-	 * @return
-	 */
-	@RequestMapping(value = "/resources/{iptResource}/contact", method = RequestMethod.GET)
-	@I18nTranslation(resourceName = "contact", translateFormat = "/resources/{}/contact")
-	public ModelAndView handleResourceContact(@PathVariable String iptResource,
-			HttpServletRequest request) {
-		ResourceContactModel resourceContactModel = occurrenceService
-				.loadResourceContactModel(iptResource);
-		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		
-		String occurrenceURL = (String)request.getSession().getAttribute("occurrencepath");
-
-		if (resourceContactModel != null) {
-			modelRoot.put("data", resourceContactModel);
-			modelRoot.put("occurrence", occurrenceURL);
-		} else {
-			throw new ResourceNotFoundException();
-		}
-		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "contact",
-				new String[] { iptResource }, appConfig, modelRoot);
-		
-		return new ModelAndView("resource-contact",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
@@ -203,7 +144,7 @@ public class OccurrenceController {
 		ResourceContactModel resourceContactModel = occurrenceService
 				.loadResourceContactModel(iptResource);
 		// URL from the previous URL accessed that led to the contact form:
-		Locale locale = RequestContextUtils.getLocale(request);		
+		Locale locale = RequestContextUtils.getLocale(request);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		if (resourceContactModel != null) {
@@ -214,16 +155,17 @@ public class OccurrenceController {
 		// Set common stuff
 		ControllerHelper.setPageHeaderVariables(request, "contact",
 				new String[] { iptResource }, appConfig, modelRoot);
-		
+
 		Map<String, Object> templateData = new HashMap<String, Object>();
 		String mailto = resourceContactModel.getEmail();
 		String nameto = resourceContactModel.getName();
-		
+
 		if (mailto != null && !mailto.equalsIgnoreCase("")) {
 			String namefrom = request.getParameter("name");
 			String mailfrom = request.getParameter("email");
 			String message = request.getParameter("message");
-			// Later change to fetch from properties file (resourcecontact.subject).
+			// Later change to fetch from properties file
+			// (resourcecontact.subject).
 			String subject = request.getParameter("subject");
 			templateData.put("mailto", mailto);
 			templateData.put("nameto", nameto);
@@ -233,17 +175,20 @@ public class OccurrenceController {
 			templateData.put("time", new SimpleDateFormat(
 					"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 			String templateName = appConfig.getContactEmailTemplateName(locale);
-			mailSender.sendMessage(mailto, subject, templateData,templateName);			
+			mailSender.sendMessage(mailto, subject, templateData, templateName);
 		}
 		// Redirect back to occurrence:
-		
+
 		// Get data from original request:
-		String sourceFileId = (String)request.getSession().getAttribute("sourceFileId");
-		String dwcaId = (String)request.getSession().getAttribute("dwcaId");
+		String sourceFileId = (String) request.getSession().getAttribute(
+				"sourceFileId");
+		String dwcaId = (String) request.getSession().getAttribute("dwcaId");
 		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
 				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
-				.getTranslationFormat("occurrence"), new String[]{sourceFileId, dwcaId} );
-		RedirectView rv = new RedirectView(request.getContextPath() + occurrenceUrl);
+				.getTranslationFormat("occurrence"), new String[] {
+				sourceFileId, dwcaId });
+		RedirectView rv = new RedirectView(request.getContextPath()
+				+ occurrenceUrl);
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		return new ModelAndView(rv);
 	}
@@ -351,26 +296,26 @@ public class OccurrenceController {
 		}
 		return occViewModel;
 	}
-	
+
 	/**
 	 * Feedback page with form to receive comments
 	 * 
-	 * @param 
+	 * @param
 	 * @return
 	 */
 	@RequestMapping(value = "/feedback", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "feedback", translateFormat = "/feedback")
 	public ModelAndView handleFeedback(HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		String previousURL = (String)request.getAttribute("previousURL");
+		String previousURL = (String) request.getAttribute("previousURL");
 		modelRoot.put("previousURL", previousURL);
-		request.setAttribute("previousURL",request.getRequestURL());
+		request.setAttribute("previousURL", request.getRequestURL());
 		ControllerHelper.setPageHeaderVariables(request, "feedback",
 				new String[] {}, appConfig, modelRoot);
 		return new ModelAndView("feedback",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
-	
+
 	/**
 	 * Resource contact message feedback sending form.
 	 * 
@@ -382,15 +327,15 @@ public class OccurrenceController {
 	@I18nTranslation(resourceName = "feedback", translateFormat = "/feedback")
 	public ModelAndView handleFeedbackMsg(HttpServletRequest request) {
 		// URL from the previous URL accessed that led to the contact form:
-		Locale locale = RequestContextUtils.getLocale(request);		
+		Locale locale = RequestContextUtils.getLocale(request);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		// Set common stuff
 		ControllerHelper.setPageHeaderVariables(request, "feedback",
-				new String[] { }, appConfig, modelRoot);
-		
+				new String[] {}, appConfig, modelRoot);
+
 		Map<String, Object> templateData = new HashMap<String, Object>();
-		
+
 		String namefrom = request.getParameter("name");
 		String mailfrom = request.getParameter("email");
 		String message = request.getParameter("message");
@@ -403,8 +348,8 @@ public class OccurrenceController {
 		templateData.put("time", new SimpleDateFormat(
 				"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 		String templateName = appConfig.getContactEmailTemplateName(locale);
-		mailSender.sendMessage(mailto, subject, templateData,templateName);			
-	
+		mailSender.sendMessage(mailto, subject, templateData, templateName);
+
 		// Redirect back to main page
 		RedirectView rv = new RedirectView(request.getContextPath());
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
