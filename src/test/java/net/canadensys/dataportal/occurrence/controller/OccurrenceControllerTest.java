@@ -127,18 +127,6 @@ public class OccurrenceControllerTest extends AbstractTransactionalJUnit4SpringC
         assertEquals("2.2", occModel.getDwcaid());
     }
     
-    @Test
-    public void testOccurrenceContactURL() throws Exception {
-    	MockHttpServletResponse response = new MockHttpServletResponse();
-    	MockHttpServletRequest request = new MockHttpServletRequest();
-    	request.setMethod("GET");
-    	request.setRequestURI("/resources/uom-occurrence/contact");
-    	Object handler = handlerMapping.getHandler(request).getHandler();    	
-        ModelAndView mav = handlerAdapter.handle(request, response, handler);
-        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        assertViewName(mav,"resource-contact");
-    }
-    
     /**
      * Test the model used for display purpose.
      * associatedSequences urls format are defined in src/main/resources/references/sequenceProviders.properties
