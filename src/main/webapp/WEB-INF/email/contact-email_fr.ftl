@@ -11,6 +11,7 @@
 		<p>Bonjour, cher éditeur <#if nameto?has_content> ${nameto}</#if>. L'utilisateur <b><#if namefrom?has_content>${namefrom}</#if></b> <a href="${mailfrom}">(${mailfrom})</a> vous a envoyé le message suivant à partir de notre portail:</p>
 		<div style="border: 0px solid;border-radius: 25px;background: #E4F1CA;width: 90%;text-decoration: none; margin: auto; padding: 5px 5px 5px 30px">
 			<p>"${message}"</p>
+			<a href="${occurrenceUrl}">${occurrenceUrl}</a>
 		</div>	
 		<p>S'il vous plaît, afin de répondre, contactez directement l'utilisateur <#if namefrom?has_content>${namefrom}</#if> à l'adresse <a href="${mailfrom}">(${mailfrom})</a>.
 		<p>OMerci, l'équipe SiBBr.</p>

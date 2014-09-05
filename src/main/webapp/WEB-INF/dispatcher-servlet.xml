@@ -101,6 +101,7 @@
           <entry key="tilerProtocol" value="${tiler.protocol:}"/>
           <entry key="tilerPort" value="${tiler.port:}"/>
           <entry key="feedbackMailTo" value="${feedback.mail.to:}"/>
+          <entry key="domainName" value="${domain.name:}"/>
           <entry key="URLHelper" value-ref="URLHelper"/>
         </map>
 		</property>

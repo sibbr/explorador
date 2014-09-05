@@ -24,7 +24,6 @@
 			<tr><th>${rc.getMessage("resourcecontact.telephone")}</th><td>${page.data.phone!}</td></tr>
 		</tbody>
 		</table>
-		
 		<h2>Send a message to the publisher about: </h2>
 		<div style="width: 100%;">
 			<form method="POST" id="sendmailform" name="sendmailform">

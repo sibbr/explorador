@@ -137,8 +137,8 @@ public class OccurrenceController {
 	 *            resource identifier (sourcefileid).
 	 * @return
 	 */
-	@RequestMapping(value = "/resources/{iptResource}/contact", method = RequestMethod.POST)
-	@I18nTranslation(resourceName = "contact", translateFormat = "/resources/{}/contact")
+	@RequestMapping(value = "/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.POST)
+	@I18nTranslation(resourceName = "occurrence", translateFormat = "/resources/{}/occurrences/{}")
 	public ModelAndView handleResourceContactMsg(
 			@PathVariable String iptResource, HttpServletRequest request) {
 		ResourceContactModel resourceContactModel = occurrenceService
@@ -146,7 +146,17 @@ public class OccurrenceController {
 		// URL from the previous URL accessed that led to the contact form:
 		Locale locale = RequestContextUtils.getLocale(request);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-
+		
+		// Get full URL:
+		String sourceFileId = (String) request.getSession().getAttribute(
+				"sourceFileId");
+		String dwcaId = (String) request.getSession().getAttribute("dwcaId");
+		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
+				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
+				.getTranslationFormat("occurrence"), new String[] {
+				sourceFileId, dwcaId });
+		String domainName = request.getParameter("domainName");
+		occurrenceUrl = domainName + request.getContextPath() + occurrenceUrl;
 		if (resourceContactModel != null) {
 			modelRoot.put("data", resourceContactModel);
 		} else {
@@ -167,11 +177,13 @@ public class OccurrenceController {
 			// Later change to fetch from properties file
 			// (resourcecontact.subject).
 			String subject = request.getParameter("subject");
+			templateData.put("subject", subject);
 			templateData.put("mailto", mailto);
 			templateData.put("nameto", nameto);
 			templateData.put("mailfrom", mailfrom);
 			templateData.put("namefrom", namefrom);
 			templateData.put("message", message);
+			templateData.put("occurrenceUrl", occurrenceUrl);
 			templateData.put("time", new SimpleDateFormat(
 					"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 			String templateName = appConfig.getContactEmailTemplateName(locale);
@@ -179,16 +191,7 @@ public class OccurrenceController {
 		}
 		// Redirect back to occurrence:
 
-		// Get data from original request:
-		String sourceFileId = (String) request.getSession().getAttribute(
-				"sourceFileId");
-		String dwcaId = (String) request.getSession().getAttribute("dwcaId");
-		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
-				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
-				.getTranslationFormat("occurrence"), new String[] {
-				sourceFileId, dwcaId });
-		RedirectView rv = new RedirectView(request.getContextPath()
-				+ occurrenceUrl);
+		RedirectView rv = new RedirectView(occurrenceUrl);
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		return new ModelAndView(rv);
 	}
