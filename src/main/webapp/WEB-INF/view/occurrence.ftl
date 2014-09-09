@@ -85,6 +85,10 @@
             <!-- NORMAL TAB-->            
             <div id="normal" class="current">
                <!-- Taxa information -->
+               <#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
+               <h2>${rc.getMessage("occpage.group.typestatus")}</h2>
+               <p>${page.occModel.typestatus!}</p>
+               </#if>
                <h2>${rc.getMessage("occpage.group.classification")}</h2>
                <table class="occpage_group">
                   <tbody>
@@ -332,10 +336,6 @@
                   <li><a href="#" class="bhl_hide">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
                   <li><a href="#" class="eol_hide">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
                   <li><a href="#" class="colif_hide">${rc.getMessage("occpage.other.catalog.of.life")}</a></li>
-                  <#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
-                  <h2>${rc.getMessage("occpage.group.typestatus")}</h2>
-                  <p>${page.occModel.typestatus!}</p>
-                  </#if>
                </ul>
                <!-- BHL PAGE-->
                <#include "inc/occurrence-bhl.ftl">
