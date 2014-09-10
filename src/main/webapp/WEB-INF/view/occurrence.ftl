@@ -85,6 +85,10 @@
             <!-- NORMAL TAB-->            
             <div id="normal" class="current">
                <!-- Taxa information -->
+               <#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
+               <h2>${rc.getMessage("occpage.group.typestatus")}</h2>
+               <p>${page.occModel.typestatus!}</p>
+               </#if>
                <h2>${rc.getMessage("occpage.group.classification")}</h2>
                <table class="occpage_group">
                   <tbody>
