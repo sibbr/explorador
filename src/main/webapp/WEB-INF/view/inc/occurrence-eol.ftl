@@ -32,28 +32,28 @@
 	            <td><i>${synonym.getSynonym()}</i></td>
 	            <td>${synonym.getRelationship()}</td>
 	         </tr>
-	     </tbody>
-         </#list>
+	         </#list>
+	       </tbody>  
       </table>
       </#if>
       <!-- Vernacular names for the name -->						
       <#if page.getVernacularNames()?has_content>
       <li> <b>${rc.getMessage("occpage.other.vernacular.names")}:</b> ${rc.getMessage("occpage.other.vernacular.description")}:</li>
-      <table class="sortable">
+	  <table class="sortable">
 		<thead>
-	        <tr>
-	        	<th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.vernacular.names")}</th>
-	            <th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.language")}</th>
-	        </tr>
-	    </thead>
-        <#list page.getVernacularNames() as name>
-        <tbody>
-	        <tr>
-	        	<td>${name.getVernacularName()}</td>
-	        	<td>${name.getLanguage()}</td>
-	        </tr>
-		</tbody>
-        </#list>
+		  <tr>
+		    <th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.vernacular.names")}</th>
+		    <th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.language")}</th>
+		  </tr>
+		</thead>
+	    <tbody>
+	      <#list page.getVernacularNames() as name>
+		    <tr>
+			  <td>${name.getVernacularName()}</td>
+			  <td>${name.getLanguage()}</td>
+			</tr>
+		  </#list>
+	    </tbody>
       </table>
       </#if>
       <!-- Taxon concepts for the name -->
@@ -62,22 +62,22 @@
       <table class="sortable">
       	<thead>
 			<tr>
-				<th class="sorttable_alpha" scope="col" style="width:35%;">${rc.getMessage("occpage.other.scientific.name")}</th>
-				<th class="sorttable_alpha" scope="col" style="width:20%;">${rc.getMessage("occpage.other.canonical.form")}</th>
-				<th class="sorttable_alpha" scope="col" style="width:27%;">${rc.getMessage("occpage.other.according.to")}</th>
-				<th class="sorttable_alpha" scope="col" style="width:18%;">${rc.getMessage("occpage.other.taxon.rank")}</th>
+				<th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.scientific.name")}</th>
+				<th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.canonical.form")}</th>
+				<th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.according.to")}</th>
+				<th class="sorttable_alpha" scope="col">${rc.getMessage("occpage.other.taxon.rank")}</th>
 	         </tr>
 		</thead>
-        <#list page.getTaxonConcepts() as concept>
         <tbody>
-	        <tr>
-	        	<td><i>${concept.getScientificName()}</i></td>
-	            <td><i>${concept.getCanonicalForm()}</i></td>
-	            <td>${concept.getAccordingTo()}</td>
-	            <td>${concept.getTaxonRank()}</td>
+          <#list page.getTaxonConcepts() as concept>
+            <tr>
+	          <td><i>${concept.getScientificName()}</i></td>
+	          <td><i>${concept.getCanonicalForm()}</i></td>
+	          <td>${concept.getAccordingTo()}</td>
+	          <td>${concept.getTaxonRank()}</td>
 	        </tr>
-	    </tbody>    
-        </#list>
+		  </#list>
+	    </tbody>  
       </table>
       </#if>
       <!-- Images related to the name -->
