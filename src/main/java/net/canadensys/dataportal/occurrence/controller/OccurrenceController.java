@@ -1,8 +1,11 @@
 package net.canadensys.dataportal.occurrence.controller;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +16,7 @@ import net.canadensys.dataportal.occurrence.model.OccurrenceViewModel;
 import net.canadensys.dataportal.occurrence.model.ResourceContactModel;
 import net.canadensys.dataportal.occurrence.model.ResourceModel;
 import net.canadensys.exception.web.ResourceNotFoundException;
+import net.canadensys.mail.TemplateMailSender;
 import net.canadensys.web.i18n.I18nUrlBuilder;
 import net.canadensys.web.i18n.annotation.I18nTranslation;
 
@@ -30,12 +34,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
-import br.gov.sibbr.json.response.model.BHLResponse;
+import br.gov.sibbr.json.response.bhl.BHLResponse;
+import br.gov.sibbr.json.response.eol.EOLResponse;
 
 /**
  * Controller of all occurrence related features of the occurrence portal.
- * Occurrence related excludes the search functionality. 
- * This controller must be stateless.
+ * Occurrence related excludes the search functionality. This controller must be
+ * stateless.
+ * 
  * @author canadensys
  * 
  */
@@ -43,7 +49,8 @@ import br.gov.sibbr.json.response.model.BHLResponse;
 public class OccurrenceController {
 
 	// get log4j handler
-	private static final Logger LOGGER = Logger.getLogger(OccurrenceController.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(OccurrenceController.class);
 	private static final ConfigurableMimeFileTypeMap MIME_TYPE_MAP = new ConfigurableMimeFileTypeMap();
 
 	// separators
@@ -57,7 +64,9 @@ public class OccurrenceController {
 	// Add views here for every new page related to occurrence:
 	private static String VIEW_PARAM = "view";
 	private static String DWC_VIEW_NAME = "dwc";
-	private static String OTHER_VIEW_NAME = "other";
+	private static String BHL_VIEW_NAME = "bhl";
+	private static String EOL_VIEW_NAME = "eol";
+	private static String COL_VIEW_NAME = "col";
 
 	@Autowired
 	private OccurrenceService occurrenceService;
@@ -65,75 +74,119 @@ public class OccurrenceController {
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
+	
+	@Autowired
+	@Qualifier("templateMailSender")
+	private TemplateMailSender mailSender;
 
 	@RequestMapping(value="/occurrences/{auto_id}", method = RequestMethod.GET)
 	@I18nTranslation(resourceName="occurrence", translateFormat = "/occurrences/{}")
 	public ModelAndView handleOccurrencePerResource(@PathVariable String auto_id, HttpServletRequest request) {
 		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
 		HashMap<String, Object> modelRoot = new HashMap<String,Object>();
+		
+		// Load resource contact data:
+		ResourceContactModel resourceContactModel = occurrenceService
+				.loadResourceContactModel(occModel.getSourcefileid());
 
-		if (occModel != null) {
+		if (!occModel.equals(null)) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel", occModel.getRawModel());
 			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));
+			modelRoot.put("data", resourceContactModel);
 		} else {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
 		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id , appConfig, modelRoot);
 
-		// handle view stuff
-		String view = request.getParameter(VIEW_PARAM);
-		if (DWC_VIEW_NAME.equalsIgnoreCase(view)) {
-			return new ModelAndView("occurrence-dwc",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-		}
-		if (OTHER_VIEW_NAME.equalsIgnoreCase(view)) {
-			// Add BHL data related to the taxon:
-			if (occModel != null) {
-				String scientificName = occModel.getScientificname().replace(
-						' ', '+');
-				// When register has no scientificName, use Genus:
-				if (scientificName.equalsIgnoreCase(" ")
-						|| scientificName.equals(null)) {
-					String genus = occModel.getGenus().replace(' ', '+');
-					modelRoot
-							.put("occBHL", new BHLResponse(genus).getResults());
-				}
-				// Defaults to use scientific name:
-				else {
-					modelRoot.put("occBHL",
-							new BHLResponse(scientificName).getResults());
-				}
+		// Add BHL data related to the taxon:
+		if (occModel != null) {
+			String scientificName = occModel.getScientificname().replace(' ',
+					'+');
+			// When register has no scientificName, use Genus:
+			if (scientificName.equalsIgnoreCase(" ")
+					|| scientificName.equals(null)) {
+				String genus = occModel.getGenus().replace(' ', '+');
+				modelRoot.put("occBHL", new BHLResponse(genus).getResults());
+				modelRoot.put("occEOL", new EOLResponse(genus).getResults());
 			}
-			return new ModelAndView("occurrence-other",
-					OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			// Defaults to use scientific name:
+			else {
+				modelRoot.put("occBHL",
+						new BHLResponse(scientificName).getResults());
+				modelRoot.put("occEOL",
+						new EOLResponse(scientificName).getResults());
+			}
 		}
-		return new ModelAndView("occurrence",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("occurrence",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
-	 * Resource contact page.
-	 * @param ipt resource identifier (sourcefileid).
+	 * Resource contact message sending form.
+	 * 
+	 * @param ipt
+	 *            resource identifier (sourcefileid).
 	 * @return
 	 */
-	@RequestMapping(value = "/resources/{iptResource}/contact", method = RequestMethod.GET)
-	@I18nTranslation(resourceName = "contact", translateFormat = "/resources/{}/contact")
-	public ModelAndView handleResourceContact(@PathVariable String iptResource,
-			HttpServletRequest request) {
+	@RequestMapping(value = "/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.POST)
+	@I18nTranslation(resourceName = "occurrence", translateFormat = "/resources/{}/occurrences/{}")
+	public ModelAndView handleResourceContactMsg(
+			@PathVariable String iptResource, HttpServletRequest request) {
 		ResourceContactModel resourceContactModel = occurrenceService
 				.loadResourceContactModel(iptResource);
+		// URL from the previous URL accessed that led to the contact form:
+		Locale locale = RequestContextUtils.getLocale(request);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-
+		
+		// Get full URL:
+		String sourceFileId = (String) request.getSession().getAttribute(
+				"sourceFileId");
+		String dwcaId = (String) request.getSession().getAttribute("dwcaId");
+		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
+				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
+				.getTranslationFormat("occurrence"), new String[] {
+				sourceFileId, dwcaId });
+		String domainName = request.getParameter("domainName");
+		occurrenceUrl = domainName + request.getContextPath() + occurrenceUrl;
 		if (resourceContactModel != null) {
 			modelRoot.put("data", resourceContactModel);
 		} else {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "contact",new String[] { iptResource }, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "contact",
+				new String[] { iptResource }, appConfig, modelRoot);
 
-		return new ModelAndView("resource-contact",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		Map<String, Object> templateData = new HashMap<String, Object>();
+		String mailto = resourceContactModel.getEmail();
+		String nameto = resourceContactModel.getName();
+
+		if (mailto != null && !mailto.equalsIgnoreCase("")) {
+			String namefrom = request.getParameter("name");
+			String mailfrom = request.getParameter("email");
+			String message = request.getParameter("message");
+			// Later change to fetch from properties file
+			// (resourcecontact.subject).
+			String subject = request.getParameter("subject");
+			templateData.put("subject", subject);
+			templateData.put("mailto", mailto);
+			templateData.put("nameto", nameto);
+			templateData.put("mailfrom", mailfrom);
+			templateData.put("namefrom", namefrom);
+			templateData.put("message", message);
+			templateData.put("occurrenceUrl", occurrenceUrl);
+			templateData.put("time", new SimpleDateFormat(
+					"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+			String templateName = appConfig.getContactEmailTemplateName(locale);
+			mailSender.sendMessage(mailto, subject, templateData, templateName);
+		}
+		// Redirect back to occurrence:
+
+		RedirectView rv = new RedirectView(occurrenceUrl);
+		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+		return new ModelAndView(rv);
 	}
 
 	/**
@@ -234,7 +287,68 @@ public class OccurrenceController {
 						resource.getArchive_url(), IPT_ARCHIVE_PATTERN,
 						IPT_RESOURCE_PATTERN));
 			}
+			// Add data source name to view:
+			occViewModel.setDataSourceName(resource.getName());
 		}
 		return occViewModel;
+	}
+
+	/**
+	 * Feedback page with form to receive comments
+	 * 
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "/feedback", method = RequestMethod.GET)
+	@I18nTranslation(resourceName = "feedback", translateFormat = "/feedback")
+	public ModelAndView handleFeedback(HttpServletRequest request) {
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		String previousURL = (String) request.getAttribute("previousURL");
+		modelRoot.put("previousURL", previousURL);
+		request.setAttribute("previousURL", request.getRequestURL());
+		ControllerHelper.setPageHeaderVariables(request, "feedback",
+				new String[] {}, appConfig, modelRoot);
+		return new ModelAndView("feedback",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+	}
+
+	/**
+	 * Resource contact message feedback sending form.
+	 * 
+	 * @param ipt
+	 *            resource identifier (sourcefileid).
+	 * @return
+	 */
+	@RequestMapping(value = "/feedback", method = RequestMethod.POST)
+	@I18nTranslation(resourceName = "feedback", translateFormat = "/feedback")
+	public ModelAndView handleFeedbackMsg(HttpServletRequest request) {
+		// URL from the previous URL accessed that led to the contact form:
+		Locale locale = RequestContextUtils.getLocale(request);
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+
+		// Set common stuff
+		ControllerHelper.setPageHeaderVariables(request, "feedback",
+				new String[] {}, appConfig, modelRoot);
+
+		Map<String, Object> templateData = new HashMap<String, Object>();
+
+		String namefrom = request.getParameter("name");
+		String mailfrom = request.getParameter("email");
+		String message = request.getParameter("message");
+		String subject = request.getParameter("subject");
+		String mailto = request.getParameter("mailto");
+		LOGGER.error("*** " + subject);
+		templateData.put("mailfrom", mailfrom);
+		templateData.put("namefrom", namefrom);
+		templateData.put("message", message);
+		templateData.put("time", new SimpleDateFormat(
+				"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+		String templateName = appConfig.getContactEmailTemplateName(locale);
+		mailSender.sendMessage(mailto, subject, templateData, templateName);
+
+		// Redirect back to main page
+		RedirectView rv = new RedirectView(request.getContextPath());
+		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+		return new ModelAndView(rv);
 	}
 }

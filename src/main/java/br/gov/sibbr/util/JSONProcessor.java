@@ -13,7 +13,8 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import br.gov.sibbr.json.response.model.BHLResponse;
+import br.gov.sibbr.json.response.bhl.BHLResponse;
+import br.gov.sibbr.json.response.eol.EOLResponse;
 
 /**
  * Facade to assist in JSON requests from external APIs.
@@ -25,8 +26,34 @@ public class JSONProcessor {
 
 	// Define API base url address:
 	private static final String bhlURL = "http://www.biodiversitylibrary.org/api2/httpquery.ashx?";
+	private static final String eolURL = "http://eol.org/api/search/1.0.json?";
 
-	/** For BHL, first, query taxon name to get references NameBankID : **/
+	/**
+	 * Main test method
+	 * @param args
+	 */
+	public static void main(String args[]) {
+		String name = "Casearia sylvestris";
+/*
+		// Teste de consulta dos dados a partir da taxonomia na BHL:
+		BHLResponse bhlresp = new BHLResponse("Casearia sylvestris");
+		System.out.println("Before page processing:");
+		System.out.println(bhlresp.toString());
+		System.out.println("After page processing:");
+		System.out.println(bhlresp.toString());
+*/		
+		// Teste de consulta dos dados a partir da taxonomia na EoL:
+
+		EOLResponse eolresp = new EOLResponse(name);
+		System.out.println("Results for " + name + ":");
+		System.out.println(eolresp.toString());
+		System.out.println(eolresp.getResults().toString());
+	}
+	
+	/** For BHL, first, query taxon name to get reference's NameBankID :
+	 * @param scientificName
+	 * @return json response object
+	 */
 	public static JSONObject fetchBHLFromTaxa(String scientificName) {
 		// Set API request parameters:
 		HashMap<String, String> parameters = new HashMap<String, String>();
@@ -72,20 +99,63 @@ public class JSONProcessor {
 		}
 		return json;
 	}
-
+	
 	/**
-	 * Main test method
-	 * @param args
+	 *  For EoL, first, query taxon name to get result's id:
+	 * @param scientificName provided from occurrence taxa
+	 * @return json response object
 	 */
-	public static void main(String args[]) {
-		// Teste de consulta dos dados a partir da taxonomia:
-		BHLResponse bhlresp = new BHLResponse("Lafoensia");
-		System.out.println("Before page processing:");
-		System.out.println(bhlresp.toString());
-		System.out.println("After page processing:");
-		System.out.println(bhlresp.toString());
-	}
+	public static JSONObject fetchEOLFromTaxa(String scientificName) {
+		// Set API request parameters:
+		HashMap<String, String> parameters = new HashMap<String, String>();
+		// Replace white spaces with '+':
+		parameters.put("q", scientificName.replace(" ", "+"));
+		parameters.put("exact", "true");
 
+		// JSON response object:
+		JSONObject json = null;
+
+		// Mount full API URL adding parameters:
+		String mountedUrl = mountUrl(getEolURL(), parameters);
+		try {
+			json = readJsonFromUrl(mountedUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}	
+	
+	/** Second, query NameBankID to get reference pages and info: **/
+	public static JSONObject fetchEOLPages(String id) {
+		// Set API pages url:
+		String url = "http://eol.org/api/pages/1.0.json?";
+		// JSON response object:
+		JSONObject json = null;
+		
+		// Sanity check:
+		if (!id.equalsIgnoreCase("") && !id.equals(null)) {
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("id", id);
+			params.put("common_names", "true");
+			params.put("synonyms", "true");
+			params.put("images", "100");
+			params.put("videos", "100");
+			params.put("sounds", "100");
+			params.put("details", "true");
+			url = mountUrl(url, params);
+			try {
+				json = readJsonFromUrl(url);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return json;
+	}
+	
 	/**
 	 * Reads characters to string from reader
 	 * @param rd
@@ -150,6 +220,14 @@ public class JSONProcessor {
 	 */
 	public static String getBhlURL() {
 		return bhlURL;
+	}
+	
+	/**
+	 * Return BHL base url
+	 * @return
+	 */
+	public static String getEolURL() {
+		return eolURL;
 	}
 }
 // EOF

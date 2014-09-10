@@ -1,12 +1,16 @@
 <#-- some /WEB-INF/view/inc/.ftl can come from portal-web-core project -->
 <#include "/WEB-INF/view/inc/global-functions.ftl">
+
 <!DOCTYPE html>
 <html lang="${rc.getLocale().getLanguage()}">
 <head>
 <meta charset="UTF-8">
 <title><sitemesh:write property='title'>Title goes here</sitemesh:write></title>
-<link rel="stylesheet" href="http://data.canadensys.net/common/styles/common-1.0.min.css" media="screen,print"/>
-<link rel="shortcut icon" href="http://data.canadensys.net/common/images/favicon.png"/>
+<link rel="stylesheet" href="http://institucional.sibbr.gov.br/wp-content/themes/portal/styles/data-common.css" media="screen,print"/>
+
+<link rel="icon" href="http://institucional.sibbr.gov.br/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="http://institucional.sibbr.gov.br/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
+
 <sitemesh:write property='head'/>
 <#include "/WEB-INF/view/inc/ga.ftl">
 </head>
@@ -14,9 +18,7 @@
 	<div id="skip-link">
 		<a href="#main-content" class="skipnav">${rc.getMessage("header.skip")}</a>
 	</div>
-	<#if feedbackURL?? && feedbackURL?has_content>
-	<div id="feedback_bar"><a href="${feedbackURL}" target="_blank" title="${rc.getMessage("feedback.hover")}">&nbsp;</a></div>
-	</#if>
+	<div id="feedback_bar"><a href="${rc.getContextPath()}${rc.getMessage("feedback.url")}" target="_blank" title="${rc.getMessage("feedback.hover")}">&nbsp;</a></div>
 	<#include "include/header-div.ftl">
 
 	<sitemesh:write property='body'/>

@@ -1,4 +1,4 @@
-package br.gov.sibbr.json.response.model;
+package br.gov.sibbr.json.response.bhl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +31,14 @@ public class BHLResponse {
 		// Fetch json from API given a taxon name:
 		JSONObject json = JSONProcessor.fetchBHLFromTaxa(scientificName);
 
-		parseBHLJSONForTaxa(scientificName, json);
+		parseBHLJSONForTaxa(json);
 	}
 
 	/**
 	 * Process JSON data filling POJO objects for the result items
 	 * @param json
 	 */
-	private void parseBHLJSONForTaxa(String scientificName, JSONObject json) {
+	private void parseBHLJSONForTaxa(JSONObject json) {
 		JSONArray results;
 		try {
 			results = (JSONArray) json.get("Result");

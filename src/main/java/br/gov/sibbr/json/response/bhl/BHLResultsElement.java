@@ -1,4 +1,4 @@
-package br.gov.sibbr.json.response.model;
+package br.gov.sibbr.json.response.bhl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +58,7 @@ public class BHLResultsElement {
 			JSONArray titles, items, pages;
 			String shortTitle = "";
 			String publisherName = "";
+			String publisherPlace = "";
 			String publicationDate = "";
 			String pageId = "";
 			try {
@@ -74,6 +75,10 @@ public class BHLResultsElement {
 							if (!element.isNull("PublisherName"))
 								publisherName = (String) element
 										.get("PublisherName");
+							
+							if (!element.isNull("PublisherPlace"))
+								publisherPlace = (String) element
+										.get("PublisherPlace");
 
 							if (!element.isNull("PublicationDate"))
 								publicationDate = (String) element
@@ -109,7 +114,7 @@ public class BHLResultsElement {
 									// (BankNameId)
 									getBhlPages().add(
 											new BHLPage(pageId, shortTitle,
-													publisherName,
+													publisherName, publisherPlace,
 													publicationDate));
 								}
 							}
