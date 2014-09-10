@@ -331,26 +331,20 @@
                <ul>
                   <li><a href="#" class="bhl_hide">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
                   <li><a href="#" class="eol_hide">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
-                  <li><a href="#" class="colif_hide">${rc.getMessage("occpage.other.catalog.of.life")}</a></li>
-                  <#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
-                  <h2>${rc.getMessage("occpage.group.typestatus")}</h2>
-                  <p>${page.occModel.typestatus!}</p>
-                  </#if>
                </ul>
                <!-- BHL PAGE-->
                <#include "inc/occurrence-bhl.ftl">
                <!-- END BHL PAGE-->		
                <!-- EOL PAGE-->
                <#include "inc/occurrence-eol.ftl">              
-               <!-- END EOL PAGE-->	 
-               <!-- COL PAGE-->
-               <#include "inc/occurrence-col.ftl">              
-               <!-- END COL PAGE-->
+               <!-- END EOL PAGE-->
             </div>
             <!-- END NAME TAB-->
-            <!-- CONTACT TAB -->
-            <#include "inc/resource-contact.ftl">             
-            <!-- END CONTACT TAB -->
+            <div id="contact">
+	            <!-- CONTACT TAB -->
+	            <#include "inc/resource-contact.ftl">             
+	            <!-- END CONTACT TAB -->
+	        </div>
          </div>
       </div>
       <!-- END TAB content_tab -->	
