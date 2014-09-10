@@ -149,6 +149,7 @@ public class SearchServiceConfig {
 	 */
 	public static final List<String> OCCURENCE_SUMMARY_FIELDS = new ArrayList<String>();
 	static{
+		OCCURENCE_SUMMARY_FIELDS.add("auto_id");
 		OCCURENCE_SUMMARY_FIELDS.add("associatedmedia");
 		OCCURENCE_SUMMARY_FIELDS.add("datasetname");
 		OCCURENCE_SUMMARY_FIELDS.add("decimallatitude");

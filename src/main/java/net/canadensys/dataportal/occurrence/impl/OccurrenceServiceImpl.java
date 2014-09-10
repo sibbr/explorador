@@ -66,7 +66,7 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	@Override
 	@Transactional(readOnly=true)
 	public OccurrenceModel loadOccurrenceModel(String auto_id, boolean loadRawModel) {
-		OccurrenceModel occModel = occurrenceDAO.load(auto_id, loadRawModel);
+		OccurrenceModel occModel = occurrenceDAO.load(Integer.parseInt(auto_id), loadRawModel);
 		return occModel;
 	}
 	
