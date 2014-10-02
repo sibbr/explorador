@@ -21,7 +21,9 @@ public class BHLResponse {
 	private List<BHLResultsElement> results;
 
 	/**
-	 * Constructor starts process given a Scientific Name, calling parseBHLJSONForTaxa. Obs.: Has to be "Species+Infraspecific" [without space " " characters]
+	 * Constructor starts process given a Scientific Name, calling parseBHLJSONForTaxa. Obs.: Has to be "Species+Infraspecific" [without space " "
+	 * characters]
+	 * 
 	 * @param scientificName
 	 */
 	public BHLResponse(String scientificName) {
@@ -36,6 +38,7 @@ public class BHLResponse {
 
 	/**
 	 * Process JSON data filling POJO objects for the result items
+	 * 
 	 * @param json
 	 */
 	private void parseBHLJSONForTaxa(JSONObject json) {
@@ -43,36 +46,36 @@ public class BHLResponse {
 		try {
 			results = (JSONArray) json.get("Result");
 			// Limit to 5 results, normally one exact match and other 4:
-			for (int i = 0; i < results.length() && i < 3 ; i++) {
+			for (int i = 0; i < results.length() && i < 3; i++) {
 				JSONObject element = (JSONObject) results.get(i);
 
 				String nameConfirmed = "";
 				if (!element.isNull("NameConfirmed"))
 					nameConfirmed = (String) element.get("NameConfirmed");
-				
+
 				String nameBankId = "";
 				if (!element.isNull("NameBankID"))
 					nameBankId = (String) element.get("NameBankID");
-	
+
 				String eolid = "";
 				if (!element.isNull("EOLID"))
 					eolid = (String) element.get("EOLID");
-	
+
 				String titles = "";
 				if (!element.isNull("Titles"))
 					titles = (String) element.get("Titles");
-	
-				getResults().add(
-						new BHLResultsElement(nameBankId, nameConfirmed, eolid,
-								titles));
+
+				getResults().add(new BHLResultsElement(nameBankId, nameConfirmed, eolid, titles));
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * Return results object
+	 * 
 	 * @return
 	 */
 	public List<BHLResultsElement> getResults() {
@@ -81,6 +84,7 @@ public class BHLResponse {
 
 	/**
 	 * Set results object
+	 * 
 	 * @param results
 	 */
 	public void setResults(List<BHLResultsElement> results) {
@@ -97,4 +101,4 @@ public class BHLResponse {
 		}
 		return results;
 	}
-} //EOF
+} // EOF

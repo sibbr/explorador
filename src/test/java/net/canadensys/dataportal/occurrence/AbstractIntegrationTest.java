@@ -9,11 +9,11 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  * Abstract integration testing class.
  * 
  * @author canadensys
- *
+ * 
  */
 public abstract class AbstractIntegrationTest {
-	
-	//TODO : read from a config file or set with DI
+
+	// TODO : read from a config file or set with DI
 	public static final String TESTING_SERVER_URL = "http://localhost:9966/explorer/en/";
 	public static final String TESTING_SERVER_URL_FR = "http://localhost:9966/explorer/fr/";
 	public static final String TESTING_SERVER_URL_LEGACY = "http://localhost:9966/explorer/";
@@ -23,6 +23,7 @@ public abstract class AbstractIntegrationTest {
 	public void setup() {
 		browser = new FirefoxDriver();
 	}
+
 	@After
 	public void tearDown() {
 		browser.close();

@@ -1,13 +1,13 @@
 package br.gov.sibbr.json.response.bhl;
 
 public class BHLPage {
-	
+
 	private String pageId;
 	private String shortTitle;
 	private String publisherName;
 	private String publisherPlace;
 	private String publicationDate;
-	
+
 	/**
 	 * Basic constructor for POJO
 	 */
@@ -18,7 +18,7 @@ public class BHLPage {
 		setPublisherPlace(publisherPlace);
 		setPublicationDate(publicationDate);
 	}
-	
+
 	public String toString() {
 		String output = "";
 		output += " PageId: " + getPageId();
@@ -36,7 +36,8 @@ public class BHLPage {
 	}
 
 	/**
-	 * @param pageId the pageId to set
+	 * @param pageId
+	 *            the pageId to set
 	 */
 	public void setPageId(String pageId) {
 		this.pageId = pageId;
@@ -50,7 +51,8 @@ public class BHLPage {
 	}
 
 	/**
-	 * @param shortTitle the shortTitle to set
+	 * @param shortTitle
+	 *            the shortTitle to set
 	 */
 	public void setShortTitle(String shortTitle) {
 		this.shortTitle = shortTitle;
@@ -64,7 +66,8 @@ public class BHLPage {
 	}
 
 	/**
-	 * @param publisherName the publisherName to set
+	 * @param publisherName
+	 *            the publisherName to set
 	 */
 	public void setPublisherName(String publisherName) {
 		this.publisherName = publisherName;
@@ -78,7 +81,8 @@ public class BHLPage {
 	}
 
 	/**
-	 * @param publisherPlace the publisherPlace to set
+	 * @param publisherPlace
+	 *            the publisherPlace to set
 	 */
 	public void setPublisherPlace(String publisherPlace) {
 		this.publisherPlace = publisherPlace;
@@ -92,9 +96,10 @@ public class BHLPage {
 	}
 
 	/**
-	 * @param publicationDate the publicationDate to set
+	 * @param publicationDate
+	 *            the publicationDate to set
 	 */
 	public void setPublicationDate(String publicationDate) {
 		this.publicationDate = publicationDate;
 	}
-} //EOF
+} // EOF

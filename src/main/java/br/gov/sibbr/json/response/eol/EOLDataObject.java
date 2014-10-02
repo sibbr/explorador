@@ -5,8 +5,9 @@ import java.util.List;
 
 /**
  * POJO for EOL Data Object
+ * 
  * @author pedro
- *
+ * 
  */
 public class EOLDataObject {
 
@@ -44,11 +45,11 @@ public class EOLDataObject {
 		output += " source: " + getSource();
 		output += " description: " + getDescription();
 		output += "\n Agents:";
-		for (EOLAgent a: getAgents())
+		for (EOLAgent a : getAgents())
 			output += a.toString();
 		return output;
 	}
-	
+
 	/**
 	 * @return the identifier
 	 */
@@ -207,7 +208,8 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @param rights the rights to set
+	 * @param rights
+	 *            the rights to set
 	 */
 	public void setRights(String rights) {
 		this.rights = rights;
@@ -221,7 +223,8 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @param source the source to set
+	 * @param source
+	 *            the source to set
 	 */
 	public void setSource(String source) {
 		this.source = source;
@@ -235,7 +238,8 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @param mimeType the mimeType to set
+	 * @param mimeType
+	 *            the mimeType to set
 	 */
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
@@ -249,7 +253,8 @@ public class EOLDataObject {
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;

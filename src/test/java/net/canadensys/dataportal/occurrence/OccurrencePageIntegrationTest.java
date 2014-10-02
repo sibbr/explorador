@@ -10,63 +10,64 @@ import org.openqa.selenium.support.PageFactory;
 
 /**
  * Ensure Occurrence page can be rendered correctly
+ * 
  * @author canadensys
- *
+ * 
  */
 public class OccurrencePageIntegrationTest extends AbstractIntegrationTest {
-	//the footer div presence ensure the page was all rendered by Freemarker
+	// the footer div presence ensure the page was all rendered by Freemarker
 	@FindBy(css = "div#footer")
 	private WebElement footerDiv;
-		
+
 	@Test
 	public void testOccurrencePage() {
-		browser.get(TESTING_SERVER_URL+"resources/acad-specimens/occurrences/ACAD-1");
-		
-		//bind the WebElement to the current page
+		browser.get(TESTING_SERVER_URL + "resources/acad-specimens/occurrences/ACAD-1");
+
+		// bind the WebElement to the current page
 		PageFactory.initElements(browser, this);
-		
+
 		WebElement h1 = browser.findElement(By.cssSelector("h1"));
 		assertEquals("Acer pseudoplatanus (ACAD ECS019597)", h1.getText());
-		//make sure footer is there
-		assertEquals("div",footerDiv.getTagName().toLowerCase());
+		// make sure footer is there
+		assertEquals("div", footerDiv.getTagName().toLowerCase());
 	}
-	
+
 	@Test
 	public void testOccurrencePageWithSpaceChar() {
-		browser.get(TESTING_SERVER_URL+"resources/acad-specimens/occurrences/ACAD%203");
-		
-		//bind the WebElement to the current page
+		browser.get(TESTING_SERVER_URL + "resources/acad-specimens/occurrences/ACAD%203");
+
+		// bind the WebElement to the current page
 		PageFactory.initElements(browser, this);
-		
+
 		WebElement h1 = browser.findElement(By.cssSelector("h1"));
 		assertEquals("Myosotis arvensis (ACAD z10441)", h1.getText());
-		//make sure footer is there
-		assertEquals("div",footerDiv.getTagName().toLowerCase());
+		// make sure footer is there
+		assertEquals("div", footerDiv.getTagName().toLowerCase());
 	}
-	
+
 	@Test
 	public void testOccurrencePageDwcView() {
-		browser.get(TESTING_SERVER_URL+"resources/acad-specimens/occurrences/ACAD-1?view=dwc");
-		
-		//bind the WebElement to the current page
+		browser.get(TESTING_SERVER_URL + "resources/acad-specimens/occurrences/ACAD-1?view=dwc");
+
+		// bind the WebElement to the current page
 		PageFactory.initElements(browser, this);
-		
+
 		WebElement h1 = browser.findElement(By.cssSelector("h1"));
 		assertEquals("Acer pseudoplatanus (ACAD ECS019597)", h1.getText());
-		//make sure footer is there
-		assertEquals("div",footerDiv.getTagName().toLowerCase());
+		// make sure footer is there
+		assertEquals("div", footerDiv.getTagName().toLowerCase());
 	}
-	
+
 	@Test
 	public void testOccurrenceContactPage() {
-		browser.get(TESTING_SERVER_URL+"resources/acad-specimens/contact");
-		
-		//bind the WebElement to the current page
+		browser.get(TESTING_SERVER_URL + "resources/acad-specimens/contact");
+
+		// bind the WebElement to the current page
 		PageFactory.initElements(browser, this);
-		
+
 		WebElement h1 = browser.findElement(By.cssSelector("h1"));
 		assertEquals("E. C. Smith Herbarium (ACAD)", h1.getText());
-		//make sure footer is there
-		assertEquals("div",footerDiv.getTagName().toLowerCase());
+		// make sure footer is there
+		assertEquals("div", footerDiv.getTagName().toLowerCase());
 	}
 }

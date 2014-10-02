@@ -62,10 +62,11 @@ public class EOLResponse {
 					link = (String) element.get("link");
 
 				getResults().add(
-						// Calls the methods to fetch data and fill with info from results:
+				// Calls the methods to fetch data and fill with info from results:
 						new EOLResultsElement(id, title, link));
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}

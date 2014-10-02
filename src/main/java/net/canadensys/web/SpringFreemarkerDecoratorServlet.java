@@ -17,23 +17,24 @@ import freemarker.template.TemplateModelException;
  * At some point we should try to wrap it using Spring ServletWrappingController.
  * 
  * <bean id="freemarkerWrapperServletController" class="org.springframework.web.servlet.mvc.ServletWrappingController">
- * 	<property name="servletClass" value="net.canadensys.web.SpringFreemarkerDecoratorServlet" />
- * 	<property name="servletName" value="sitemesh-freemarker" />
- * 	<property name="initParameters">
- * 		<props>
- * 			<prop key="TemplatePath">/</prop><!--this is ignored by our custom implementation but keep it here-->
- * 			<prop key="default_encoding">ISO-8859-1</prop>
- * 		</props>
- * 	</property>
+ * <property name="servletClass" value="net.canadensys.web.SpringFreemarkerDecoratorServlet" />
+ * <property name="servletName" value="sitemesh-freemarker" />
+ * <property name="initParameters">
+ * <props>
+ * <prop key="TemplatePath">/</prop><!--this is ignored by our custom implementation but keep it here-->
+ * <prop key="default_encoding">ISO-8859-1</prop>
+ * </props>
+ * </property>
  * </bean>
  * So we could use:
- *  Autowired
- *  Configuration freemarkerConfiguration;
- *  
- *  TemplateLoader templateLoader = freemarkerConfiguration.getTemplateLoader();
- *  getConfiguration().setTemplateLoader(templateLoader);
+ * Autowired
+ * Configuration freemarkerConfiguration;
+ * 
+ * TemplateLoader templateLoader = freemarkerConfiguration.getTemplateLoader();
+ * getConfiguration().setTemplateLoader(templateLoader);
+ * 
  * @author canadensys
- *
+ * 
  */
 public class SpringFreemarkerDecoratorServlet extends FreemarkerServlet {
 
@@ -45,23 +46,26 @@ public class SpringFreemarkerDecoratorServlet extends FreemarkerServlet {
 		try {
 			getConfiguration().setSharedVariable("URLHelper",
 					BeansWrapper.getDefaultInstance().getStaticModels().get("net.canadensys.web.freemarker.FreemarkerURLHelper"));
-			
-			//Since we are running in a different Servlet context we need to load the config ourself.
+
+			// Since we are running in a different Servlet context we need to load the config ourself.
 			Properties prop = new Properties();
 			InputStream in = getServletContext().getResourceAsStream("/WEB-INF/portal-config.properties");
-			if(in != null){
+			if (in != null) {
 				prop.load(in);
 				in.close();
 			}
 
-			getConfiguration().setSharedVariable("gaSiteVerification", StringUtils.defaultString(prop.getProperty("googleanalytics.siteVerification")));
+			getConfiguration().setSharedVariable("gaSiteVerification",
+					StringUtils.defaultString(prop.getProperty("googleanalytics.siteVerification")));
 			getConfiguration().setSharedVariable("gaAccount", StringUtils.defaultString(prop.getProperty("googleanalytics.account")));
-			if(prop.getProperty("feedback.mail.to") != null){
+			if (prop.getProperty("feedback.mail.to") != null) {
 				getConfiguration().setSharedVariable("feedbackMailTo", StringUtils.defaultString(prop.getProperty("feedback.mail.to")));
 			}
-		} catch (TemplateModelException e) {
+		}
+		catch (TemplateModelException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

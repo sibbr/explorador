@@ -26,18 +26,19 @@ public class EOLSynonym {
 	public static ArrayList<EOLSynonym> processJSON(JSONArray json) {
 		ArrayList<EOLSynonym> synonyms = new ArrayList<EOLSynonym>();
 		try {
-			for (int i  = 0 ; i< json.length() ; i++) {
+			for (int i = 0; i < json.length(); i++) {
 				JSONObject item = (JSONObject) json.get(i);
-				
-				String synonym = ""; 
+
+				String synonym = "";
 				if (!item.isNull("synonym"))
 					synonym = (String) item.get("synonym");
-				String relationship = ""; 
+				String relationship = "";
 				if (!item.isNull("relationship"))
 					relationship = (String) item.get("relationship");
 				synonyms.add(new EOLSynonym(synonym, relationship));
 			}
-		} catch(JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return synonyms;
@@ -52,7 +53,7 @@ public class EOLSynonym {
 		output += " relationship: " + getRelationship();
 		return output;
 	}
-	
+
 	public String getSynonym() {
 		return synonym;
 	}

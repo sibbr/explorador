@@ -31,6 +31,7 @@ public class EOLVernacularName {
 
 	/**
 	 * Process JSON array of vernacular names
+	 * 
 	 * @param json
 	 * @return
 	 */
@@ -46,10 +47,10 @@ public class EOLVernacularName {
 				String language = "";
 				if (!item.isNull("language"))
 					language = (String) item.get("language");
-				vernacularNames.add(new EOLVernacularName(vernacularName,
-						language));
+				vernacularNames.add(new EOLVernacularName(vernacularName, language));
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return vernacularNames;
@@ -64,7 +65,7 @@ public class EOLVernacularName {
 		output += " language: " + getLanguage();
 		return output;
 	}
-	
+
 	/**
 	 * @return the vernacularName
 	 */
@@ -73,7 +74,8 @@ public class EOLVernacularName {
 	}
 
 	/**
-	 * @param vernacularName the vernacularName to set
+	 * @param vernacularName
+	 *            the vernacularName to set
 	 */
 	public void setVernacularName(String vernacularName) {
 		this.vernacularName = vernacularName;
@@ -87,7 +89,8 @@ public class EOLVernacularName {
 	}
 
 	/**
-	 * @param language the language to set
+	 * @param language
+	 *            the language to set
 	 */
 	public void setLanguage(String language) {
 		this.language = language;

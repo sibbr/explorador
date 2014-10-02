@@ -31,12 +31,9 @@ public class EOLAudio extends EOLDataObject {
 	 * @param eolMediaURL
 	 * @param agents
 	 */
-	public EOLAudio(String identifier, String dataObjectVersionID,
-			String dataType, String vettedStatus, String dataRating,
-			String mimeType, String title, String language, String license,
-			String rights, String rightsHolder, String source,
-			String description, String mediaURL, String eolMediaURL,
-			List<EOLAgent> agents) {
+	public EOLAudio(String identifier, String dataObjectVersionID, String dataType, String vettedStatus, String dataRating, String mimeType,
+			String title, String language, String license, String rights, String rightsHolder, String source, String description, String mediaURL,
+			String eolMediaURL, List<EOLAgent> agents) {
 		setIdentifier(identifier);
 		setDataObjectVersionID(dataObjectVersionID);
 		setDataType(dataType);
@@ -73,8 +70,7 @@ public class EOLAudio extends EOLDataObject {
 
 						String dataObjectVersionID = "";
 						if (!item.isNull("dataObjectVersionID"))
-							dataObjectVersionID = item.get(
-									"dataObjectVersionID").toString();
+							dataObjectVersionID = item.get("dataObjectVersionID").toString();
 
 						String dataType = "";
 						if (!item.isNull("dataType"))
@@ -130,19 +126,16 @@ public class EOLAudio extends EOLDataObject {
 
 						List<EOLAgent> agents = null;
 						if (!item.isNull("agents"))
-							agents = EOLAgent.processJSON((JSONArray) item
-									.getJSONArray("agents"));
+							agents = EOLAgent.processJSON((JSONArray) item.getJSONArray("agents"));
 
 						// Create new EOLImage and add to list:
-						images.add(new EOLAudio(identifier,
-								dataObjectVersionID, dataType, vettedStatus,
-								dataRating, mimeType, title, language, license,
-								rights, rightsHolder, source, description,
-								mediaUrl, eolMediaUrl, agents));
+						images.add(new EOLAudio(identifier, dataObjectVersionID, dataType, vettedStatus, dataRating, mimeType, title, language,
+								license, rights, rightsHolder, source, description, mediaUrl, eolMediaUrl, agents));
 					}
 				}
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return images;

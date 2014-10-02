@@ -30,18 +30,19 @@ public class JSONProcessor {
 
 	/**
 	 * Main test method
+	 * 
 	 * @param args
 	 */
 	public static void main(String args[]) {
 		String name = "Casearia sylvestris";
-/*
-		// Teste de consulta dos dados a partir da taxonomia na BHL:
-		BHLResponse bhlresp = new BHLResponse("Casearia sylvestris");
-		System.out.println("Before page processing:");
-		System.out.println(bhlresp.toString());
-		System.out.println("After page processing:");
-		System.out.println(bhlresp.toString());
-*/		
+		/*
+		 * // Teste de consulta dos dados a partir da taxonomia na BHL:
+		 * BHLResponse bhlresp = new BHLResponse("Casearia sylvestris");
+		 * System.out.println("Before page processing:");
+		 * System.out.println(bhlresp.toString());
+		 * System.out.println("After page processing:");
+		 * System.out.println(bhlresp.toString());
+		 */
 		// Teste de consulta dos dados a partir da taxonomia na EoL:
 
 		EOLResponse eolresp = new EOLResponse(name);
@@ -49,8 +50,10 @@ public class JSONProcessor {
 		System.out.println(eolresp.toString());
 		System.out.println(eolresp.getResults().toString());
 	}
-	
-	/** For BHL, first, query taxon name to get reference's NameBankID :
+
+	/**
+	 * For BHL, first, query taxon name to get reference's NameBankID :
+	 * 
 	 * @param scientificName
 	 * @return json response object
 	 */
@@ -69,9 +72,11 @@ public class JSONProcessor {
 		String mountedUrl = mountUrl(getBhlURL(), parameters);
 		try {
 			json = readJsonFromUrl(mountedUrl);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return json;
@@ -91,18 +96,22 @@ public class JSONProcessor {
 			mountedUrl = mountUrl(getBhlURL(), params);
 			try {
 				json = readJsonFromUrl(mountedUrl);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
+			}
+			catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		return json;
 	}
-	
+
 	/**
-	 *  For EoL, first, query taxon name to get result's id:
-	 * @param scientificName provided from occurrence taxa
+	 * For EoL, first, query taxon name to get result's id:
+	 * 
+	 * @param scientificName
+	 *            provided from occurrence taxa
 	 * @return json response object
 	 */
 	public static JSONObject fetchEOLFromTaxa(String scientificName) {
@@ -119,21 +128,23 @@ public class JSONProcessor {
 		String mountedUrl = mountUrl(getEolURL(), parameters);
 		try {
 			json = readJsonFromUrl(mountedUrl);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return json;
-	}	
-	
+	}
+
 	/** Second, query NameBankID to get reference pages and info: **/
 	public static JSONObject fetchEOLPages(String id) {
 		// Set API pages url:
 		String url = "http://eol.org/api/pages/1.0.json?";
 		// JSON response object:
 		JSONObject json = null;
-		
+
 		// Sanity check:
 		if (!id.equalsIgnoreCase("") && !id.equals(null)) {
 			HashMap<String, String> params = new HashMap<String, String>();
@@ -147,17 +158,20 @@ public class JSONProcessor {
 			url = mountUrl(url, params);
 			try {
 				json = readJsonFromUrl(url);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
+			}
+			catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		return json;
 	}
-	
+
 	/**
 	 * Reads characters to string from reader
+	 * 
 	 * @param rd
 	 * @return
 	 * @throws IOException
@@ -171,23 +185,23 @@ public class JSONProcessor {
 		return sb.toString();
 	}
 
-	/** 
+	/**
 	 * Read data from JSON request into JSONObject
+	 * 
 	 * @param url
 	 * @return
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	private static JSONObject readJsonFromUrl(String url) throws IOException,
-			JSONException {
+	private static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 		InputStream is = new URL(url).openStream();
 		try {
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
-					Charset.forName("UTF-8")));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
 			JSONObject json = new JSONObject(jsonText);
 			return json;
-		} finally {
+		}
+		finally {
 			is.close();
 		}
 	}
@@ -199,8 +213,7 @@ public class JSONProcessor {
 	 * @param params
 	 * @return
 	 */
-	private static String mountUrl(String baseUrl,
-			HashMap<String, String> params) {
+	private static String mountUrl(String baseUrl, HashMap<String, String> params) {
 		String url = baseUrl;
 		Set<String> keys = params.keySet();
 		int counter = 0;
@@ -216,14 +229,16 @@ public class JSONProcessor {
 
 	/**
 	 * Return BHL base url
+	 * 
 	 * @return
 	 */
 	public static String getBhlURL() {
 		return bhlURL;
 	}
-	
+
 	/**
 	 * Return BHL base url
+	 * 
 	 * @return
 	 */
 	public static String getEolURL() {

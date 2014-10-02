@@ -20,8 +20,7 @@ public class EOLTaxonConcept {
 	private String canonicalForm;
 	private String taxonRank;
 
-	public EOLTaxonConcept(String identifier, String scientificName,
-			String accordingTo, String canonicalForm, String taxonRank) {
+	public EOLTaxonConcept(String identifier, String scientificName, String accordingTo, String canonicalForm, String taxonRank) {
 		setIdentifier(identifier);
 		setScientificName(scientificName);
 		setAccordingTo(accordingTo);
@@ -55,10 +54,10 @@ public class EOLTaxonConcept {
 				if (!item.isNull("taxonRank"))
 					taxonRank = (String) item.get("taxonRank");
 
-				taxonConcepts.add(new EOLTaxonConcept(identifier,
-						scientificName, accordingTo, canonicalForm, taxonRank));
+				taxonConcepts.add(new EOLTaxonConcept(identifier, scientificName, accordingTo, canonicalForm, taxonRank));
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return taxonConcepts;

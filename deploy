@@ -33,7 +33,7 @@ fi
 export JAVA_HOME="/opt/jdk1.7.0_51/"
 
 #Tomcat base diretory:
-TOMCAT_DIR="/opt/canadensys/apache-tomcat-8.0.9"
+TOMCAT_DIR="/opt/apache-tomcat-8.0.12"
 
 echo "*** Stopping tomcat:"
 sh $TOMCAT_DIR/bin/shutdown.sh
@@ -48,7 +48,7 @@ rm -r $TOMCAT_DIR/work/Catalina/localhost/*
 rm -r $TOMCAT_DIR/webapps/portal-biodiversidade/
 rm $TOMCAT_DIR/webapps/portal-biodiversidade.war
 echo ""
-echo "*** Moving recently built portal.web file to tomcat webapps directory ***"
+echo "*** Moving recently built portal.war file to tomcat webapps directory ***"
 mv ./build/libs/portal-biodiversidade.war $TOMCAT_DIR/webapps/portal-biodiversidade.war
 echo "*** Starting tomcat:"
 sh $TOMCAT_DIR/bin/startup.sh

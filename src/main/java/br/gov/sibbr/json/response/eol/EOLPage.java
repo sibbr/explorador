@@ -17,8 +17,8 @@ public class EOLPage {
 	/**
 	 * Basic constructor for POJO
 	 */
-	public EOLPage(String id, String richnessScore, ArrayList<EOLSynonym> syonyms,
-			ArrayList<EOLVernacularName> vernacularNames, ArrayList<EOLTaxonConcept> taxonConcepts, ArrayList<EOLImage> images, ArrayList<EOLText> texts, ArrayList<EOLAudio> audio) {
+	public EOLPage(String id, String richnessScore, ArrayList<EOLSynonym> syonyms, ArrayList<EOLVernacularName> vernacularNames,
+			ArrayList<EOLTaxonConcept> taxonConcepts, ArrayList<EOLImage> images, ArrayList<EOLText> texts, ArrayList<EOLAudio> audio) {
 		setId(id);
 		setRichnessScore(richnessScore);
 		setSynonyms(syonyms);
@@ -37,22 +37,22 @@ public class EOLPage {
 		output += " PageId: " + getId();
 		output += " Richness Score: " + getRichnessScore();
 		output += "\n \t Synonyms: " + getSynonyms().size() + "\n";
-		for (EOLSynonym s: getSynonyms())
+		for (EOLSynonym s : getSynonyms())
 			output += s.toString();
 		output += "\n \t Vernacular Names: " + getVernacularNames().size() + "\n";
-		for (EOLVernacularName v: getVernacularNames())
+		for (EOLVernacularName v : getVernacularNames())
 			output += v.toString();
 		output += "\n \t Taxon Concepts: " + getTaxonConcepts().size() + "\n";
-		for (EOLTaxonConcept t: getTaxonConcepts())
+		for (EOLTaxonConcept t : getTaxonConcepts())
 			output += t.toString();
 		output += "\n \t Images: " + getImages().size() + "\n";
-		for (EOLImage i: getImages())
+		for (EOLImage i : getImages())
 			output += i.toString();
 		output += "\n \t Texts: " + getTexts().size() + "\n";
-		for (EOLText t: getTexts())
+		for (EOLText t : getTexts())
 			output += t.toString();
 		output += "\n \t Audio: " + getTexts().size() + "\n";
-		for (EOLAudio a: getAudio())
+		for (EOLAudio a : getAudio())
 			output += a.toString();
 		return output;
 	}
@@ -155,7 +155,8 @@ public class EOLPage {
 	}
 
 	/**
-	 * @param texts the texts to set
+	 * @param texts
+	 *            the texts to set
 	 */
 	public void setTexts(List<EOLText> texts) {
 		this.texts = texts;
@@ -169,7 +170,8 @@ public class EOLPage {
 	}
 
 	/**
-	 * @param audio the audio to set
+	 * @param audio
+	 *            the audio to set
 	 */
 	public void setAudio(List<EOLAudio> audio) {
 		this.audio = audio;

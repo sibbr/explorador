@@ -22,46 +22,47 @@ import org.springframework.stereotype.Service;
 
 /**
  * CacheManagementService implementation.
+ * 
  * @author cgendreau
- *
+ * 
  */
 @Service
-public class CacheManagementServiceImpl implements CacheManagementServiceIF{
-	
-	//cache keys managed by this CacheManagementServiceIF implementation
+public class CacheManagementServiceImpl implements CacheManagementServiceIF {
+
+	// cache keys managed by this CacheManagementServiceIF implementation
 	public static final List<String> MANAGED_CACHE_KEY = new ArrayList<String>();
-	static{
+	static {
 		MANAGED_CACHE_KEY.add(DISTINCT_VALUES_COUNT_CACHE_KEY);
 		MANAGED_CACHE_KEY.add(CacheManagementServiceIF.RESOURCE_MODEL_CACHE_KEY);
 	}
-	
+
 	@Autowired
 	private OccurrenceSearchService occurrenceSearchService;
-	
+
 	@Autowired
 	@Qualifier("searchServiceConfig")
 	private SearchServiceConfig searchServiceConfig;
-	
+
 	private AtomicLong cacheTimestamp = new AtomicLong(0);
-	
+
 	/**
 	 * Blocking function, caller is responsible to run this in a thread if needed.
 	 */
 	@Override
-	public void preLoadCache(){
-		//to avoid any issue with the cache, simply call the service directly.
-		Map<String,List<SearchQueryPart>> emptySearchCriteria = new HashMap<String, List<SearchQueryPart>>();
+	public void preLoadCache() {
+		// to avoid any issue with the cache, simply call the service directly.
+		Map<String, List<SearchQueryPart>> emptySearchCriteria = new HashMap<String, List<SearchQueryPart>>();
 		OccurrenceSearchableField osf = null;
-		for(SearchableFieldEnum  currSf : SearchableFieldGroupEnum.CLASSIFICATION.getContent()){
+		for (SearchableFieldEnum currSf : SearchableFieldGroupEnum.CLASSIFICATION.getContent()) {
 			osf = searchServiceConfig.getSearchableField(currSf);
 			occurrenceSearchService.getDistinctValuesCount(emptySearchCriteria, osf);
 		}
-		for(SearchableFieldEnum  currSf : SearchableFieldGroupEnum.LOCATION.getContent()){
+		for (SearchableFieldEnum currSf : SearchableFieldGroupEnum.LOCATION.getContent()) {
 			osf = searchServiceConfig.getSearchableField(currSf);
 			occurrenceSearchService.getDistinctValuesCount(emptySearchCriteria, osf);
 		}
 	}
-	
+
 	@Override
 	public long getCacheTimestamp() {
 		return cacheTimestamp.get();
@@ -70,15 +71,15 @@ public class CacheManagementServiceImpl implements CacheManagementServiceIF{
 	@Override
 	public void purgeCache() {
 		Cache cache = null;
-		for(String currCacheKey : MANAGED_CACHE_KEY){
+		for (String currCacheKey : MANAGED_CACHE_KEY) {
 			cache = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME).getCache(currCacheKey);
-			if(cache != null){
+			if (cache != null) {
 				cache.removeAll();
 			}
 		}
 		cacheTimestamp.set(System.currentTimeMillis());
-		
-		//reload the preLoaded cache
+
+		// reload the preLoaded cache
 		preLoadCache();
 	}
 }

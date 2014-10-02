@@ -8,27 +8,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-
 /**
  * Configuration class for Explorer caching.
+ * 
  * @author cgendreau
- *
+ * 
  */
 @Configuration
 @EnableCaching
 public class CachingConfig {
-	
+
 	@Bean
 	public EhCacheManagerFactoryBean ehCacheManagerFactoryBean() {
-	    EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
-	    ehCacheManagerFactoryBean.setConfigLocation(new ClassPathResource("ehcache.xml"));
-	    return ehCacheManagerFactoryBean;
+		EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
+		ehCacheManagerFactoryBean.setConfigLocation(new ClassPathResource("ehcache.xml"));
+		return ehCacheManagerFactoryBean;
 	}
-	
+
 	@Bean
 	public CacheManager cacheManager() {
-	    EhCacheCacheManager cacheManager = new EhCacheCacheManager();
-	    cacheManager.setCacheManager(ehCacheManagerFactoryBean().getObject());
-	    return cacheManager;
+		EhCacheCacheManager cacheManager = new EhCacheCacheManager();
+		cacheManager.setCacheManager(ehCacheManagerFactoryBean().getObject());
+		return cacheManager;
 	}
 }

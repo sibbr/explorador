@@ -67,12 +67,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Controller of all search related features of the occurrence portal.
  * This controller must be stateless.
+ * 
  * @author canadensys
- *
+ * 
  */
 @Controller
 public class SearchController {
-	//get log4j handler
+	// get log4j handler
 	private static final Logger LOGGER = Logger.getLogger(SearchController.class);
 
 	public static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
@@ -93,8 +94,8 @@ public class SearchController {
 	public static final ObjectMapper JACKSON_MAPPER = new ObjectMapper();
 	static {
 		// avoid sending irrelevant data on the client side
-		JACKSON_MAPPER.addMixInAnnotations(SearchQueryPart.class,SearchQueryPartMixIn.class);
-		JACKSON_MAPPER.addMixInAnnotations(OccurrenceSearchableField.class,OccurrenceSearchableFieldMixIn.class);
+		JACKSON_MAPPER.addMixInAnnotations(SearchQueryPart.class, SearchQueryPartMixIn.class);
+		JACKSON_MAPPER.addMixInAnnotations(OccurrenceSearchableField.class, OccurrenceSearchableFieldMixIn.class);
 		JACKSON_MAPPER.setSerializationInclusion(Include.NON_NULL);
 	}
 	private String availableSearchFieldsMap;
@@ -137,11 +138,14 @@ public class SearchController {
 		String json = null;
 		try {
 			json = JACKSON_MAPPER.writeValueAsString(value);
-		} catch (JsonGenerationException e) {
+		}
+		catch (JsonGenerationException e) {
 			LOGGER.fatal("Bean to JSON error", e);
-		} catch (JsonMappingException e) {
+		}
+		catch (JsonMappingException e) {
 			LOGGER.fatal("Bean to JSON error", e);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			LOGGER.fatal("Bean to JSON error", e);
 		}
 		return json;
@@ -159,15 +163,10 @@ public class SearchController {
 
 		Map<String, String> langResourceMap = null;
 		for (Locale currLocale : appConfig.getSupportedLocale()) {
-			langResourceMap = osfLangSupport
-					.buildLanguageResourcesMap(appConfig
-							.getResourceBundle(currLocale));
+			langResourceMap = osfLangSupport.buildLanguageResourcesMap(appConfig.getResourceBundle(currLocale));
 			// also add URL translation resources
-			langResourceMap.putAll(osfLangSupport
-					.buildURLLanguageResourcesMap(appConfig
-							.getURLResourceBundle(currLocale)));
-			languageResourcesByLocale.put(currLocale,
-					beanAsJSONString(langResourceMap));
+			langResourceMap.putAll(osfLangSupport.buildURLLanguageResourcesMap(appConfig.getURLResourceBundle(currLocale)));
+			languageResourcesByLocale.put(currLocale, beanAsJSONString(langResourceMap));
 		}
 	}
 
@@ -178,20 +177,20 @@ public class SearchController {
 		long occurrenceCount = 0;
 		// Handle view param
 		String currentView = request.getParameter(SearchURLHelper.VIEW_PARAM);
-		if (StringUtils.isBlank(currentView)
-				|| !SearchURLHelper.isKnowViewName(currentView)) {
+		if (StringUtils.isBlank(currentView) || !SearchURLHelper.isKnowViewName(currentView)) {
 			currentView = DEFAULT_VIEW;
 		}
 		modelRoot.put("currentView", currentView);
 		modelRoot.put("contextURL", extractContextURL(request));
-		
-		//Handle locale
+
+		// Handle locale
 		Locale locale = RequestContextUtils.getLocale(request);
-		
-		//Set common stuff (version,minified, ...)
-		ControllerHelper.setPageHeaderVariables(request,"search",null,appConfig, modelRoot);
-		
-		modelRoot.put("languageResources", ObjectUtils.defaultIfNull(languageResourcesByLocale.get(locale),languageResourcesByLocale.get(Locale.ENGLISH)));
+
+		// Set common stuff (version,minified, ...)
+		ControllerHelper.setPageHeaderVariables(request, "search", null, appConfig, modelRoot);
+
+		modelRoot.put("languageResources",
+				ObjectUtils.defaultIfNull(languageResourcesByLocale.get(locale), languageResourcesByLocale.get(Locale.ENGLISH)));
 		modelRoot.put("availableFilters", searchServiceConfig.getFreemarkerSearchableFieldMap());
 		modelRoot.put("availableFiltersMap", availableSearchFieldsMap);
 
@@ -199,11 +198,11 @@ public class SearchController {
 		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler.getSearchQueryPartCollection(request.getParameterMap());
 
 		// handle alias parameters e.g. 'dataset','iptresource'
-		handleSearchParameterAlias(request.getParameter(SearchURLHelper.DATASET_PARAM),"datasetname", searchRelatedParams);
-		handleSearchParameterAlias(request.getParameter(SearchURLHelper.IPT_RESOURCE_PARAM),"sourcefileid", searchRelatedParams);
+		handleSearchParameterAlias(request.getParameter(SearchURLHelper.DATASET_PARAM), "datasetname", searchRelatedParams);
+		handleSearchParameterAlias(request.getParameter(SearchURLHelper.IPT_RESOURCE_PARAM), "sourcefileid", searchRelatedParams);
 
 		// keep search related query string
-		modelRoot.put("searchParameters",searchParamHandler.toQueryStringMap(searchRelatedParams));
+		modelRoot.put("searchParameters", searchParamHandler.toQueryStringMap(searchRelatedParams));
 
 		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler.asMap(searchRelatedParams);
 
@@ -211,17 +210,15 @@ public class SearchController {
 		// handling data related to the view
 		if (currentView.equals(ViewNameEnum.MAP_VIEW_NAME.getViewName())) {
 			handleSearchMapView(modelRoot, searchCriteria);
-		} else if (currentView.equals(ViewNameEnum.TABLE_VIEW_NAME
-				.getViewName())) {
+		}
+		else if (currentView.equals(ViewNameEnum.TABLE_VIEW_NAME.getViewName())) {
 			// sorting only make sense for table view
-			SearchSortPart searchSortPart = searchParamHandler
-					.getSearchQuerySort(request.getParameterMap());
+			SearchSortPart searchSortPart = searchParamHandler.getSearchQuerySort(request.getParameterMap());
 			handleSearchTableView(modelRoot, searchCriteria, searchSortPart);
-		} else if (currentView.equals(ViewNameEnum.STATS_VIEW_NAME
-				.getViewName())) {
+		}
+		else if (currentView.equals(ViewNameEnum.STATS_VIEW_NAME.getViewName())) {
 			// get regular count
-			occurrenceCount = occurrenceSearchService
-					.getOccurrenceCount(searchCriteria);
+			occurrenceCount = occurrenceSearchService.getOccurrenceCount(searchCriteria);
 			modelRoot.put("occurrenceCount", occurrenceCount);
 			handleSearchStatsView(modelRoot, request, searchCriteria);
 		}
@@ -229,20 +226,19 @@ public class SearchController {
 		// let the view know that we search on all record
 		modelRoot.put("allRecordsTargeted", searchCriteria.isEmpty());
 
-		String searchCriteriaJson = beanAsJSONString(searchParamHandler
-				.asList(searchRelatedParams));
+		String searchCriteriaJson = beanAsJSONString(searchParamHandler.asList(searchRelatedParams));
 		modelRoot.put("searchCriteria", searchCriteriaJson);
 
 		modelRoot.put("debug", locale.toString());
 
-		if(currentView.equals(ViewNameEnum.MAP_VIEW_NAME.getViewName())){
-			return new ModelAndView("view-map",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
+		if (currentView.equals(ViewNameEnum.MAP_VIEW_NAME.getViewName())) {
+			return new ModelAndView("view-map", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 		}
-		else if(currentView.equals(ViewNameEnum.STATS_VIEW_NAME.getViewName())){
-			return new ModelAndView("view-stats",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
+		else if (currentView.equals(ViewNameEnum.STATS_VIEW_NAME.getViewName())) {
+			return new ModelAndView("view-stats", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 		}
 
-		return new ModelAndView("view-table",OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY,modelRoot);
+		return new ModelAndView("view-table", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
@@ -252,26 +248,26 @@ public class SearchController {
 	 * @param searchCriteria
 	 * @param searchSortPart
 	 */
-	private void handleSearchMapView(HashMap<String,Object> model,Map<String,List<SearchQueryPart>> searchCriteria){
-		
-		//get regular count
+	private void handleSearchMapView(HashMap<String, Object> model, Map<String, List<SearchQueryPart>> searchCriteria) {
+
+		// get regular count
 		model.put("occurrenceCount", occurrenceSearchService.getOccurrenceCount(searchCriteria));
-		model.put("embeddedMapQuery",occurrenceSearchService.getMapQuery(searchCriteria));
+		model.put("embeddedMapQuery", occurrenceSearchService.getMapQuery(searchCriteria));
 		int georeferencedOccurrenceCount = occurrenceSearchService.getGeoreferencedOccurrenceCount(searchCriteria);
 		model.put("georeferencedOccurrenceCount", georeferencedOccurrenceCount);
 	}
 
 	/**
 	 * Handle table-view specific data.
+	 * 
 	 * @param model
 	 * @param searchCriteria
 	 * @param searchSortPart
 	 */
-	private void handleSearchTableView(HashMap<String,Object> model,Map<String,List<SearchQueryPart>> searchCriteria, SearchSortPart searchSortPart){
+	private void handleSearchTableView(HashMap<String, Object> model, Map<String, List<SearchQueryPart>> searchCriteria, SearchSortPart searchSortPart) {
 		// Handle search
 		List<Map<String, String>> searchResult = new ArrayList<Map<String, String>>();
-		LimitedResult<List<Map<String, String>>> qr = occurrenceSearchService
-				.searchWithLimit(searchCriteria, searchSortPart);
+		LimitedResult<List<Map<String, String>>> qr = occurrenceSearchService.searchWithLimit(searchCriteria, searchSortPart);
 		searchResult = qr.getRows();
 		long occurrenceCount = qr.getTotal_rows();
 		model.put("occurrenceList", searchResult);
@@ -292,17 +288,12 @@ public class SearchController {
 	 * @param request
 	 * @param searchCriteria
 	 */
-	private void handleSearchStatsView(HashMap<String, Object> model,
-			HttpServletRequest request,
-			Map<String, List<SearchQueryPart>> searchCriteria) {
+	private void handleSearchStatsView(HashMap<String, Object> model, HttpServletRequest request, Map<String, List<SearchQueryPart>> searchCriteria) {
 		// extract parameters
-		String statsGroupParameter = request
-				.getParameter(STATS_GROUP_URL_PARAMETER);
-		String statSelection = request
-				.getParameter(STATS_SELECTION_URL_PARAMETER);
+		String statsGroupParameter = request.getParameter(STATS_GROUP_URL_PARAMETER);
+		String statSelection = request.getParameter(STATS_SELECTION_URL_PARAMETER);
 
-		SearchableFieldGroupEnum statsGroup = SearchableFieldGroupEnum
-				.fromIdentifier(statsGroupParameter);
+		SearchableFieldGroupEnum statsGroup = SearchableFieldGroupEnum.fromIdentifier(statsGroupParameter);
 		// set default stats group
 		if (statsGroup == null) {
 			statsGroup = SearchableFieldGroupEnum.CLASSIFICATION;
@@ -312,9 +303,9 @@ public class SearchController {
 		if (!StringUtils.isBlank(statSelection)) {
 			try {
 				Integer fieldId = Integer.parseInt(statSelection);
-				searchableField = searchServiceConfig
-						.getSearchableFieldbyId(fieldId);
-			} catch (Exception e) {/* nothing to do */
+				searchableField = searchServiceConfig.getSearchableFieldbyId(fieldId);
+			}
+			catch (Exception e) {/* nothing to do */
 			}
 		}
 
@@ -325,67 +316,54 @@ public class SearchController {
 		if (statsGroup.getContent().size() > 1) {
 			for (SearchableFieldEnum currSf : statsGroup.getContent()) {
 				osf = searchServiceConfig.getSearchableField(currSf);
-				count = occurrenceSearchService.getDistinctValuesCount(
-						searchCriteria, osf);
+				count = occurrenceSearchService.getDistinctValuesCount(searchCriteria, osf);
 				model.put(osf.getSearchableFieldName() + "_count", count);
 			}
 		}
 
 		Locale locale = RequestContextUtils.getLocale(request);
 		Map<StatsPropertiesEnum, Object> extraProperties = new HashMap<OccurrenceSearchService.StatsPropertiesEnum, Object>();
-		extraProperties.put(StatsPropertiesEnum.RESOURCE_BUNDLE,
-				appConfig.getResourceBundle(locale));
+		extraProperties.put(StatsPropertiesEnum.RESOURCE_BUNDLE, appConfig.getResourceBundle(locale));
 
 		SearchableFieldEnum searchableFieldEnum = null;
 		if (searchableField != null) {
-			searchableFieldEnum = SearchableFieldEnum
-					.fromIdentifier(searchableField.getSearchableFieldId());
+			searchableFieldEnum = SearchableFieldEnum.fromIdentifier(searchableField.getSearchableFieldId());
 		}
 
 		// ensure that the searchableField is within the current statsGroup
-		if (searchableField == null
-				|| !statsGroup.getContent().contains(searchableFieldEnum)) {
+		if (searchableField == null || !statsGroup.getContent().contains(searchableFieldEnum)) {
 			// set default searchableField
 			switch (statsGroup) {
-			case CLASSIFICATION:
-				searchableField = searchServiceConfig
-						.getSearchableField(SearchableFieldEnum.FAMILY);
-				break;
-			case LOCATION:
-				searchableField = searchServiceConfig
-						.getSearchableField(SearchableFieldEnum.COUNTRY);
-				break;
-			case DATE:
-				searchableField = searchServiceConfig
-						.getSearchableField(SearchableFieldEnum.DECADE);
-				break;
-			case ALTITUDE:
-				searchableField = searchServiceConfig
-						.getSearchableField(SearchableFieldEnum.AVERAGE_ALTITUDE_ROUNDED);
-				break;
-			default:
-				searchableField = searchServiceConfig
-						.getSearchableField(SearchableFieldEnum.FAMILY);
+				case CLASSIFICATION:
+					searchableField = searchServiceConfig.getSearchableField(SearchableFieldEnum.FAMILY);
+					break;
+				case LOCATION:
+					searchableField = searchServiceConfig.getSearchableField(SearchableFieldEnum.COUNTRY);
+					break;
+				case DATE:
+					searchableField = searchServiceConfig.getSearchableField(SearchableFieldEnum.DECADE);
+					break;
+				case ALTITUDE:
+					searchableField = searchServiceConfig.getSearchableField(SearchableFieldEnum.AVERAGE_ALTITUDE_ROUNDED);
+					break;
+				default:
+					searchableField = searchServiceConfig.getSearchableField(SearchableFieldEnum.FAMILY);
 			}
 			// load the matching enum value
-			searchableFieldEnum = SearchableFieldEnum
-					.fromIdentifier(searchableField.getSearchableFieldId());
+			searchableFieldEnum = SearchableFieldEnum.fromIdentifier(searchableField.getSearchableFieldId());
 		}
 
 		Map<?, Integer> statsData = null;
-		if (searchableFieldEnum == SearchableFieldEnum.DECADE
-				|| searchableFieldEnum == SearchableFieldEnum.AVERAGE_ALTITUDE_ROUNDED) {
-			Map<Object, Integer> histogramData = occurrenceSearchService
-					.getValuesFrequencyDistributionAsMap(searchCriteria,
-							searchableField, extraProperties);
-			statsData = applyHistogramDataTransformation(searchableFieldEnum,
-					locale, histogramData);
-		} else {
+		if (searchableFieldEnum == SearchableFieldEnum.DECADE || searchableFieldEnum == SearchableFieldEnum.AVERAGE_ALTITUDE_ROUNDED) {
+			Map<Object, Integer> histogramData = occurrenceSearchService.getValuesFrequencyDistributionAsMap(searchCriteria, searchableField,
+					extraProperties);
+			statsData = applyHistogramDataTransformation(searchableFieldEnum, locale, histogramData);
+		}
+		else {
 			extraProperties.put(StatsPropertiesEnum.MAX_RESULT, 10);
 			// sort by count desc
-			statsData = StatsTransformation.sortByValue(occurrenceSearchService
-					.getValuesFrequencyDistributionAsMap(searchCriteria,
-							searchableField, extraProperties));
+			statsData = StatsTransformation.sortByValue(occurrenceSearchService.getValuesFrequencyDistributionAsMap(searchCriteria, searchableField,
+					extraProperties));
 		}
 		model.put("statsData", statsData);
 		model.put("statsFieldKey", searchableField.getSearchableFieldName());
@@ -400,13 +378,11 @@ public class SearchController {
 	 * 
 	 * @param searchCriteria
 	 */
-	private void handleGeospatialQuery(
-			Map<String, List<SearchQueryPart>> searchCriteria) {
+	private void handleGeospatialQuery(Map<String, List<SearchQueryPart>> searchCriteria) {
 		// we need to check if we have a geospatial query
 		List<SearchQueryPart> insidePolygonSqp = null;
 		for (List<SearchQueryPart> sqpListByName : searchCriteria.values()) {
-			insidePolygonSqp = searchParamHandler.findSearchQueryPartByType(
-					sqpListByName, SearchableFieldTypeEnum.INSIDE_POLYGON_GEO);
+			insidePolygonSqp = searchParamHandler.findSearchQueryPartByType(sqpListByName, SearchableFieldTypeEnum.INSIDE_POLYGON_GEO);
 			// we can only have one geospatial query for now
 			if (!insidePolygonSqp.isEmpty()) {
 				break;
@@ -417,11 +393,8 @@ public class SearchController {
 			// if we have a sign change
 			// in the coordinates list.
 			// if so, does it cross the IDL?
-			boolean isCrossingIDL = occurrenceSearchService
-					.isCrossingIDL(insidePolygonSqp.get(0));
-			insidePolygonSqp.get(0).addHint(
-					InsidePolygonFieldInterpreter.IS_CROSSING_IDL_HINT,
-					isCrossingIDL);
+			boolean isCrossingIDL = occurrenceSearchService.isCrossingIDL(insidePolygonSqp.get(0));
+			insidePolygonSqp.get(0).addHint(InsidePolygonFieldInterpreter.IS_CROSSING_IDL_HINT, isCrossingIDL);
 		}
 	}
 
@@ -434,19 +407,17 @@ public class SearchController {
 	 */
 	@RequestMapping(value = "/occurrence-preview/{auto_id}", method = RequestMethod.GET)
 	public ModelAndView handleOccurrencePreview(@PathVariable Integer auto_id) {
-		OccurrenceModel occModel = occurrenceSearchService
-				.getOccurrenceSummary(auto_id);
+		OccurrenceModel occModel = occurrenceSearchService.getOccurrenceSummary(auto_id);
 
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		if (occModel != null) {
 			modelRoot.put("occModel", occModel);
-			modelRoot.put("occViewModel",
-					occurrenceController.buildOccurrenceViewModel(occModel));
-		} else {
+			modelRoot.put("occViewModel", occurrenceController.buildOccurrenceViewModel(occModel));
+		}
+		else {
 			throw new ResourceNotFoundException();
 		}
-		return new ModelAndView("fragment/occurrence-preview",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("fragment/occurrence-preview", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
@@ -457,35 +428,29 @@ public class SearchController {
 	 * @param statsData
 	 * @return
 	 */
-	private Map<String, Integer> applyHistogramDataTransformation(
-			SearchableFieldEnum searchableFieldEnum, Locale locale,
+	private Map<String, Integer> applyHistogramDataTransformation(SearchableFieldEnum searchableFieldEnum, Locale locale,
 			Map<Object, Integer> statsData) {
 		Map<String, Integer> formatedStatsData = null;
 		// We only support histogram with Integer as key (decade, altitude)
-		Map<Integer, Integer> statsDataCorrectedKey = new HashMap<Integer, Integer>(
-				statsData.size());
+		Map<Integer, Integer> statsDataCorrectedKey = new HashMap<Integer, Integer>(statsData.size());
 		for (Object currKey : statsData.keySet()) {
 			if (NumberUtils.isNumber(currKey.toString())) {
-				statsDataCorrectedKey.put(Integer.valueOf(currKey.toString()),
-						statsData.get(currKey));
+				statsDataCorrectedKey.put(Integer.valueOf(currKey.toString()), statsData.get(currKey));
 			}
 		}
 		switch (searchableFieldEnum) {
-		case DECADE:
-			formatedStatsData = StatsTransformation.transformDecadeData(
-					statsDataCorrectedKey, appConfig.getResourceBundle(locale));
-			break;
-		case AVERAGE_ALTITUDE_ROUNDED:
-			formatedStatsData = StatsTransformation.transformAltitudeData(
-					statsDataCorrectedKey, appConfig.getResourceBundle(locale));
-			break;
-		default:
-			break;
+			case DECADE:
+				formatedStatsData = StatsTransformation.transformDecadeData(statsDataCorrectedKey, appConfig.getResourceBundle(locale));
+				break;
+			case AVERAGE_ALTITUDE_ROUNDED:
+				formatedStatsData = StatsTransformation.transformAltitudeData(statsDataCorrectedKey, appConfig.getResourceBundle(locale));
+				break;
+			default:
+				break;
 		}
 
 		if (formatedStatsData == null) {
-			LOGGER.error("No data transformation found for SearchableFieldEnum "
-					+ searchableFieldEnum);
+			LOGGER.error("No data transformation found for SearchableFieldEnum " + searchableFieldEnum);
 		}
 		return formatedStatsData;
 	}
@@ -499,18 +464,14 @@ public class SearchController {
 	 * @return
 	 */
 	@RequestMapping(value = "/ws/livesearch", method = RequestMethod.GET)
-	public ResponseEntity<String> handleSuggestion(
-			@RequestParam Integer fieldId,
-			@RequestParam(required = false) String curr) {
+	public ResponseEntity<String> handleSuggestion(@RequestParam Integer fieldId, @RequestParam(required = false) String curr) {
 		String suggestion = null;
 		if (searchServiceConfig.getSearchableFieldbyId(fieldId) != null) {
-			suggestion = autoCompleteService.search(searchServiceConfig
-					.getSearchableFieldbyId(fieldId).getRelatedField(), curr);
+			suggestion = autoCompleteService.search(searchServiceConfig.getSearchableFieldbyId(fieldId).getRelatedField(), curr);
 		}
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", JSON_CONTENT_TYPE);
-		return new ResponseEntity<String>(suggestion, responseHeaders,
-				HttpStatus.OK);
+		return new ResponseEntity<String>(suggestion, responseHeaders, HttpStatus.OK);
 	}
 
 	/**
@@ -523,16 +484,13 @@ public class SearchController {
 	public ResponseEntity<String> handleSuggestion(@RequestParam Integer fieldId) {
 		String possibleValuesJson = null;
 		if (searchServiceConfig.getSearchableFieldbyId(fieldId) != null
-				&& searchServiceConfig.getSearchableFieldbyId(fieldId)
-						.isSupportSelectionList()) {
-			possibleValuesJson = beanAsJSONString(autoCompleteService
-					.getAllPossibleValues(searchServiceConfig
-							.getSearchableFieldbyId(fieldId).getRelatedField()));
+				&& searchServiceConfig.getSearchableFieldbyId(fieldId).isSupportSelectionList()) {
+			possibleValuesJson = beanAsJSONString(autoCompleteService.getAllPossibleValues(searchServiceConfig.getSearchableFieldbyId(fieldId)
+					.getRelatedField()));
 		}
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", JSON_CONTENT_TYPE);
-		return new ResponseEntity<String>(possibleValuesJson, responseHeaders,
-				HttpStatus.OK);
+		return new ResponseEntity<String>(possibleValuesJson, responseHeaders, HttpStatus.OK);
 	}
 
 	/**
@@ -579,12 +537,9 @@ public class SearchController {
 	 * @return
 	 */
 	@RequestMapping(value = "/ws/downloadresult", method = RequestMethod.GET)
-	public ResponseEntity<String> handleDownloadResult(
-			HttpServletRequest request) {
-		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler
-				.getSearchQueryPartCollection(request.getParameterMap());
-		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler
-				.asMap(searchRelatedParams);
+	public ResponseEntity<String> handleDownloadResult(HttpServletRequest request) {
+		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler.getSearchQueryPartCollection(request.getParameterMap());
+		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler.asMap(searchRelatedParams);
 		Map<String, String> resultMap = new HashMap<String, String>();
 		// TODO, create a static dwca for all records
 		String fileName = String.valueOf(UUID.randomUUID());
@@ -597,53 +552,42 @@ public class SearchController {
 		}
 		extraProperties.put(DownloadPropertiesEnum.LOCALE, locale);
 
-		String baseURL = request.getScheme() + "://" + request.getServerName()
-				+ request.getContextPath();
+		String baseURL = request.getScheme() + "://" + request.getServerName() + request.getContextPath();
 		String searchBaseUrlString = baseURL
 				+ I18nUrlBuilder.generateI18nResourcePath(locale.getLanguage(),
-						OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
-								.getTranslationFormat("search"), (String) null);
+						OccurrencePortalConfig.I18N_TRANSLATION_HANDLER.getTranslationFormat("search"), (String) null);
 		QueryStringBuilder qsb = new QueryStringBuilder();
-		qsb.add(searchParamHandler.getSearchQueryRelatedParameters(request
-				.getParameterMap())).add(SearchURLHelper.VIEW_PARAM,
+		qsb.add(searchParamHandler.getSearchQueryRelatedParameters(request.getParameterMap())).add(SearchURLHelper.VIEW_PARAM,
 				SearchURLHelper.ViewNameEnum.TABLE_VIEW_NAME.getViewName());
 		searchBaseUrlString += qsb.toQueryString();
-		extraProperties.put(DownloadPropertiesEnum.SEARCH_URL,
-				searchBaseUrlString);
+		extraProperties.put(DownloadPropertiesEnum.SEARCH_URL, searchBaseUrlString);
 
-		DownloadResultStatus downloadStatus = occurrenceSearchService
-				.searchAsDwca(searchCriteria, fileName, extraProperties);
+		DownloadResultStatus downloadStatus = occurrenceSearchService.searchAsDwca(searchCriteria, fileName, extraProperties);
 		switch (downloadStatus.getMode()) {
-		case SYNC:
-			resultMap.put(DWCA_STATUS_TAG, DWCA_STATUS_DONE);
-			resultMap.put(DWCA_FILENAME_TAG, downloadStatus.getFileName());
-			break;
-		case ASYNC:
-			resultMap.put(DWCA_STATUS_TAG, DWCA_STATUS_DEFERRED);
-			break;
-		case ERROR:
-			resultMap.put(DWCA_STATUS_TAG, DWCA_STATUS_ERROR);
-			break;
+			case SYNC:
+				resultMap.put(DWCA_STATUS_TAG, DWCA_STATUS_DONE);
+				resultMap.put(DWCA_FILENAME_TAG, downloadStatus.getFileName());
+				break;
+			case ASYNC:
+				resultMap.put(DWCA_STATUS_TAG, DWCA_STATUS_DEFERRED);
+				break;
+			case ERROR:
+				resultMap.put(DWCA_STATUS_TAG, DWCA_STATUS_ERROR);
+				break;
 		}
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", JSON_CONTENT_TYPE);
 		String jsonResponse = beanAsJSONString(resultMap);
 
-		return new ResponseEntity<String>(jsonResponse, responseHeaders,
-				HttpStatus.OK);
+		return new ResponseEntity<String>(jsonResponse, responseHeaders, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/ws/stats/unique/{fieldId}", method = RequestMethod.GET)
-	public ResponseEntity<String> handleStatsUnique(
-			@PathVariable Integer fieldId, HttpServletRequest request) {
-		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler
-				.getSearchQueryPartCollection(request.getParameterMap());
-		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler
-				.asMap(searchRelatedParams);
-		Integer count = occurrenceSearchService.getDistinctValuesCount(
-				searchCriteria,
-				searchServiceConfig.getSearchableFieldbyId(fieldId));
+	public ResponseEntity<String> handleStatsUnique(@PathVariable Integer fieldId, HttpServletRequest request) {
+		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler.getSearchQueryPartCollection(request.getParameterMap());
+		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler.asMap(searchRelatedParams);
+		Integer count = occurrenceSearchService.getDistinctValuesCount(searchCriteria, searchServiceConfig.getSearchableFieldbyId(fieldId));
 
 		Map<String, Integer> response = new HashMap<String, Integer>(1);
 		response.put("count", count);
@@ -651,45 +595,36 @@ public class SearchController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", JSON_CONTENT_TYPE);
 		String jsonResponse = beanAsJSONString(response);
-		return new ResponseEntity<String>(jsonResponse, responseHeaders,
-				HttpStatus.OK);
+		return new ResponseEntity<String>(jsonResponse, responseHeaders, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/ws/stats/chart/{fieldId}", method = RequestMethod.GET)
-	public ResponseEntity<String> handleStats(@PathVariable Integer fieldId,
-			HttpServletRequest request) {
-		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler
-				.getSearchQueryPartCollection(request.getParameterMap());
-		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler
-				.asMap(searchRelatedParams);
+	public ResponseEntity<String> handleStats(@PathVariable Integer fieldId, HttpServletRequest request) {
+		Collection<SearchQueryPart> searchRelatedParams = searchParamHandler.getSearchQueryPartCollection(request.getParameterMap());
+		Map<String, List<SearchQueryPart>> searchCriteria = searchParamHandler.asMap(searchRelatedParams);
 		ChartModel chartModel = null;
 
 		if (searchServiceConfig.getSearchableFieldbyId(fieldId) != null) {
 			Locale locale = RequestContextUtils.getLocale(request);
 			Map<StatsPropertiesEnum, Object> extraProperties = new HashMap<OccurrenceSearchService.StatsPropertiesEnum, Object>();
-			extraProperties.put(StatsPropertiesEnum.RESOURCE_BUNDLE,
-					appConfig.getResourceBundle(locale));
+			extraProperties.put(StatsPropertiesEnum.RESOURCE_BUNDLE, appConfig.getResourceBundle(locale));
 
 			String maxStr = request.getParameter(STATS_MAX_URL_PARAMETER);
 			if (!StringUtils.isBlank(maxStr)) {
 				try {
-					extraProperties.put(StatsPropertiesEnum.MAX_RESULT,
-							Integer.parseInt(maxStr));
-				} catch (Exception e) {/* nothing to do */
+					extraProperties.put(StatsPropertiesEnum.MAX_RESULT, Integer.parseInt(maxStr));
+				}
+				catch (Exception e) {/* nothing to do */
 				}
 			}
-			chartModel = occurrenceSearchService
-					.getValuesFrequencyDistribution(
-							searchCriteria,
-							searchServiceConfig.getSearchableFieldbyId(fieldId),
-							extraProperties);
+			chartModel = occurrenceSearchService.getValuesFrequencyDistribution(searchCriteria, searchServiceConfig.getSearchableFieldbyId(fieldId),
+					extraProperties);
 		}
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", JSON_CONTENT_TYPE);
 		String jsonResponse = beanAsJSONString(chartModel);
-		return new ResponseEntity<String>(jsonResponse, responseHeaders,
-				HttpStatus.OK);
+		return new ResponseEntity<String>(jsonResponse, responseHeaders, HttpStatus.OK);
 	}
 
 	/**
@@ -701,11 +636,9 @@ public class SearchController {
 	private String extractContextURL(HttpServletRequest request) {
 		// only add the port to the URL if it's different than 80
 		if (request.getServerPort() != 80) {
-			return request.getScheme() + "://" + request.getServerName() + ":"
-					+ request.getServerPort() + request.getContextPath();
+			return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		}
-		return request.getScheme() + "://" + request.getServerName()
-				+ request.getContextPath();
+		return request.getScheme() + "://" + request.getServerName() + request.getContextPath();
 	}
 
 	/**
@@ -716,11 +649,9 @@ public class SearchController {
 	 * @param searchRelatedParams
 	 *            collection to add the new SearchQueryPart
 	 */
-	private void handleSearchParameterAlias(String aliasValue,
-			String fieldName, Collection<SearchQueryPart> searchRelatedParams) {
+	private void handleSearchParameterAlias(String aliasValue, String fieldName, Collection<SearchQueryPart> searchRelatedParams) {
 		if (!StringUtils.isBlank(aliasValue)) {
-			SearchQueryPart sqp = occurrenceSearchService
-					.getSearchQueryPartFromFieldName(fieldName, aliasValue);
+			SearchQueryPart sqp = occurrenceSearchService.getSearchQueryPartFromFieldName(fieldName, aliasValue);
 			if (sqp != null) {
 				// we need to copy the list to be able to add a new element
 				searchRelatedParams.add(sqp);

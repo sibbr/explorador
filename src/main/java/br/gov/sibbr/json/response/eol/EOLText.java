@@ -29,11 +29,9 @@ public class EOLText extends EOLDataObject {
 	 * @param description
 	 * @param agents
 	 */
-	public EOLText(String identifier, String dataObjectVersionID,
-			String dataType, String vettedStatus, String dataRating,
-			String subject, String mymeType, String title, String language,
-			String license, String rights, String rightsHolder, String source,
-			String description, List<EOLAgent> agents) {
+	public EOLText(String identifier, String dataObjectVersionID, String dataType, String vettedStatus, String dataRating, String subject,
+			String mymeType, String title, String language, String license, String rights, String rightsHolder, String source, String description,
+			List<EOLAgent> agents) {
 		setIdentifier(identifier);
 		setDataObjectVersionID(dataObjectVersionID);
 		setDataType(dataType);
@@ -63,8 +61,7 @@ public class EOLText extends EOLDataObject {
 
 					String dataObjectVersionID = "";
 					if (!item.isNull("dataObjectVersionID"))
-						dataObjectVersionID = item.get("dataObjectVersionID")
-								.toString();
+						dataObjectVersionID = item.get("dataObjectVersionID").toString();
 
 					String dataType = "";
 					if (!item.isNull("dataType"))
@@ -116,17 +113,15 @@ public class EOLText extends EOLDataObject {
 
 					List<EOLAgent> agents = null;
 					if (!item.isNull("agents"))
-						agents = EOLAgent.processJSON((JSONArray) item
-								.getJSONArray("agents"));
+						agents = EOLAgent.processJSON((JSONArray) item.getJSONArray("agents"));
 
 					// Create new EOLImage and add to list:
-					images.add(new EOLText(identifier, dataObjectVersionID,
-							dataType, vettedStatus, dataRating, subject,
-							mimeType, title, language, license, rights,
-							rightsHolder, source, description, agents));
+					images.add(new EOLText(identifier, dataObjectVersionID, dataType, vettedStatus, dataRating, subject, mimeType, title, language,
+							license, rights, rightsHolder, source, description, agents));
 				}
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return images;
@@ -134,6 +129,7 @@ public class EOLText extends EOLDataObject {
 
 	/**
 	 * Check this item is an text object
+	 * 
 	 * @param item
 	 * @return
 	 */
@@ -144,7 +140,8 @@ public class EOLText extends EOLDataObject {
 				if (mime.equalsIgnoreCase("text/html")) {
 					return true;
 				}
-			} else {
+			}
+			else {
 				if (item.has("dataType") && !item.isNull("dataType")) {
 					String type = (String) item.get("dataType");
 					if (type.equalsIgnoreCase("http://purl.org/dc/dcmitype/Text")) {
@@ -152,7 +149,8 @@ public class EOLText extends EOLDataObject {
 					}
 				}
 			}
-		} catch(JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return false;

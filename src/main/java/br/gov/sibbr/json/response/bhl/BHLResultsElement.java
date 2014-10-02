@@ -35,8 +35,7 @@ public class BHLResultsElement {
 	 * @param EOLID
 	 * @param Titles
 	 */
-	public BHLResultsElement(String nameBankID, String nameConfirmed,
-			String EOLID, String Titles) {
+	public BHLResultsElement(String nameBankID, String nameConfirmed, String EOLID, String Titles) {
 		setBhlPages(new ArrayList<BHLPage>());
 		setNameBankID(nameBankID);
 		setNameConfirmed(nameConfirmed);
@@ -73,16 +72,13 @@ public class BHLResultsElement {
 								shortTitle = (String) element.get("ShortTitle");
 
 							if (!element.isNull("PublisherName"))
-								publisherName = (String) element
-										.get("PublisherName");
-							
+								publisherName = (String) element.get("PublisherName");
+
 							if (!element.isNull("PublisherPlace"))
-								publisherPlace = (String) element
-										.get("PublisherPlace");
+								publisherPlace = (String) element.get("PublisherPlace");
 
 							if (!element.isNull("PublicationDate"))
-								publicationDate = (String) element
-										.get("PublicationDate");
+								publicationDate = (String) element.get("PublicationDate");
 
 							// Set items data loop for titles:
 							if (!element.isNull("Items")) {
@@ -112,16 +108,14 @@ public class BHLResultsElement {
 									pageId = page.get("PageID").toString();
 									// Add BHLPage to BHLResultsElement
 									// (BankNameId)
-									getBhlPages().add(
-											new BHLPage(pageId, shortTitle,
-													publisherName, publisherPlace,
-													publicationDate));
+									getBhlPages().add(new BHLPage(pageId, shortTitle, publisherName, publisherPlace, publicationDate));
 								}
 							}
 						}
 					}
 				}
-			} catch (JSONException e) {
+			}
+			catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}

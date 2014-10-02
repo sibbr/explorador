@@ -79,10 +79,11 @@
             <li class="current"><a href="#normal">${rc.getMessage("occpage.header.button.normal")} <span class="question">!</span></a></li>
             <li><a href="#dwctab">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">!</span></a></li>
             <li><a href="#name">${rc.getMessage("occpage.other.information")}</a></li>
+            <li><a href="#dataset">${rc.getMessage("occpage.menu.dataset")}</a></li>
             <li><a href="#contact">${rc.getMessage("occpage.menu.datasetcontact")}</a></li>
          </ul>
          <div id="content_tab" class="boxcontent">
-            <!-- NORMAL TAB-->            
+            <!-- NORMAL TAB-->
             <div id="normal" class="current">
                <!-- Taxa information -->
                <#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
@@ -325,11 +326,13 @@
                </#if>
             </div>
             <!-- END NORMAL TAB-->
+            
             <!-- DWC TAB-->
             <div id="dwctab">            
                <#include "inc/occurrence-dwc.ftl">
             </div>
             <!-- END DWC TAB-->
+            
             <!-- NAME TAB -->
             <div id="name">
                <ul>
@@ -344,6 +347,13 @@
                <!-- END EOL PAGE-->
             </div>
             <!-- END NAME TAB-->
+            
+            <div id="dataset">
+	            <!-- DATASET TAB -->
+	            <#include "inc/occurrence-dataset.ftl">             
+	            <!-- END DATASET TAB -->
+	        </div>
+	        
             <div id="contact">
 	            <!-- CONTACT TAB -->
 	            <#include "inc/resource-contact.ftl">             

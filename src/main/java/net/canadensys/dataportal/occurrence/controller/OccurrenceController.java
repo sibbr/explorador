@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceViewModel;
 import net.canadensys.dataportal.occurrence.model.ResourceContactModel;
+import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
 import net.canadensys.dataportal.occurrence.model.ResourceModel;
 import net.canadensys.exception.web.ResourceNotFoundException;
 import net.canadensys.mail.TemplateMailSender;
@@ -49,8 +51,7 @@ import br.gov.sibbr.json.response.eol.EOLResponse;
 public class OccurrenceController {
 
 	// get log4j handler
-	private static final Logger LOGGER = Logger
-			.getLogger(OccurrenceController.class);
+	private static final Logger LOGGER = Logger.getLogger(OccurrenceController.class);
 	private static final ConfigurableMimeFileTypeMap MIME_TYPE_MAP = new ConfigurableMimeFileTypeMap();
 
 	// separators
@@ -61,66 +62,70 @@ public class OccurrenceController {
 	private static final String IPT_ARCHIVE_PATTERN = "/archive.do?r=";
 	private static final String IPT_RESOURCE_PATTERN = "/resource.do?r=";
 
-	// Add views here for every new page related to occurrence:
-	private static String VIEW_PARAM = "view";
-	private static String DWC_VIEW_NAME = "dwc";
-	private static String BHL_VIEW_NAME = "bhl";
-	private static String EOL_VIEW_NAME = "eol";
-	private static String COL_VIEW_NAME = "col";
-
 	@Autowired
 	private OccurrenceService occurrenceService;
 
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
-	
+
 	@Autowired
 	@Qualifier("templateMailSender")
 	private TemplateMailSender mailSender;
 
-	@RequestMapping(value="/occurrences/{auto_id}", method = RequestMethod.GET)
-	@I18nTranslation(resourceName="occurrence", translateFormat = "/occurrences/{}")
+	@RequestMapping(value = "/occurrences/{auto_id}", method = RequestMethod.GET)
+	@I18nTranslation(resourceName = "occurrence", translateFormat = "/occurrences/{}")
 	public ModelAndView handleOccurrencePerResource(@PathVariable String auto_id, HttpServletRequest request) {
 		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
-		HashMap<String, Object> modelRoot = new HashMap<String,Object>();
-		
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		ResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
+		ResourceInformationModel resourceInformation = occurrenceService.loadResourceInformationModel(resource.getResource_uuid());
 		// Load resource contact data:
-		ResourceContactModel resourceContactModel = occurrenceService
-				.loadResourceContactModel(occModel.getSourcefileid());
-
+		Set<ResourceContactModel> contacts = resourceInformation.getContacts();
+		ResourceContactModel contact = null;
+		if (contacts != null) {
+			LOGGER.error("*** Number of contacts: " + contacts.size());
+			for (ResourceContactModel rcm : contacts) {
+				if (rcm.getContact_type().equalsIgnoreCase("contact")) {
+					contact = rcm;
+					break;
+				}
+			}
+			if (contact != null) {
+				LOGGER.error("*** Contact information: " + contact.getEmail());
+			} else {
+				LOGGER.error("*** NULL CONTACT!");
+			}
+		}
 		if (!occModel.equals(null)) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel", occModel.getRawModel());
 			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));
-			modelRoot.put("data", resourceContactModel);
-		} else {
+			modelRoot.put("information", resourceInformation);
+			modelRoot.put("contact", contact);
+		}
+		else {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id , appConfig, modelRoot);
+		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id, appConfig, modelRoot);
 
 		// Add BHL data related to the taxon:
 		if (occModel != null) {
-			String scientificName = occModel.getScientificname().replace(' ',
-					'+');
+			String scientificName = occModel.getScientificname().replace(' ', '+');
 			// When register has no scientificName, use Genus:
-			if (scientificName.equalsIgnoreCase(" ")
-					|| scientificName.equals(null)) {
+			if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
 				String genus = occModel.getGenus().replace(' ', '+');
 				modelRoot.put("occBHL", new BHLResponse(genus).getResults());
 				modelRoot.put("occEOL", new EOLResponse(genus).getResults());
 			}
 			// Defaults to use scientific name:
 			else {
-				modelRoot.put("occBHL",
-						new BHLResponse(scientificName).getResults());
-				modelRoot.put("occEOL",
-						new EOLResponse(scientificName).getResults());
+				modelRoot.put("occBHL", new BHLResponse(scientificName).getResults());
+				modelRoot.put("occEOL", new EOLResponse(scientificName).getResults());
 			}
 		}
-		return new ModelAndView("occurrence",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("occurrence", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
@@ -130,38 +135,39 @@ public class OccurrenceController {
 	 *            resource identifier (sourcefileid).
 	 * @return
 	 */
-	@RequestMapping(value = "/resources/{iptResource}/occurrences/{dwcaId:.+}", method = RequestMethod.POST)
-	@I18nTranslation(resourceName = "occurrence", translateFormat = "/resources/{}/occurrences/{}")
-	public ModelAndView handleResourceContactMsg(
-			@PathVariable String iptResource, HttpServletRequest request) {
-		ResourceContactModel resourceContactModel = occurrenceService
-				.loadResourceContactModel(iptResource);
+	@RequestMapping(value = "/occurrences/{auto_id}", method = RequestMethod.POST)
+	@I18nTranslation(resourceName = "occurrence", translateFormat = "/occurrences/{}")
+	public ModelAndView handleResourceContactMsg(@PathVariable String auto_id, HttpServletRequest request) {
+		String sourceFileId = (String) request.getSession().getAttribute("sourceFileId");
+		ResourceInformationModel resourceInformationModel = occurrenceService.loadResourceInformationModel(sourceFileId);
+		// Get resource contacts:
+		Set<ResourceContactModel> contacts = resourceInformationModel.getContacts();
+
 		// URL from the previous URL accessed that led to the contact form:
 		Locale locale = RequestContextUtils.getLocale(request);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		
+
 		// Get full URL:
-		String sourceFileId = (String) request.getSession().getAttribute(
-				"sourceFileId");
-		String dwcaId = (String) request.getSession().getAttribute("dwcaId");
-		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
-				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
-				.getTranslationFormat("occurrence"), new String[] {
-				sourceFileId, dwcaId });
+		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale.getLanguage(),
+				OccurrencePortalConfig.I18N_TRANSLATION_HANDLER.getTranslationFormat("occurrence"), new String[] { auto_id });
 		String domainName = request.getParameter("domainName");
 		occurrenceUrl = domainName + request.getContextPath() + occurrenceUrl;
-		if (resourceContactModel != null) {
-			modelRoot.put("data", resourceContactModel);
-		} else {
-			throw new ResourceNotFoundException();
-		}
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "contact",
-				new String[] { iptResource }, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "contact", new String[] { auto_id }, appConfig, modelRoot);
 
 		Map<String, Object> templateData = new HashMap<String, Object>();
-		String mailto = resourceContactModel.getEmail();
-		String nameto = resourceContactModel.getName();
+		ResourceContactModel contact = null;
+		for (ResourceContactModel rcm : contacts) {
+			if (rcm.getContact_type().equalsIgnoreCase("contact")) {
+				contact = rcm;
+				// Add contacts information
+				modelRoot.put("contact", contact);
+				break;
+			}
+		}
+
+		String mailto = contact.getEmail();
+		String nameto = contact.getName();
 
 		if (mailto != null && !mailto.equalsIgnoreCase("")) {
 			String namefrom = request.getParameter("name");
@@ -177,8 +183,7 @@ public class OccurrenceController {
 			templateData.put("namefrom", namefrom);
 			templateData.put("message", message);
 			templateData.put("occurrenceUrl", occurrenceUrl);
-			templateData.put("time", new SimpleDateFormat(
-					"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+			templateData.put("time", new SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 			String templateName = appConfig.getContactEmailTemplateName(locale);
 			mailSender.sendMessage(mailto, subject, templateData, templateName);
 		}
@@ -198,17 +203,14 @@ public class OccurrenceController {
 	 */
 	@RequestMapping(value = "/resources/{iptResource}", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "resource", translateFormat = "/resources/{}")
-	public ModelAndView handleIptResource(@PathVariable String iptResource,
-			HttpServletRequest request) {
+	public ModelAndView handleIptResource(@PathVariable String iptResource, HttpServletRequest request) {
 		if (!occurrenceService.resourceExists(iptResource)) {
 			throw new ResourceNotFoundException();
 		}
 		Locale locale = RequestContextUtils.getLocale(request);
-		String searchUrl = I18nUrlBuilder.generateI18nResourcePath(locale
-				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
-				.getTranslationFormat("search"), (String) null);
-		RedirectView rv = new RedirectView(request.getContextPath() + searchUrl
-				+ "?iptresource=" + iptResource);
+		String searchUrl = I18nUrlBuilder.generateI18nResourcePath(locale.getLanguage(),
+				OccurrencePortalConfig.I18N_TRANSLATION_HANDLER.getTranslationFormat("search"), (String) null);
+		RedirectView rv = new RedirectView(request.getContextPath() + searchUrl + "?iptresource=" + iptResource);
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		ModelAndView mv = new ModelAndView(rv);
 		return mv;
@@ -228,10 +230,10 @@ public class OccurrenceController {
 			// assumes that data are coming from harvester
 			String[] media = occModel.getAssociatedmedia().split("; ");
 			for (String currentMedia : media) {
-				if (MIME_TYPE_MAP.getContentType(currentMedia).startsWith(
-						"image")) {
+				if (MIME_TYPE_MAP.getContentType(currentMedia).startsWith("image")) {
 					occViewModel.addImage(currentMedia);
-				} else {
+				}
+				else {
 					occViewModel.addOtherMedia(currentMedia);
 				}
 			}
@@ -239,53 +241,38 @@ public class OccurrenceController {
 
 		// handle associated sequences
 		if (StringUtils.isNotEmpty(occModel.getAssociatedsequences())) {
-			String[] sequences = StringUtils.split(
-					occModel.getAssociatedsequences(),
-					ASSOCIATED_SEQUENCES_SEPARATOR);
+			String[] sequences = StringUtils.split(occModel.getAssociatedsequences(), ASSOCIATED_SEQUENCES_SEPARATOR);
 
 			String seqProvider, seqId, seqProviderUrlFormat;
 			for (String currentSequence : sequences) {
-				seqProvider = StringUtils
-						.substringBefore(currentSequence,
-								ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim()
-						.toLowerCase();
-				seqId = StringUtils.substringAfter(currentSequence,
-						ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
-				seqProviderUrlFormat = appConfig
-						.getSequenceProviderUrlFormat(seqProvider);
+				seqProvider = StringUtils.substringBefore(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim().toLowerCase();
+				seqId = StringUtils.substringAfter(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
+				seqProviderUrlFormat = appConfig.getSequenceProviderUrlFormat(seqProvider);
 
 				// set display name if defined, otherwise keep extracted name
 				if (appConfig.getSequenceProviderDisplayName(seqProvider) != null) {
-					seqProvider = appConfig
-							.getSequenceProviderDisplayName(seqProvider);
+					seqProvider = appConfig.getSequenceProviderDisplayName(seqProvider);
 				}
 
 				if (seqProvider != null && seqId != null) {
 					if (StringUtils.isBlank(seqProviderUrlFormat)) {
-						occViewModel.addAssociatedSequenceLink(seqProvider,
-								seqId, "");
-					} else {
-						occViewModel.addAssociatedSequenceLink(seqProvider,
-								seqId, MessageFormat.format(
-										seqProviderUrlFormat, seqId));
+						occViewModel.addAssociatedSequenceLink(seqProvider, seqId, "");
 					}
-				} else {
-					LOGGER.warn("associatedSequences ["
-							+ occModel.getAssociatedsequences()
-							+ "] cannot be parsed.");
+					else {
+						occViewModel.addAssociatedSequenceLink(seqProvider, seqId, MessageFormat.format(seqProviderUrlFormat, seqId));
+					}
+				}
+				else {
+					LOGGER.warn("associatedSequences [" + occModel.getAssociatedsequences() + "] cannot be parsed.");
 				}
 			}
 		}
 
 		// handle data source page URL (url to the resource page)
-		ResourceModel resource = occurrenceService.loadResourceModel(occModel
-				.getSourcefileid());
+		ResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
 		if (resource != null) {
-			if (StringUtils.contains(resource.getArchive_url(),
-					IPT_ARCHIVE_PATTERN)) {
-				occViewModel.setDataSourcePageURL(StringUtils.replace(
-						resource.getArchive_url(), IPT_ARCHIVE_PATTERN,
-						IPT_RESOURCE_PATTERN));
+			if (StringUtils.contains(resource.getArchive_url(), IPT_ARCHIVE_PATTERN)) {
+				occViewModel.setDataSourcePageURL(StringUtils.replace(resource.getArchive_url(), IPT_ARCHIVE_PATTERN, IPT_RESOURCE_PATTERN));
 			}
 			// Add data source name to view:
 			occViewModel.setDataSourceName(resource.getName());
@@ -306,10 +293,8 @@ public class OccurrenceController {
 		String previousURL = (String) request.getAttribute("previousURL");
 		modelRoot.put("previousURL", previousURL);
 		request.setAttribute("previousURL", request.getRequestURL());
-		ControllerHelper.setPageHeaderVariables(request, "feedback",
-				new String[] {}, appConfig, modelRoot);
-		return new ModelAndView("feedback",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "feedback", new String[] {}, appConfig, modelRoot);
+		return new ModelAndView("feedback", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
@@ -327,8 +312,7 @@ public class OccurrenceController {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "feedback",
-				new String[] {}, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "feedback", new String[] {}, appConfig, modelRoot);
 
 		Map<String, Object> templateData = new HashMap<String, Object>();
 
@@ -341,8 +325,7 @@ public class OccurrenceController {
 		templateData.put("mailfrom", mailfrom);
 		templateData.put("namefrom", namefrom);
 		templateData.put("message", message);
-		templateData.put("time", new SimpleDateFormat(
-				"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+		templateData.put("time", new SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 		String templateName = appConfig.getContactEmailTemplateName(locale);
 		mailSender.sendMessage(mailto, subject, templateData, templateName);
 

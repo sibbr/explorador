@@ -38,68 +38,69 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 /**
  * The the caching strategy of the Search Service.
+ * 
  * @author canadensys
- *
+ * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:test-dispatcher-servlet.xml"})
-@TransactionConfiguration(transactionManager="hibernateTransactionManager")
-public class CachingTest extends AbstractTransactionalJUnit4SpringContextTests{
-	
+@ContextConfiguration(locations = { "classpath:test-dispatcher-servlet.xml" })
+@TransactionConfiguration(transactionManager = "hibernateTransactionManager")
+public class CachingTest extends AbstractTransactionalJUnit4SpringContextTests {
+
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
-	
+
 	@Autowired
 	@Qualifier("searchServiceConfig")
 	private SearchServiceConfig searchServiceConfig;
-	
-	@Autowired
-    private RequestMappingHandlerAdapter handlerAdapter;
 
-    @Autowired
-    private RequestMappingHandlerMapping handlerMapping;
-    
-    @Autowired
-    private ApplicationContext applicationContext;
-    
-    private JdbcTemplate jdbcTemplate;
-	
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-    
-    @Before
-    public void setup() {       
-		//make sure the table is empty
+	@Autowired
+	private RequestMappingHandlerAdapter handlerAdapter;
+
+	@Autowired
+	private RequestMappingHandlerMapping handlerMapping;
+
+	@Autowired
+	private ApplicationContext applicationContext;
+
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	@Before
+	public void setup() {
+		// make sure the table is empty
 		jdbcTemplate.update("DELETE FROM occurrence");
 		jdbcTemplate.update("DELETE FROM occurrence_raw");
 		jdbcTemplate.update("DELETE FROM resource_contact");
-		
-    	Resource resource = new ClassPathResource("/insert_test_data.sql");
-    	JdbcTestUtils.executeSqlScript(jdbcTemplate, resource, true);
-    }
-    
-    /**
-     * Test distinctValuesCountCache
-     */
-    @Test
-    public void testDistinctValuesCountCache(){
-    	OccurrenceSearchService searchService = (OccurrenceSearchService)applicationContext.getBean("occurrenceSearchService");
-    	Map<String,List<SearchQueryPart>> searchCriteria = new HashMap<String, List<SearchQueryPart>>();
-    
+
+		Resource resource = new ClassPathResource("/insert_test_data.sql");
+		JdbcTestUtils.executeSqlScript(jdbcTemplate, resource, true);
+	}
+
+	/**
+	 * Test distinctValuesCountCache
+	 */
+	@Test
+	public void testDistinctValuesCountCache() {
+		OccurrenceSearchService searchService = (OccurrenceSearchService) applicationContext.getBean("occurrenceSearchService");
+		Map<String, List<SearchQueryPart>> searchCriteria = new HashMap<String, List<SearchQueryPart>>();
+
 		SearchableField countrySearchableField = searchServiceConfig.getSearchableField(SearchableFieldEnum.COUNTRY);
 
-		//count all different countries with empty searchCriteria 
-    	Integer count = searchService.getDistinctValuesCount(searchCriteria, (OccurrenceSearchableField)countrySearchableField);
-    	assertTrue(count.intValue() > 0);
-    	
-    	//extract value from cache
-    	Cache cache = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME).getCache("distinctValuesCountCache");
-    	Integer countFromCache = (Integer)cache.get(countrySearchableField.getSearchableFieldId()).getObjectValue();
-    	
-    	assertEquals(count, countFromCache);
-    }
+		// count all different countries with empty searchCriteria
+		Integer count = searchService.getDistinctValuesCount(searchCriteria, (OccurrenceSearchableField) countrySearchableField);
+		assertTrue(count.intValue() > 0);
+
+		// extract value from cache
+		Cache cache = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME).getCache("distinctValuesCountCache");
+		Integer countFromCache = (Integer) cache.get(countrySearchableField.getSearchableFieldId()).getObjectValue();
+
+		assertEquals(count, countFromCache);
+	}
 
 }

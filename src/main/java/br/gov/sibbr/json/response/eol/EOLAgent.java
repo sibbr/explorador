@@ -51,15 +51,16 @@ public class EOLAgent {
 				String role = "";
 				if (!item.isNull("role"))
 					role = (String) item.get("role");
-				
+
 				agents.add(new EOLAgent(fullName, homepage, role));
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return agents;
 	}
-	
+
 	/**
 	 * Default toString method
 	 */
@@ -70,7 +71,7 @@ public class EOLAgent {
 		output += " role: " + getRole();
 		return output;
 	}
-	
+
 	/**
 	 * @return the fullName
 	 */

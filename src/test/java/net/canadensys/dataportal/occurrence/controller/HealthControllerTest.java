@@ -17,41 +17,42 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 /**
  * This test checks that the health URL is available
+ * 
  * @author canadensys
- *
+ * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:test-dispatcher-servlet.xml"})
+@ContextConfiguration(locations = { "classpath:test-dispatcher-servlet.xml" })
 public class HealthControllerTest {
 
 	@Autowired
-    private RequestMappingHandlerAdapter handlerAdapter;
+	private RequestMappingHandlerAdapter handlerAdapter;
 
-    @Autowired
-    private RequestMappingHandlerMapping handlerMapping;
-    
-    @Test
-    public void testHealth() throws Exception {
-    	//Test http GET
-    	MockHttpServletRequest request = new MockHttpServletRequest();
-    	MockHttpServletResponse response = new MockHttpServletResponse();
-    	request.setMethod("GET");
-    	request.setRequestURI("/status");
-    	
-    	Object handler = handlerMapping.getHandler(request).getHandler();
-        handlerAdapter.handle(request, response, handler);
-        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        assertTrue(response.getContentAsString().contains("OK"));
-        
-        //Test http HEAD
-    	request = new MockHttpServletRequest();
-    	response = new MockHttpServletResponse();
-    	request.setMethod("HEAD");
-    	request.setRequestURI("/status");
-    	
-    	handler = handlerMapping.getHandler(request).getHandler();
-        handlerAdapter.handle(request, response, handler);
-        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        assertEquals(0,response.getContentLength());
-    }
+	@Autowired
+	private RequestMappingHandlerMapping handlerMapping;
+
+	@Test
+	public void testHealth() throws Exception {
+		// Test http GET
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		request.setMethod("GET");
+		request.setRequestURI("/status");
+
+		Object handler = handlerMapping.getHandler(request).getHandler();
+		handlerAdapter.handle(request, response, handler);
+		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		assertTrue(response.getContentAsString().contains("OK"));
+
+		// Test http HEAD
+		request = new MockHttpServletRequest();
+		response = new MockHttpServletResponse();
+		request.setMethod("HEAD");
+		request.setRequestURI("/status");
+
+		handler = handlerMapping.getHandler(request).getHandler();
+		handlerAdapter.handle(request, response, handler);
+		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		assertEquals(0, response.getContentLength());
+	}
 }
