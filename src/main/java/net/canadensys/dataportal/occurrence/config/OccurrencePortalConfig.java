@@ -63,7 +63,7 @@ public class OccurrencePortalConfig {
 	public static final String PAGE_ROOT_MODEL_KEY = "page";
 
 	public static final I18nTranslationHandler I18N_TRANSLATION_HANDLER = new I18nTranslationHandler(
-			"net.canadensys.dataportal.occurrence.controller");
+			"net.canadensys.dataportal");
 
 	public OccurrencePortalConfig() {
 	}
