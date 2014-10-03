@@ -36,20 +36,21 @@
 							<option value="${page.availableFilters.family}">${rc.getMessage("filter.family")}</option>
 							<option value="${page.availableFilters.taxonrank}">${rc.getMessage("filter.taxonrank")}</option>
 						</optgroup>
-						<optgroup label="${rc.getMessage("filter.group.dataset")}">
-							<option value="${page.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
-<<<<<<< HEAD
-=======
-							<!-- Removed filter until further definition about dataset names -->
-							<!--option value="${page.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option-->
->>>>>>> issue4
-							<option value="${page.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
-						</optgroup>
+						<!-- Removed filter until further definition about dataset>
+							<optgroup label="${rc.getMessage("filter.group.dataset")}">
+								<option value="${page.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
+								<option value="${page.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option>
+								<option value="${page.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
+							</optgroup>
+						 -->
 						<optgroup label="${rc.getMessage("filter.group.specimen")}">
-							<option value="${page.availableFilters.collectioncode}">${rc.getMessage("filter.collectioncode")}</option>
-							<option value="${page.availableFilters.catalognumber}">${rc.getMessage("filter.catalognumber")}</option>
+							<option value="${page.availableFilters.hastypestatus}">${rc.getMessage("filter.hastypestatus")}</option>
 							<option value="${page.availableFilters.recordedby}">${rc.getMessage("filter.recordedby")}</option>
-							<option value="${page.availableFilters.recordnumber}">${rc.getMessage("filter.recordnumber")}</option>
+							<!-- Removed filter until further definition about how to add the "add" button>
+								<option value="${page.availableFilters.collectioncode}">${rc.getMessage("filter.collectioncode")}</option>
+								<option value="${page.availableFilters.catalognumber}">${rc.getMessage("filter.catalognumber")}</option>
+								<option value="${page.availableFilters.recordnumber}">${rc.getMessage("filter.recordnumber")}</option>
+							-->
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.date")}">
 							<option value="${page.availableFilters.daterange}">${rc.getMessage("filter.daterange")}</option>
@@ -60,13 +61,14 @@
 							<option value="${page.availableFilters.stateprovince}">${rc.getMessage("filter.stateprovince")}</option>
 							<option value="${page.availableFilters.county}">${rc.getMessage("filter.county")}</option>
 							<option value="${page.availableFilters.municipality}">${rc.getMessage("filter.municipality")}</option>
+							<!-- Removed filter until further definition about how to add the "add" button>
 							<option value="${page.availableFilters.locality}">${rc.getMessage("filter.locality")}</option>
+							-->
 							<option value="${page.availableFilters.altituderange}">${rc.getMessage("filter.altituderange")}</option>
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.extra")}">
 							<option value="${page.availableFilters.hascoordinates}">${rc.getMessage("filter.hascoordinates")}</option>
 							<option value="${page.availableFilters.hasmedia}">${rc.getMessage("filter.hasmedia")}</option>
-							<option value="${page.availableFilters.hastypestatus}">${rc.getMessage("filter.hastypestatus")}</option>
 						</optgroup>
 					</select>
 				</div>
@@ -108,7 +110,9 @@
 <!-- Partial match -->
 <script type="text/template" id="filter_template_partial_match">
 <p id="partial_match" class="clear_fix">
-<!-- button type="button">${rc.getMessage("control.search.button.add")}</button --> ${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span id="partial_match_value"></span>
+<!-- Removed the "Filter contains" text:
+${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span id="partial_match_value"></span>
+-->
 </p>
 </script>
 
@@ -162,14 +166,14 @@
 		<span id="date_start">
 		<label for="date_start_y" class="label_single">${rc.getMessage("control.search.date.singledate")}</label>
 		<label for="date_start_y" class="label_range hidden">${rc.getMessage("control.search.date.startdate")}</label>
-			<input id="date_start_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/>
+			<input id="date_start_d" class="validationDay" type="text" maxlength="2" placeholder="dd"/>	
 			<input id="date_start_m" class="validationMonth" type="text" maxlength="2" placeholder="mm"/>
-			<input id="date_start_d" class="validationDay" type="text" maxlength="2" placeholder="dd"/> 
+			<input id="date_start_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/> 
 		</span>
 		<span id="date_end"><label for="date_end_y">${rc.getMessage("control.search.date.enddate")}</label>
-			<input id="date_end_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/>
-			<input id="date_end_m" class="validationMonth" type="text" maxlength="2" placeholder="mm"/>
 			<input id="date_end_d" class="validationDay" type="text" maxlength="2" placeholder="dd"/>
+			<input id="date_end_m" class="validationMonth" type="text" maxlength="2" placeholder="mm"/>
+			<input id="date_end_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/>
 		</span>
 	</p>
 	<p class="clear_fix"><button type="button">${rc.getMessage("control.search.button.add")}</button>
