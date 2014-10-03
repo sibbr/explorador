@@ -1,5 +1,7 @@
 package net.canadensys.dataportal.occurrence;
 
+import java.util.List;
+
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
 import net.canadensys.dataportal.occurrence.model.ResourceModel;
@@ -63,4 +65,6 @@ public interface OccurrenceService {
 	 * @return
 	 */
 	public ResourceModel loadResourceModel(String sourcefileid);
+	
+	public List<ResourceModel> loadResources();
 }

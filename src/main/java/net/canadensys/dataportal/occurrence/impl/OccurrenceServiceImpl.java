@@ -88,4 +88,10 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	public ResourceModel loadResourceModel(String sourcefileid) {
 		return resourceDAO.load(sourcefileid);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ResourceModel> loadResources() {
+		return resourceDAO.loadResources();
+	}
 }

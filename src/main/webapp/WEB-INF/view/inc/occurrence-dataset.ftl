@@ -4,7 +4,7 @@
    <h1>${page.information.getResource_name()!}</h1>
    <h2>Information:</h2>
    <#if page.information.getResource_logo_url()?has_content>
-   <a href="${page.information.getResource_logo_url()}" target="_blank" style="float:right;">
+   <a href="${page.information.getResource_logo_url()}" target="_blank" style="float: right;">
    	 <img src="${page.information.getResource_logo_url()}">
    </a></br>
    </#if>
@@ -15,7 +15,7 @@
 	   <b>Title:</b> ${page.information.getTitle()!}</br>
    </#if>   
    <#if page.information.getResource_uuid()?has_content>
-   <b>UUID:</b> <a href="${page.information.getResource_uuid()}" target="_blank">${page.information.getResource_uuid()}</a></br>
+   <b>UUID:</b> <a href="http://www.gbif.org/dataset/${page.information.getResource_uuid()}" target="_blank">${page.information.getResource_uuid()}</a></br>
    </#if>   
    <#if page.information.getCollection_identifier()?has_content>
 	   <b>Collection identifier:</b> ${page.information.getCollection_identifier()!}</br>
