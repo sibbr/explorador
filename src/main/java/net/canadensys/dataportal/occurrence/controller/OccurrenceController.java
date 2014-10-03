@@ -84,17 +84,11 @@ public class OccurrenceController {
 		Set<ResourceContactModel> contacts = resourceInformation.getContacts();
 		ResourceContactModel contact = null;
 		if (contacts != null) {
-			LOGGER.error("*** Number of contacts: " + contacts.size());
 			for (ResourceContactModel rcm : contacts) {
 				if (rcm.getContact_type().equalsIgnoreCase("contact")) {
 					contact = rcm;
 					break;
 				}
-			}
-			if (contact != null) {
-				LOGGER.error("*** Contact information: " + contact.getEmail());
-			} else {
-				LOGGER.error("*** NULL CONTACT!");
 			}
 		}
 		if (!occModel.equals(null)) {
