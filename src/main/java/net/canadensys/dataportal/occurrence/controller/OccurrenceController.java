@@ -62,9 +62,15 @@ public class OccurrenceController {
 	private static final String IPT_ARCHIVE_PATTERN = "/archive.do?r=";
 	private static final String IPT_RESOURCE_PATTERN = "/resource.do?r=";
 
+	// Occurrence view tags
+	private static final String VIEW_PARAM = "view";
+	private static final String ORIGINAL_VIEW = "original";
+	private static final String NAME_VIEW = "name";
+	private static final String CONTACT_VIEW = "contact";
+
 	@Autowired
 	private OccurrenceService occurrenceService;
-		
+
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
@@ -109,22 +115,36 @@ public class OccurrenceController {
 		// Set common stuff
 		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id, appConfig, modelRoot);
 
-		// Add BHL data related to the taxon:
-		if (occModel != null) {
-			String scientificName = occModel.getScientificname().replace(' ', '+');
-			// When register has no scientificName, use Genus:
-			if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
-				String genus = occModel.getGenus().replace(' ', '+');
-				modelRoot.put("occBHL", new BHLResponse(genus).getResults());
-				modelRoot.put("occEOL", new EOLResponse(genus).getResults());
+		// Load objects depending on the view and forward to the proper view:
+		String view = request.getParameter(VIEW_PARAM);
+		if (view != null) {
+			if (view.equalsIgnoreCase(ORIGINAL_VIEW)) {
+				return new ModelAndView("occurrence-original", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 			}
-			// Defaults to use scientific name:
-			else {
-				modelRoot.put("occBHL", new BHLResponse(scientificName).getResults());
-				modelRoot.put("occEOL", new EOLResponse(scientificName).getResults());
+			else if (view.equalsIgnoreCase(NAME_VIEW)) {
+				// Add BHL data related to the taxon:
+				if (occModel != null) {
+					String scientificName = occModel.getScientificname().replace(' ', '+');
+					// When register has no scientificName, use Genus:
+					if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
+						String genus = occModel.getGenus().replace(' ', '+');
+						modelRoot.put("occBHL", new BHLResponse(genus).getResults());
+						modelRoot.put("occEOL", new EOLResponse(genus).getResults());
+					}
+					// Defaults to use scientific name:
+					else {
+						modelRoot.put("occBHL", new BHLResponse(scientificName).getResults());
+						modelRoot.put("occEOL", new EOLResponse(scientificName).getResults());
+					}
+				}
+				return new ModelAndView("occurrence-name", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(CONTACT_VIEW)) {
+				return new ModelAndView("occurrence-contact", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 			}
 		}
-		return new ModelAndView("occurrence", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		// Defaults to interpreted view
+		return new ModelAndView("occurrence-interpreted", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**

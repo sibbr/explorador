@@ -34,7 +34,7 @@
 	         </tr>
 	      </tbody>
 	   </table>
-	   <h2>Send a message to the publisher about: </h2>
+	   <h2>${rc.getMessage("resourcecontact.sendamessage")}</h2>
 	   <form method="POST" id="sendmailform" name="sendmailform">
 	      ${rc.getMessage("resourcecontact.name")}: <input type="text" name="name" style="width: 45%;"/></br>
 	      ${rc.getMessage("resourcecontact.email")}: <input type="text" name="email" style="width: 45%;"/></br>

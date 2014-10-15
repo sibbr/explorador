@@ -8,65 +8,8 @@
       .boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;}
       .round {background-color: #fff!important;border: none!important;}
    </style>
-   <!-- INFO TAB AND JS SHOW HIDE CONTENT-->  
-   <script>
-      $(function(){
-      	$('#tabs li a').click(function(e){
-      
-      		$('#tabs li, #content_tab .current').removeClass('current').removeClass('fadeInLeft');
-      		$(this).parent().addClass('current');
-      		var currentTab = $(this).attr('href');
-      		$(currentTab).addClass('current fadeInLeft');
-      		e.preventDefault();
-      	});
-      });
-      
-      $(document).ready(function () {
-        $("span.question").hover(function () {
-          $(this).append('<div class="tooltip"><i>${rc.getMessage("occpage.heather.desc.normal")}</i></div>');
-        }, function () {
-          $("div.tooltip").remove();
-        });
-      });
-      
-      $(document).ready(function () {
-        $("span.question2").hover(function () {
-          $(this).append('<div class="tooltip2"><i>${rc.getMessage("occpage.heather.desc.dwc")}</i></div>');
-        }, function () {
-          $("div.tooltip2").remove();
-        });
-      });
-      $(document).ready(function(){
-       
-          $(".bhl").hide();
-      	$(".bhl_hide").show();
-       
-          $('.bhl_hide').click(function(){
-          $(".bhl").slideToggle();
-      $(".eol").hide();
-      $(".colif").hide();
-          });
-      	
-      	$(".eol").hide();
-      	$(".eol_hide").show();
-       
-          $('.eol_hide').click(function(){
-          $(".eol").slideToggle();
-      $(".bhl").hide();
-      $(".colif").hide();
-          });
-      	
-      	$(".colif").hide();
-      	$(".colif_hide").show();
-       
-          $('.colif_hide').click(function(){
-          $(".colif").slideToggle();
-          $(".bhl").hide();
-      $(".eol").hide();
-          });
-       
-      });
-   </script>
+   <!-- INFO TAB AND JS SHOW HIDE CONTENT-->
+   <@jsAsset fileName="names" version=page.currentVersion! useMinified=page.useMinified/>
 </head>
 <a id="main-content"></a>
 <div id="body">
@@ -76,14 +19,14 @@
       <!-- CONTENT TAB -->
       <div id="tabwrap">
          <ul id="tabs">
-            <li class="current"><a href="#normal">${rc.getMessage("occpage.header.button.normal")} <span class="question">!</span></a></li>
-            <li><a href="#dwctab">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">!</span></a></li>
-            <li><a href="#name">${rc.getMessage("occpage.other.information")}</a></li>
-            <li><a href="#contact">${rc.getMessage("occpage.menu.datasetcontact")}</a></li>
+            <li class="current"><a href="?view=interpreted">${rc.getMessage("occpage.header.button.normal")} <span class="question">?</span></a></li>
+            <li><a href="?view=original">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">?</span></a></li>
+            <li><a href="?view=name">${rc.getMessage("occpage.other.information")}</a></li>
+            <li><a href="?view=contact">${rc.getMessage("occpage.menu.datasetcontact")}</a></li>
          </ul>
          <div id="content_tab" class="boxcontent">
             <!-- NORMAL TAB-->
-            <div id="normal" class="current">
+            <div id="interpreted" class="current">
                <!-- Taxa information -->
                <#if page.occModel.hastypestatus?? && page.occModel.hastypestatus>
                <h2>${rc.getMessage("occpage.group.typestatus")}</h2>
@@ -341,34 +284,12 @@
                </div>
                </#if>
             </div>
-            <!-- END NORMAL TAB-->
-            
-            <!-- DWC TAB-->
-            <div id="dwctab">            
-               <#include "inc/occurrence-dwc.ftl">
-            </div>
-            <!-- END DWC TAB-->
-            
+            <!-- ORIGINAL TAB-->
+            <div id="original"></div>
             <!-- NAME TAB -->
-            <div id="name">
-               <ul>
-                  <li><a href="#" class="bhl_hide">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
-                  <li><a href="#" class="eol_hide">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
-               </ul>
-               <!-- BHL PAGE-->
-               <#include "inc/occurrence-bhl.ftl">
-               <!-- END BHL PAGE-->		
-               <!-- EOL PAGE-->
-               <#include "inc/occurrence-eol.ftl">              
-               <!-- END EOL PAGE-->
-            </div>
-            <!-- END NAME TAB-->
-	        
-            <div id="contact">
-	            <!-- CONTACT TAB -->
-	            <#include "inc/resource-contact.ftl">             
-	            <!-- END CONTACT TAB -->
-	        </div>
+            <div id="name"></div>
+	        <!-- CONTACT TAB -->
+            <div id="contact"></div>
          </div>
       </div>
       <!-- END TAB content_tab -->	
