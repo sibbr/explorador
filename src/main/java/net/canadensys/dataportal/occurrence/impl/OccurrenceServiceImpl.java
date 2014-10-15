@@ -94,4 +94,15 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	public List<ResourceModel> loadResources() {
 		return resourceDAO.loadResources();
 	}
+	
+	/**
+	 * ResourceModel will be cached after calling this method.
+	 * Those models are assumed to be 'almost static' so the current cache invalidation is handled by CacheInvalidationScheduled.
+	 * This could potentially cause an issue if a ResourceModel is updated and no harvest are achieved.
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public ResourceModel loadResourceModelByAutoId(String auto_id) {
+		return resourceDAO.loadByAutoId(auto_id);
+	}
 }

@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +64,7 @@ public class OccurrenceController {
 
 	@Autowired
 	private OccurrenceService occurrenceService;
-	
+		
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
@@ -91,13 +90,18 @@ public class OccurrenceController {
 					break;
 				}
 			}
-		}	
+		}
+		// Get current time to display in citation:
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date date = new Date(System.currentTimeMillis());
 		if (!occModel.equals(null)) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel", occModel.getRawModel());
 			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));
+			modelRoot.put("resource", resource);
 			modelRoot.put("information", resourceInformation);
 			modelRoot.put("contact", contact);
+			modelRoot.put("currentTime", sdf.format(date));
 		}
 		else {
 			throw new ResourceNotFoundException();
@@ -187,28 +191,6 @@ public class OccurrenceController {
 		RedirectView rv = new RedirectView(occurrenceUrl);
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		return new ModelAndView(rv);
-	}
-
-	/**
-	 * Redirect this URL to a search on an IPT resource. We support this to have
-	 * a clean URL to an IPT resource.
-	 * 
-	 * @param iptResource
-	 * @return
-	 */
-	@RequestMapping(value = "/resources/{iptResource}", method = RequestMethod.GET)
-	@I18nTranslation(resourceName = "resource", translateFormat = "/resources/{}")
-	public ModelAndView handleIptResource(@PathVariable String iptResource, HttpServletRequest request) {
-		if (!occurrenceService.resourceExists(iptResource)) {
-			throw new ResourceNotFoundException();
-		}
-		Locale locale = RequestContextUtils.getLocale(request);
-		String searchUrl = I18nUrlBuilder.generateI18nResourcePath(locale.getLanguage(),
-				OccurrencePortalConfig.I18N_TRANSLATION_HANDLER.getTranslationFormat("search"), (String) null);
-		RedirectView rv = new RedirectView(request.getContextPath() + searchUrl + "?iptresource=" + iptResource);
-		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
-		ModelAndView mv = new ModelAndView(rv);
-		return mv;
 	}
 
 	/**
@@ -328,32 +310,5 @@ public class OccurrenceController {
 		RedirectView rv = new RedirectView(request.getContextPath());
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		return new ModelAndView(rv);
-	}
-	
-	/**
-	 * Display a list with pagination of all current available resources.
-	 * 
-	 */
-	@RequestMapping(value = "/datasets}", method = RequestMethod.GET)
-	@I18nTranslation(resourceName = "datasets", translateFormat = "/datasets")
-	public ModelAndView handleResources(HttpServletRequest request) {
-		System.out.println("Entered here!");
-		LOGGER.error("*** Entered handleResources <3!");
-		/**
-		List<ResourceModel> resources = occurrenceService.loadResources();
-		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		if (!resources.equals(null)) {
-			modelRoot.put("resources", resources);
-		}
-		else {
-			LOGGER.error("ResourceNotFoundException at DatasetController.handleResource()");
-			throw new ResourceNotFoundException();
-		}
-		// Set common stuff
-		ControllerHelper.setDatasetVariables(request, "dataset", null, appConfig, modelRoot);
-
-		return new ModelAndView("dataset", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-		*/
-		return null;
 	}
 }

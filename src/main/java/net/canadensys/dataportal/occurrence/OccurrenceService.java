@@ -67,4 +67,13 @@ public interface OccurrenceService {
 	public ResourceModel loadResourceModel(String sourcefileid);
 	
 	public List<ResourceModel> loadResources();
+	
+
+	/**
+	 * Load a ResourceModel based on the auto_id
+	 * 
+	 * @param sourcefileid
+	 * @return
+	 */
+	public ResourceModel loadResourceModelByAutoId(String auto_id);
 }

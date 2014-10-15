@@ -72,14 +72,13 @@
 <div id="body">
    <div id="content" class="clear_fix">
       <h1><i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})</h1>
-      <p class="details">${rc.getMessage("occpage.header.details")}: ${page.occModel.sourcefileid?if_exists}/${page.occModel.dwcaid?if_exists}</p>
+      <p class="details">${rc.getMessage("occpage.header.details")} <a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${page.resource.getId()}" target="_self">${page.information.getTitle()?if_exists}</a></p>
       <!-- CONTENT TAB -->
       <div id="tabwrap">
          <ul id="tabs">
             <li class="current"><a href="#normal">${rc.getMessage("occpage.header.button.normal")} <span class="question">!</span></a></li>
             <li><a href="#dwctab">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">!</span></a></li>
             <li><a href="#name">${rc.getMessage("occpage.other.information")}</a></li>
-            <li><a href="#dataset">${rc.getMessage("occpage.menu.dataset")}</a></li>
             <li><a href="#contact">${rc.getMessage("occpage.menu.datasetcontact")}</a></li>
          </ul>
          <div id="content_tab" class="boxcontent">
@@ -279,34 +278,51 @@
                      </tr>
                   </tbody>
                </table>
-               <!-- Dataset information -->
-               <h2>${rc.getMessage("occpage.group.dataset")}</h2>
+               <!-- Rights and citation -->
+               <h2>${rc.getMessage("occpage.group.rights")}</h2>
                <table class="occpage_group">
                   <tbody>
                      <tr>
-                        <th scope="row">${rc.getMessage("occ.institutioncode")}</th>
-                        <td><#if page.occModel.institutioncode?has_content>${page.occModel.institutioncode?if_exists}<#else>${rc.getMessage("occ.not.provided")}</#if></td>
-                     </tr>
-                     <tr>
-                        <th scope="row">${rc.getMessage("occ.datasetname")}</th>
-                        <td><#if page.occModel.datasetname?has_content>${page.occModel.datasetname!}<#elseif page.occViewModel.dataSourceName?has_content>${page.occViewModel.dataSourceName}<span class="remark">(${rc.getMessage("occpage.remark.interpretedfrom.dataset.metadata")})</span><#else>${rc.getMessage("occ.not.provided")}</#if></td>
-                     </tr>
-                     <tr>
-                        <th scope="row">${rc.getMessage("occ.rights")}</th>
-                        <td><#if page.occModel.rights?has_content>${page.occRawModel.rights?if_exists}<#else>${rc.getMessage("occ.not.provided")}</#if></td>
-                     </tr>
-                     <tr>
-                        <th scope="row">${rc.getMessage("occpage.sourcefile")}</th>
-                        <td>
-                           <#if page.occViewModel.dataSourcePageURL?has_content>
-                           <@hrefIfNotEmpty text=page.occModel.sourcefileid! link=page.occViewModel.dataSourcePageURL!/>
-                           <#else>${rc.getMessage("occ.not.provided")}
-                           </#if>
-                        </td>
-                     </tr>
-                  </tbody>
-               </table>
-               <!-- Image content-->
+	                     <th scope="row">${rc.getMessage("occpage.other.data.citation")}</th>
+	                     <td>
+	                     	<#if page.occModel.getBibliographiccitation()?has_content>
+	                     		${occModel.getBibliographiccitation()}
+	                     	<#else>
+	                     		${rc.getMessage("occ.not.provided.citation")}</br>
+	                     		<#if page.information.getCitation()?has_content>
+						    		${page.information.getCitation()!}
+							    <#else>
+									<#assign link = rc.getMessage("resourcepage.resource")>
+							    	<div style=" border: 1px solid #a8a7a5; border-radius: 5px; background-color: #D9ECE0; padding: 10px; margin: auto; text-align: center">
+								    	${page.information.getTitle()!}, ${page.information.getPublication_date()!}.</br>
+								    	${rc.getMessage("resourcepage.accessedon")} <a href="${rc.getContextPath()}/${link}/${page.resource.getId()}" target="_blank"> ${domainName}${rc.getContextPath()}/${link}/${page.resource.getId()} </a>, ${rc.getMessage("resourcepage.on")} ${page.currentTime}.
+								    </div>
+							    </#if>
+	                     	</#if>
+	                     </td>
+	                 </tr>
+	                 <tr>
+	                     <th scope="row">${rc.getMessage("occpage.other.data.rights")}</th>
+	                     <td>
+	                     	<#if page.occRawModel.getRights()?has_content>
+	                     		${occRawModel.getRights()}
+	                     	<#else>
+	                     		${rc.getMessage("occ.not.provided.rights")}</br>
+	                     		<#if page.information.getIntellectual_rights()?has_content>
+						    		${page.information.getIntellectual_rights()!}
+								<#else>
+									${rc.getMessage("occ.not.provided")}
+						    	</#if>
+	                     	</#if>
+	                     </td>
+	                 </tr>
+	                 <tr>
+	                     <th scope="row">${rc.getMessage("occpage.other.data.accessrights")}</th>
+	                     <td><#if page.occRawModel.getAccessrights()?has_content>${occRawModel.getAccessrights()}<#else>${rc.getMessage("occ.not.provided")}</#if></td>
+	                 </tr>
+	              </tbody>
+	           </table>      
+               <!-- Image content -->
                <#if page.occViewModel.imageList?has_content>
                <div id="occpage_image">
                   <#list page.occViewModel.imageList as currImg>
@@ -314,7 +330,7 @@
                   </#list>
                </div>
                </#if>
-               <!-- Media content-->
+               <!-- Media content -->
                <#if page.occViewModel.otherMediaList?has_content>
                <div id="occpage_media">
                   <#assign mediaNumber = 1>
@@ -347,12 +363,6 @@
                <!-- END EOL PAGE-->
             </div>
             <!-- END NAME TAB-->
-            
-            <div id="dataset">
-	            <!-- DATASET TAB -->
-	            <#include "inc/occurrence-dataset.ftl">             
-	            <!-- END DATASET TAB -->
-	        </div>
 	        
             <div id="contact">
 	            <!-- CONTACT TAB -->
