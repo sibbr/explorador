@@ -1,5 +1,6 @@
 <#ftl strip_whitespace=true>
 <#include "inc/functions.ftl">
+<#include "inc/paging.ftl">
 <#include "inc/global-functions.ftl">
 <head>
 <title>SiBBr - ${rc.getMessage("contact.header")}</title>
@@ -13,8 +14,8 @@
 			<thead>
 				<tr>
 					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.resourcename")}</th>
-					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.archiveurl")}</th>
 					<th class="sorttable_numerical" scope="col">${rc.getMessage("resourcespage.amountofrecords")}</th>
+					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.archiveurl")}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -22,12 +23,16 @@
 					<#list page.resources as resource>
 						<tr>
 							<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a></td>
-							<td><a href="${resource.getArchive_url()}" target="_blank">${resource.getResource_uuid()}</a></td>
-							<td>${rc.getMessage("resourcespage.notimplemented")}</td>
+							<td>${resource.getRecord_count()}</td>
+							<td><a href="${resource.getArchive_url()}" target="_blank">${rc.getMessage("resourcespage.download")}</a></td>
 						</tr>
 					</#list>
 				</#if>
 			</tbody>
-		</table>				
-	</div>
+		</table>
+	   	<#if ((page.totalResources!0) >= page.pageSize)>
+	   		<#assign p = (page.currentPage!1)?number>
+			<@pages 1..page.totalPages p />
+		</#if>
+   		</div>
 </div><#-- body -->

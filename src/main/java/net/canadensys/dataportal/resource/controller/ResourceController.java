@@ -35,11 +35,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class ResourceController {
 
 	// get log4j handler
-	private static final Logger LOGGER = Logger.getLogger(ResourceController.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(ResourceController.class);
 
 	@Autowired
 	private ResourceService resourceService;
-	
+
 	@Autowired
 	private OccurrenceService occurrenceService;
 
@@ -47,8 +48,16 @@ public class ResourceController {
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
 
+	// Define maximum number of records per page
+	private static final int pageSize = 20;
+
+	// Occurrence view tags
+	private static final String PAGE_PARAM = "page";
+	
+	private static final String PAGE_ONE = "1";
+
 	/**
-	 * Display a list with pagination of all current available resources.
+	 * Display a list of all current available resources with pagination support.
 	 * 
 	 */
 	@RequestMapping(value = "/resources", method = RequestMethod.GET)
@@ -56,44 +65,93 @@ public class ResourceController {
 	public ModelAndView handleResources(HttpServletRequest request) {
 		List<ResourceModel> resources = occurrenceService.loadResources();
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		if (!resources.equals(null)) {
-			modelRoot.put("resources", resources);
-		}
-		else {
+		String pageNumber = request.getParameter(PAGE_PARAM);
+		if (resources != null) {
+			List<ResourceModel> pageResources = null;
+			// Get total number of resources
+			int totalResources = resources.size();
+			// Provide the number of pages
+			int totalPages = (totalResources / pageSize) + 1;
+			modelRoot.put("totalResources", totalResources);
+			modelRoot.put("totalPages", totalPages);
+			modelRoot.put("pageSize", pageSize);
+			// A page number has been provided
+			if (pageNumber!=null) {
+				int page = Integer.parseInt(pageNumber);
+				modelRoot.put("currentPage", page);
+				// If the page is valid:
+				if (page > 0) {
+					/**
+					 * Logic to load the records to a given page Ex.: Page 4 →
+					 * Get From 61 to 80 → Shift interval on the index list is
+					 * from 60 final 79
+					 */
+					int shift = (page - 1) * pageSize;
+					// Avoid ouf of bounds by the upper limit:
+					if ((shift + pageSize) <= totalResources) {
+						pageResources = resources.subList(shift, (shift + pageSize));
+					} else {
+						pageResources = resources.subList(shift, (shift + (totalResources-shift) ));
+					}
+					modelRoot.put("resources", pageResources);
+				}
+			}
+			// No page provided, return first page
+			else {
+				modelRoot.put("currentPage", PAGE_ONE);
+				if (totalResources == pageSize) {
+					LOGGER.error("IF*** Total resources: " + totalResources);
+					pageResources = resources.subList(0,
+						pageSize - 1);
+					LOGGER.error("IF*** Page resources: " + pageResources.size());
+				} else {
+					pageResources = resources.subList(0,
+							totalResources);
+				}
+				modelRoot.put("resources", pageResources);
+			}
+		} else {
 			LOGGER.error("ResourceNotFoundException at DatasetController.handleResource()");
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setDatasetVariables(request, "resources", null, appConfig, modelRoot);
-
-		return new ModelAndView("resources", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		ControllerHelper.setDatasetVariables(request, "resources", null,
+				appConfig, modelRoot);
+		
+		return new ModelAndView("resources",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
-	
+
 	/**
-	 * Display a page with information about the current resource given its auto_id value.
+	 * Display a page with information about the current resource given its
+	 * auto_id value.
 	 * 
 	 */
 	@RequestMapping(value = "/resource/{auto_id}", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "resource", translateFormat = "/resource/{}")
-	public ModelAndView handleResource(@PathVariable String auto_id, HttpServletRequest request) {
+	public ModelAndView handleResource(@PathVariable String auto_id,
+			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		ResourceModel resource = occurrenceService.loadResourceModelByAutoId(auto_id);
-		ResourceInformationModel information = occurrenceService.loadResourceInformationModel(resource.getResource_uuid());
+		ResourceModel resource = occurrenceService
+				.loadResourceModelByAutoId(auto_id);
+		ResourceInformationModel information = occurrenceService
+				.loadResourceInformationModel(resource.getResource_uuid());
 		// Get current time to display in citation:
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date date = new Date(System.currentTimeMillis());
 		if (!resource.equals(null) && !information.equals(null)) {
 			modelRoot.put("resource", resource);
 			modelRoot.put("information", information);
-			modelRoot.put("currentTime", sdf.format(date)); 
-		}
-		else {
+			modelRoot.put("currentTime", sdf.format(date));
+		} else {
 			LOGGER.error("ResourceNotFoundException at ResourceController.handleResource()");
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setDatasetVariables(request, "resource", auto_id, appConfig, modelRoot);
+		ControllerHelper.setDatasetVariables(request, "resource", auto_id,
+				appConfig, modelRoot);
 
-		return new ModelAndView("resource", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("resource",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 }
