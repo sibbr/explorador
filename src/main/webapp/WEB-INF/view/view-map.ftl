@@ -55,7 +55,7 @@ $(function() {
    	tilerPort : ${tilerPort},
    	mapQuery : "${page.embeddedMapQuery}",
     mapCenter : [-16, -49],
-    mapZoom : 3
+    mapZoom : 4
   });
   <@controlJavaScriptInit/>
 });

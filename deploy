@@ -45,11 +45,11 @@ echo "*** Tomcat directory set to: $TOMCAT_DIR"
 echo "*** Cleaning old data from tomcat ***"
 echo ""
 rm -r $TOMCAT_DIR/work/Catalina/localhost/*
-rm -r $TOMCAT_DIR/webapps/portal-biodiversidade/
-rm $TOMCAT_DIR/webapps/portal-biodiversidade.war
+rm -r $TOMCAT_DIR/webapps/explorador/
+rm $TOMCAT_DIR/webapps/explorador.war
 echo ""
 echo "*** Moving recently built portal.war file to tomcat webapps directory ***"
-mv ./build/libs/portal-biodiversidade.war $TOMCAT_DIR/webapps/portal-biodiversidade.war
+mv ./build/libs/portal-biodiversidade.war $TOMCAT_DIR/webapps/explorador.war
 echo "*** Starting tomcat:"
 sh $TOMCAT_DIR/bin/startup.sh
 echo "*** Done. Server must me up in a few seconds."

@@ -5,6 +5,8 @@
 <head>
 <title>SiBBr - ${rc.getMessage("contact.header")}</title>
 <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
+<@jsLibAsset libName="sorttable.js"/>
+
 </head>
 <div id="body">
 	<a id="main-content"></a>
@@ -21,11 +23,13 @@
 			<tbody>
 				<#if page.resources?has_content>
 					<#list page.resources as resource>
-						<tr>
-							<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a></td>
-							<td>${resource.getRecord_count()}</td>
-							<td><a href="${resource.getArchive_url()}" target="_blank">${rc.getMessage("resourcespage.download")}</a></td>
-						</tr>
+						<#if (resource.getRecord_count()>0)>
+							<tr>
+								<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a></td>
+								<td>${resource.getRecord_count()}</td>
+								<td><a href="${resource.getArchive_url()}" target="_blank">${rc.getMessage("resourcespage.download")}</a></td>
+							</tr>
+						</#if>	
 					</#list>
 				</#if>
 			</tbody>

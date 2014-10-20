@@ -1,5 +1,6 @@
 <#include "inc/functions.ftl">
 <#include "inc/global-functions.ftl">
+<#include "inc/tip.ftl">
 <head>
    <title>${rc.getMessage("page.search.title")}</title>
    <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
@@ -8,8 +9,6 @@
       .boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;}
       .round {background-color: #fff!important;border: none!important;}
    </style>
-   <!-- INFO TAB AND JS SHOW HIDE CONTENT-->  
-   <@jsAsset fileName="names" version=page.currentVersion! useMinified=page.useMinified/>
 </head>
 <a id="main-content"></a>
 <div id="body">
@@ -19,8 +18,8 @@
       <!-- CONTENT TAB -->
       <div id="tabwrap">
          <ul id="tabs">
-            <li><a href="?view=interpreted">${rc.getMessage("occpage.header.button.normal")} <span class="question">!</span></a></li>
-            <li><a href="?view=original">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">!</span></a></li>
+            <li><a href="?view=interpreted">${rc.getMessage("occpage.header.button.normal")} <span class="question">${rc.getMessage("occpage.information.icon")}</span></a></li>
+            <li><a href="?view=original">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">${rc.getMessage("occpage.information.icon")}</span></a></li>
             <li class="current"><a href="?view=name">${rc.getMessage("occpage.other.information")}</a></li>
             <li><a href="?view=contact">${rc.getMessage("occpage.menu.datasetcontact")}</a></li>
          </ul>
@@ -32,15 +31,9 @@
             <!-- NAME TAB -->
             <div id="name" class="current">
                <ul>
-                  <li><a href="#" class="bhl_hide">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
-                  <li><a href="#" class="eol_hide">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
+                  <li><a href="?view=bhl">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
+                  <li><a href="?view=eol">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
                </ul>
-               <!-- BHL PAGE-->
-               <#include "inc/occurrence-bhl.ftl">
-               <!-- END BHL PAGE-->		
-               <!-- EOL PAGE-->
-               <#include "inc/occurrence-eol.ftl">              
-               <!-- END EOL PAGE-->
             </div>
 	        <!-- CONTACT TAB -->    
             <div id="contact"></div>

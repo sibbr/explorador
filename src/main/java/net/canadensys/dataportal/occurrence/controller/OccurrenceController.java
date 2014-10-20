@@ -66,6 +66,8 @@ public class OccurrenceController {
 	private static final String VIEW_PARAM = "view";
 	private static final String ORIGINAL_VIEW = "original";
 	private static final String NAME_VIEW = "name";
+	private static final String BHL_VIEW = "bhl";
+	private static final String EOL_VIEW = "eol";
 	private static final String CONTACT_VIEW = "contact";
 
 	@Autowired
@@ -122,6 +124,9 @@ public class OccurrenceController {
 				return new ModelAndView("occurrence-original", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 			}
 			else if (view.equalsIgnoreCase(NAME_VIEW)) {
+				return new ModelAndView("occurrence-name", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(BHL_VIEW)) {
 				// Add BHL data related to the taxon:
 				if (occModel != null) {
 					String scientificName = occModel.getScientificname().replace(' ', '+');
@@ -129,15 +134,29 @@ public class OccurrenceController {
 					if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
 						String genus = occModel.getGenus().replace(' ', '+');
 						modelRoot.put("occBHL", new BHLResponse(genus).getResults());
-						modelRoot.put("occEOL", new EOLResponse(genus).getResults());
 					}
 					// Defaults to use scientific name:
 					else {
 						modelRoot.put("occBHL", new BHLResponse(scientificName).getResults());
+					}
+				}
+				return new ModelAndView("occurrence-bhl", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(EOL_VIEW)) {
+				// Add BHL data related to the taxon:
+				if (occModel != null) {
+					String scientificName = occModel.getScientificname().replace(' ', '+');
+					// When register has no scientificName, use Genus:
+					if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
+						String genus = occModel.getGenus().replace(' ', '+');
+						modelRoot.put("occEOL", new EOLResponse(genus).getResults());
+					}
+					// Defaults to use scientific name:
+					else {
 						modelRoot.put("occEOL", new EOLResponse(scientificName).getResults());
 					}
 				}
-				return new ModelAndView("occurrence-name", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+				return new ModelAndView("occurrence-eol", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 			}
 			else if (view.equalsIgnoreCase(CONTACT_VIEW)) {
 				return new ModelAndView("occurrence-contact", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);

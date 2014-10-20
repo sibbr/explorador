@@ -12,7 +12,7 @@
 
 	<appender name="harvesterLogFile" class="org.apache.log4j.RollingFileAppender">
 		<param name="file"
-			value="/tmp/portal-biodiversidade.log" />
+			value="/tmp/explorador.log" />
 		<param name="Threshold" value="ERROR" />
 		<param name="MaxFileSize" value="1MB" />
 		<!-- Keep one backup file -->
