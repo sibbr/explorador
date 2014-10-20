@@ -1,3 +1,4 @@
+<title>${rc.getMessage("resourcespage.title")}</title>
 <div id="body">
 	<div id="content" class="clear_fix no_side_bar">
 		<#if page.resource?has_content>

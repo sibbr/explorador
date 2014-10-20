@@ -3,7 +3,7 @@
 <#include "inc/paging.ftl">
 <#include "inc/global-functions.ftl">
 <head>
-<title>SiBBr - ${rc.getMessage("contact.header")}</title>
+<title>${rc.getMessage("resourcespage.title")}</title>
 <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
 <@jsLibAsset libName="sorttable.js"/>
 

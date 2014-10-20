@@ -2,7 +2,7 @@
 <#include "inc/global-functions.ftl">
 <#include "inc/tip.ftl">
 <head>
-   <title>${rc.getMessage("page.search.title")}</title>
+   <title>${rc.getMessage("occpage.title")}</title>
    <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
    <style>
