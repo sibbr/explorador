@@ -3,7 +3,7 @@ ext {
 }
 
 dependencies {
-	compile("br.gov.sibbr:portal-web-theme:${webThemeVersion}@war")
+	compile("br.gov.sibbr:web-theme:${webThemeVersion}@war")
 }
 
 //include our layout.ftl to the root of 'decorators' as defined in sitemesh3.xml
