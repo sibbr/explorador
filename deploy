@@ -56,6 +56,7 @@ mv ./build/libs/$PACKAGE_NAME $TOMCAT_DIR/webapps/$PACKAGE_NAME
 echo "*** Starting tomcat:"
 sh $TOMCAT_DIR/bin/startup.sh
 echo "*** Done. Server must me up in a few seconds."
-echo "*** Flushing Redis."
-redis-cli FLUSHALL
 
+#Uncomment only if running redis for map points and tiler server locally
+#echo "*** Flushing Redis."
+#redis-cli FLUSHALL

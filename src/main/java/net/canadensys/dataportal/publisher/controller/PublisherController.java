@@ -1,9 +1,9 @@
 package net.canadensys.dataportal.publisher.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,6 +63,9 @@ public class PublisherController {
 	@I18nTranslation(resourceName = "publishers", translateFormat = "/publishers")
 	public ModelAndView handlePublishers(HttpServletRequest request) {
 		List<PublisherInformationModel> publishers = publisherService.loadPublishers();
+		if (publishers.size()==0) {
+			LOGGER.error(publishers.toString());
+		}
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (publishers != null) {
@@ -75,24 +78,36 @@ public class PublisherController {
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
 			// A page number has been provided
-			if (pageNumber!=null) {
+			if (pageNumber != null) {
 				int page = Integer.parseInt(pageNumber);
 				modelRoot.put("currentPage", page);
 				// If the page is valid:
 				if (page > 0) {
-					/**
-					 * Logic to load the records to a given page Ex.: Page 4 →
-					 * Get From 61 to 80 → Shift interval on the index list is
-					 * from 60 final 79
-					 */
-					int shift = (page - 1) * pageSize;
-					// Avoid ouf of bounds by the upper limit:
-					if ((shift + pageSize) <= totalPublishers) {
-						pagePublishers = publishers.subList(shift, (shift + pageSize));
+					if (page > totalPages) {
+						modelRoot.put("currentPage", PAGE_ONE);
+						if (totalPublishers == pageSize) {
+							pagePublishers = publishers.subList(0,
+								pageSize - 1);
+						} else {
+							pagePublishers = publishers.subList(0,
+								totalPublishers);
+						}
+						modelRoot.put("Publishers", pagePublishers);
 					} else {
-						pagePublishers = publishers.subList(shift, (shift + (totalPublishers-shift) ));
+						/**
+						 * Logic to load the records to a given page Ex.: Page 4 →
+						 * Get From 61 to 80 → Shift interval on the index list is
+						 * from 60 final 79
+						 */
+						int shift = (page - 1) * pageSize;
+						// Avoid ouf of bounds by the upper limit:
+						if ((shift + pageSize) <= totalPublishers) {
+							pagePublishers = publishers.subList(shift, (shift + pageSize));
+						} else {
+							pagePublishers = publishers.subList(shift, (shift + (totalPublishers-shift) ));
+						}
+						modelRoot.put("publishers", pagePublishers);
 					}
-					modelRoot.put("publishers", pagePublishers);
 				}
 			}
 			// No page provided, return first page
@@ -107,8 +122,6 @@ public class PublisherController {
 				}
 				modelRoot.put("publishers", pagePublishers);
 			}
-		} else {
-			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
 		ControllerHelper.setDatasetVariables(request, "publishers", null,
@@ -128,11 +141,12 @@ public class PublisherController {
 	public ModelAndView handlePublisher(@PathVariable String auto_id,
 			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		PublisherInformationModel publisher = publisherService
-				.loadPublisher(auto_id);
-		if (!publisher.equals(null)) {
+		PublisherInformationModel publisher = publisherService.loadPublisher(auto_id);
+//		PublisherInformationModel publisher = mockPublisher();
+		if (publisher != null) {
 			modelRoot.put("publisher", publisher);
 		} else {
+			LOGGER.error("*** Publisher not found!");
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
@@ -141,5 +155,24 @@ public class PublisherController {
 
 		return new ModelAndView("publisher",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+	}
+	
+	public PublisherInformationModel mockPublisher() {
+		PublisherInformationModel p = new PublisherInformationModel();
+		int random = new Random().nextInt();
+		p.setAuto_id(random);
+		p.setName("BLa bla foo foo" + random);
+		p.setDescription("This is the foo description" + random);
+		p.setAddress("My address no 10001" + random);
+		p.setAdministrative_area("BA");
+		p.setCity("Salvador");
+		p.setDecimallatitude(20.0 + random);
+		p.setDecimallongitude(-20.0 + random);
+		p.setEmail("email" + random + "@gmail.com");
+		p.setPhone("55 44 32167" + random);
+		p.setPostal_code(random + "-333");
+		p.setLogo_url("http://ecx.images-amazon.com/images/I/41FeeKSU5UL.jpg");
+		p.setRecord_count(56789);
+		return p;
 	}
 }

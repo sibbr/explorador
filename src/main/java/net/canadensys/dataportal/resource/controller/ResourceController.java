@@ -64,6 +64,7 @@ public class ResourceController {
 	@I18nTranslation(resourceName = "resources", translateFormat = "/resources")
 	public ModelAndView handleResources(HttpServletRequest request) {
 		List<ResourceModel> resources = occurrenceService.loadResources();
+		ResourceModel temp = new ResourceModel();
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (resources != null) {
@@ -81,39 +82,47 @@ public class ResourceController {
 				modelRoot.put("currentPage", page);
 				// If the page is valid:
 				if (page > 0) {
-					/**
-					 * Logic to load the records to a given page Ex.: Page 4 →
-					 * Get From 61 to 80 → Shift interval on the index list is
-					 * from 60 final 79
-					 */
-					int shift = (page - 1) * pageSize;
-					// Avoid ouf of bounds by the upper limit:
-					if ((shift + pageSize) <= totalResources) {
-						pageResources = resources.subList(shift, (shift + pageSize));
+					// Treat page top limit:
+					if (page > totalPages) {
+						modelRoot.put("currentPage", PAGE_ONE);
+						if (totalResources == pageSize) {
+							pageResources = resources.subList(0,
+								pageSize - 1);
+						} else {
+							pageResources = resources.subList(0,
+								totalResources);
+						}
+						modelRoot.put("resources", pageResources);
 					} else {
-						pageResources = resources.subList(shift, (shift + (totalResources-shift) ));
+						/**
+						 * Logic to load the records to a given page Ex.: Page 4 →
+						 * Get From 61 to 80 → Shift interval on the index list is
+						 * from 60 final 79
+						 */
+						int shift = (page - 1) * pageSize;
+						// Avoid ouf of bounds by the upper limit:
+						if ((shift + pageSize) <= totalResources) {
+							pageResources = resources.subList(shift, (shift + pageSize));
+						} else {
+							pageResources = resources.subList(shift, (shift + (totalResources-shift) ));
+						}
+						modelRoot.put("resources", pageResources);
 					}
-					modelRoot.put("resources", pageResources);
 				}
 			}
 			// No page provided, return first page
 			else {
 				modelRoot.put("currentPage", PAGE_ONE);
 				if (totalResources == pageSize) {
-					LOGGER.error("IF*** Total resources: " + totalResources);
 					pageResources = resources.subList(0,
 						pageSize - 1);
-					LOGGER.error("IF*** Page resources: " + pageResources.size());
 				} else {
 					pageResources = resources.subList(0,
-							totalResources);
+						totalResources);
 				}
 				modelRoot.put("resources", pageResources);
 			}
-		} else {
-			LOGGER.error("ResourceNotFoundException at DatasetController.handleResource()");
-			throw new ResourceNotFoundException();
-		}
+		} 
 		// Set common stuff
 		ControllerHelper.setDatasetVariables(request, "resources", null,
 				appConfig, modelRoot);

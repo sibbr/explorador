@@ -13,7 +13,7 @@ import net.canadensys.dataportal.occurrence.model.PublisherInformationModel;
 public interface PublisherService {
 
 	/**
-	 * Load all Publishers on the database
+	 * Load all publishers available on the database
 	 * 
 	 * @param sourcefileid
 	 * @return

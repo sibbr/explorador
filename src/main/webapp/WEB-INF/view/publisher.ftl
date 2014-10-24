@@ -3,69 +3,42 @@
 	<div id="content" class="clear_fix no_side_bar">
 		<#if page.publisher?has_content>
 			<h1>${page.publisher.getName()!}</h1>
-			<#if page.information?has_content>
-				<h2>${rc.getMessage("publisherpage.information")}</h2>
-			    <#if page.information.getpublisher_logo_url()?has_content>
-			    	<a href="${page.information.getpublisher_logo_url()}" target="_blank" style="float: right;">
-						<img src="${page.information.getpublisher_logo_url()}">
+			<#if page.publisher?has_content>
+				<#assign info = page.publisher>
+				<h2>${rc.getMessage("publisherpage.information")} (${info.getRecord_count()} ${rc.getMessage("publisherpage.records")})</h2>
+			    <#if info.getLogo_url()?has_content>
+			    	<a href="${info.getLogo_url()}" target="_blank" style="float: right;">
+						<img src="${info.getLogo_url()}">
 				    </a>
 			    </#if>
-			    <#if page.information.getTitle()?has_content>
-				   <b>${rc.getMessage("publisherpage.title")}:</b> ${page.information.getTitle()!}</br>
-			    </#if>   
-			    <#if page.information.get_abstract()?has_content>
-			   		<b>${rc.getMessage("publisherpage.abstract")}:</b> ${page.information.get_abstract()!}</br>
+				<#if info.getName()?has_content>
+			    	${info.getName()}
 			    </#if>
-			    <#if page.information.getpublisher_uuid()?has_content>
-			   		<b>${rc.getMessage("publisherpage.uuid")}:</b>
-			   		<a href="http://www.gbif.org/dataset/${page.information.getpublisher_uuid()}" target="_blank">${page.information.getpublisher_uuid()}</a></br>
-			    </#if>   
-			    <#if page.information.getCollection_identifier()?has_content>
-				   <b>${rc.getMessage("publisherpage.collectionidentifier")}:</b> ${page.information.getCollection_identifier()!}</br>
+			    <#if info.getDescription()?has_content>
+				   <b>${rc.getMessage("publisherpage.description")}:</b> ${info.getDescription()}</br>
 			    </#if>
-			    <#if page.information.getParent_collection_identifier()?has_content>
-			   		<b>${rc.getMessage("publisherpage.parentcollectionidentifier")}:</b> ${page.information.getParent_collection_identifier()!}</br>
+			    <#if info.getHomepage()?has_content>
+				   <b>${rc.getMessage("publisherpage.homepage")}:</b> ${info.getHomepage()}</br>
+			    </#if>
+			    <h2>${rc.getMessage("publisherpage.contactinformation")}</h2>
+			    <#if info.getEmail()?has_content>
+			   		<b>${rc.getMessage("publisherpage.email")}:</b> ${info.getEmail()}</br>
 				</#if>
-			    <#if page.information.getCollection_name()?has_content>
-					<b>${rc.getMessage("publisherpage.collectionname")}:</b> ${page.information.getCollection_name()!}</br>
+			    <#if info.getPhone()?has_content>
+					<b>${rc.getMessage("publisherpage.phone")}:</b> ${info.getPhone()}</br>
 			   	</#if>
-			   	<#if page.information.getPublication_date()?has_content>
-					<b>${rc.getMessage("publisherpage.publicationdate")}:</b> ${page.information.getPublication_date()!}</br>
+			   	<#if info.getAddress()?has_content>
+					<b>${rc.getMessage("publisherpage.address")}:</b> ${info.getAddress()}</br>
 				</#if>
-				<#if page.information.getKeyword()?has_content>
-					<b>${rc.getMessage("publisherpage.keywords")}:</b> ${page.information.getKeyword()}</br>
+				<#if info.getCity()?has_content>
+					<b>${rc.getMessage("publisherpage.city")}:</b> ${info.getCity()}</br>
 				</#if>
-				<#if page.information.getKeyword_thesaurus()?has_content>
-				   <b>${rc.getMessage("publisherpage.keywordthesaurus")}:</b> ${page.information.getKeyword_thesaurus()}</br>
+				<#if info.getAdministrative_area()?has_content>
+				   <b>${rc.getMessage("publisherpage.department")}:</b> ${info.getAdministrative_area()}</br>
 			    </#if>
-			    <#if page.information.getAlternate_identifier()?has_content>
-			    <b>${rc.getMessage("publisherpage.alternateidentifier")}:</b> ${page.information.getAlternate_identifier()}
+		    	<#if info.getPostal_code()?has_content>
+			    	<b>${rc.getMessage("publisherpage.postalcode")}:</b> ${info.getPostal_code()}
 			    </#if>
-		    
-			    <h2>${rc.getMessage("publisherpage.licensingandrights")}</h2>
-			    <div style=" border: 1px solid #a8a7a5; border-radius: 5px; background-color: #D9ECE0; width: 80%; padding: 10px; margin: auto; text-align: center">
-			    	${rc.getMessage("publisherpage.license.description")}
-			    </div>
-			    </br>
-				<b>${rc.getMessage("publisherpage.intellectualrights")}:</b>
-			    <#if page.information.getIntellectual_rights()?has_content>
-			    	 ${page.information.getIntellectual_rights()!}
-				<#else>
-					${rc.getMessage("publisherpage.defaultintellectualrights")}
-			    </#if>
-			    </br>
-   			    <b>${rc.getMessage("publisherpage.citation")}:</b>
-				<#if page.information.getCitation()?has_content>
-		    		${page.information.getCitation()!}
-			    <#else>
-			    	<#assign link = rc.getMessage("publisherpage.publisher")> 
-			    	${rc.getMessage("publisherpage.defaultcitation")}:</br></br>
-			    	<div style=" border: 1px solid #a8a7a5; border-radius: 5px; background-color: #D9ECE0; width: 80%; padding: 10px; margin: auto; text-align: center">
-				    	${page.information.getTitle()!}, ${page.information.getPublication_date()!}.</br>
-				    	${rc.getMessage("publisherpage.accessedon")} <a href="${rc.getContextPath()}/${link}/${page.publisher.getId()}" target="_blank"> ${domainName}${rc.getContextPath()}/${link}/${page.publisher.getId()} </a>, ${rc.getMessage("publisherpage.on")} ${page.currentTime}.
-				    </div>	   	
-				</#if>
-				</br>
 			<#else>
 			<h2>Sorry, no information found about this dataset.</h2>
 			</#if>
