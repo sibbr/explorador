@@ -19,20 +19,19 @@
 				<tr>
 					<th class="sorttable_alpha" scope="col">${rc.getMessage("publisherspage.publishername")}</th>
 					<th class="sorttable_alpha" scope="col">${rc.getMessage("publisherspage.amountofrecords")}</th>
-					<th class="sorttable_numerical" scope="col">${rc.getMessage("publisherspage.logo")}</th>
+					<th class="sorttable_numerical" scope="col" style="float:right">${rc.getMessage("publisherspage.logo")}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<#if page.publishers?has_content>
-					<script>var markers[];</script>
 					<#list page.publishers as publisher>
-						<#if (publisher.getRecord_count()>0)>
+						<#if (publisher.getRecord_count()?has_content)>
 							<tr>
-								<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisher")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></td>
+								<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></td>
 								<td>${publisher.getRecord_count()}</td>
-								<td><img url='${publisher.getLogo_url()}'/></td>
+								<td><img src="${publisher.getLogo_url()}" style="height: 70px; float: right"></td>							
 							</tr>
-						</#if>	
+						</#if>
 					</#list>
 				</#if>
 			</tbody>
@@ -41,16 +40,22 @@
 		<div id="map" style="width: 100%; height: 480px"></div>
 	    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 	    <script>
-	    	var map = L.map('map').setView([-16.0, -49.0], 4);
-	        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+	    	var map = L.map('map').setView([-16.0, -50.0], 4);
+	    	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 	        	maxZoom: 18,
 	            id: 'examples.map-i875mjb7'
 	        }).addTo(map);
-	        var marker =  L.marker([-16.5, -49.0]).addTo(map).bindPopup("<b>Nome da instituição</b><br />Registros: XYZ");
-	        function onMapClick(e) {
+	        <#list page.publishers as publisher>
+	    		<#assign latitude = publisher.getDecimallatitude()?string?replace(",",".")>
+	    		<#assign longitude = publisher.getDecimallongitude()?string?replace(",",".")>
+	    		<#assign link = "<a href=" + "'" + rc.getMessage("publisherspage.publisherlink.map") + publisher.getAuto_id() + "'" + ">" + publisher.getName() + "</a>">
+	    		<#assign popuptxt = "</br>" + rc.getMessage("publisherspage.recordnumber") + " " + publisher.getRecord_count()?string>
+	   	        new L.marker([${latitude}, ${longitude}]).bindPopup("${link} ${popuptxt}").addTo(map);
+	        </#list>
+   	        map.on('click', onMarkerClick);
+	        function onMarkerClick(e) {
 	           marker.openPopup();
-	        }
-	        map.on('click', onMapClick);
+	        }        
 	    </script>
 	   	<#if ((page.totalpublishers!0) >= page.pageSize)>
 	   		<#assign p = (page.currentPage!1)?number>

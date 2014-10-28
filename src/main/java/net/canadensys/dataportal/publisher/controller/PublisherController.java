@@ -3,7 +3,6 @@ package net.canadensys.dataportal.publisher.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +10,9 @@ import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.controller.ControllerHelper;
 import net.canadensys.dataportal.occurrence.model.PublisherInformationModel;
+import net.canadensys.dataportal.occurrence.model.ResourceModel;
 import net.canadensys.dataportal.publisher.service.PublisherService;
+import net.canadensys.dataportal.resource.service.ResourceService;
 import net.canadensys.exception.web.ResourceNotFoundException;
 import net.canadensys.web.i18n.annotation.I18nTranslation;
 
@@ -42,6 +43,10 @@ public class PublisherController {
 
 	@Autowired
 	private OccurrenceService occurrenceService;
+	
+	@Autowired
+	private ResourceService resourceService;
+
 
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
@@ -63,9 +68,6 @@ public class PublisherController {
 	@I18nTranslation(resourceName = "publishers", translateFormat = "/publishers")
 	public ModelAndView handlePublishers(HttpServletRequest request) {
 		List<PublisherInformationModel> publishers = publisherService.loadPublishers();
-		if (publishers.size()==0) {
-			LOGGER.error(publishers.toString());
-		}
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (publishers != null) {
@@ -142,7 +144,6 @@ public class PublisherController {
 			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		PublisherInformationModel publisher = publisherService.loadPublisher(auto_id);
-//		PublisherInformationModel publisher = mockPublisher();
 		if (publisher != null) {
 			modelRoot.put("publisher", publisher);
 		} else {
@@ -155,24 +156,5 @@ public class PublisherController {
 
 		return new ModelAndView("publisher",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-	}
-	
-	public PublisherInformationModel mockPublisher() {
-		PublisherInformationModel p = new PublisherInformationModel();
-		int random = new Random().nextInt();
-		p.setAuto_id(random);
-		p.setName("BLa bla foo foo" + random);
-		p.setDescription("This is the foo description" + random);
-		p.setAddress("My address no 10001" + random);
-		p.setAdministrative_area("BA");
-		p.setCity("Salvador");
-		p.setDecimallatitude(20.0 + random);
-		p.setDecimallongitude(-20.0 + random);
-		p.setEmail("email" + random + "@gmail.com");
-		p.setPhone("55 44 32167" + random);
-		p.setPostal_code(random + "-333");
-		p.setLogo_url("http://ecx.images-amazon.com/images/I/41FeeKSU5UL.jpg");
-		p.setRecord_count(56789);
-		return p;
 	}
 }

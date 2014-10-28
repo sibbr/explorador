@@ -16,8 +16,8 @@
 			<thead>
 				<tr>
 					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.resourcename")}</th>
+					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.publishername")}</th>
 					<th class="sorttable_numerical" scope="col">${rc.getMessage("resourcespage.amountofrecords")}</th>
-					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.archiveurl")}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -25,10 +25,11 @@
 					<#list page.resources as resource>
 						<#if resource?has_content>
 							<#if (resource.getRecord_count()>0)>
+								<#assign publisher = resource.getPublisherInformation()>
 								<tr>
 									<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a></td>
+									<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></td>
 									<td>${resource.getRecord_count()}</td>
-									<td><a href="${resource.getArchive_url()}" target="_blank">${rc.getMessage("resourcespage.download")}</a></td>
 								</tr>
 							</#if>
 						</#if>			

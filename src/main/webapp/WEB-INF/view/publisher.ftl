@@ -7,18 +7,20 @@
 				<#assign info = page.publisher>
 				<h2>${rc.getMessage("publisherpage.information")} (${info.getRecord_count()} ${rc.getMessage("publisherpage.records")})</h2>
 			    <#if info.getLogo_url()?has_content>
-			    	<a href="${info.getLogo_url()}" target="_blank" style="float: right;">
-						<img src="${info.getLogo_url()}">
+   				    <#if info.getHomepage()?has_content>
+   				    	<#assign link = info.getHomepage()>
+   				    <#else>
+	   				    <#assign link = info.getLogo_url()>
+   				    </#if>
+   				    <a href="${link}" target="_blank" >
+						<img src="${info.getLogo_url()}" style="padding: 5px; float: right; height: 100px">
 				    </a>
-			    </#if>
-				<#if info.getName()?has_content>
-			    	${info.getName()}
 			    </#if>
 			    <#if info.getDescription()?has_content>
 				   <b>${rc.getMessage("publisherpage.description")}:</b> ${info.getDescription()}</br>
 			    </#if>
 			    <#if info.getHomepage()?has_content>
-				   <b>${rc.getMessage("publisherpage.homepage")}:</b> ${info.getHomepage()}</br>
+				   <b>${rc.getMessage("publisherpage.homepage")}:</b> <a href="${info.getHomepage()}" target:'_blank'>${info.getHomepage()}</a></br>
 			    </#if>
 			    <h2>${rc.getMessage("publisherpage.contactinformation")}</h2>
 			    <#if info.getEmail()?has_content>
@@ -42,6 +44,12 @@
 			<#else>
 			<h2>Sorry, no information found about this dataset.</h2>
 			</#if>
+			<!-- Provide list of all datasets published by this publisher-->
+			<h2>${rc.getMessage("publisherpage.resources")}</h2>
+			<#list page.publisher.getResources() as resource>
+				<#assign count = resource.getRecord_count()?string>
+			   	<li> <a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a> ${rc.getMessage("publisherpage.recordcount", [count])}</li>
+			</#list>
 		</#if>	
 	</div>
 </div>	
