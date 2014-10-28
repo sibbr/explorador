@@ -247,7 +247,7 @@
 	                     <th scope="row">${rc.getMessage("occpage.other.data.rights")}</th>
 	                     <td>
 	                     	<#if page.occRawModel.getRights()?has_content>
-	                     		${occRawModel.getRights()}
+	                     		${page.occRawModel.getRights()}
 	                     	<#else>
 	                     		${rc.getMessage("occ.not.provided.rights")}</br>
 	                     		<#if page.information.getIntellectual_rights()?has_content>
