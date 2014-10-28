@@ -35,6 +35,9 @@ export JAVA_HOME="/opt/jdk1.7.0_51/"
 #Tomcat base diretory:
 TOMCAT_DIR="/opt/apache-tomcat-8.0.12"
 
+#Package name:
+PACKAGE_NAME="explorador.war"
+
 echo "*** Stopping tomcat:"
 sh $TOMCAT_DIR/bin/shutdown.sh
 
@@ -46,13 +49,14 @@ echo "*** Cleaning old data from tomcat ***"
 echo ""
 rm -r $TOMCAT_DIR/work/Catalina/localhost/*
 rm -r $TOMCAT_DIR/webapps/explorador/
-rm $TOMCAT_DIR/webapps/explorador.war
+rm $TOMCAT_DIR/webapps/$PACKAGE_NAME
 echo ""
-echo "*** Moving recently built portal.war file to tomcat webapps directory ***"
-mv ./build/libs/portal-biodiversidade.war $TOMCAT_DIR/webapps/explorador.war
+echo "*** Moving recently built" $PACKAGE_NAME "file to tomcat webapps directory ***"
+mv ./build/libs/$PACKAGE_NAME $TOMCAT_DIR/webapps/$PACKAGE_NAME
 echo "*** Starting tomcat:"
 sh $TOMCAT_DIR/bin/startup.sh
 echo "*** Done. Server must me up in a few seconds."
-echo "*** Flushing Redis."
-redis-cli FLUSHALL
 
+#Uncomment only if running redis for map points and tiler server locally
+#echo "*** Flushing Redis."
+#redis-cli FLUSHALL

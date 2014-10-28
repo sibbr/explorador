@@ -6,8 +6,8 @@
 			<#if page.information?has_content>
 				<h2>${rc.getMessage("resourcepage.information")}</h2>
 			    <#if page.information.getResource_logo_url()?has_content>
-			    	<a href="${page.information.getResource_logo_url()}" target="_blank" style="float: right;">
-						<img src="${page.information.getResource_logo_url()}">
+			    	<a href="${page.information.getResource_logo_url()}" target="_blank">
+						<img src="${page.information.getResource_logo_url()}" style="float: right; height: 100px">
 				    </a>
 			    </#if>
 			    <#if page.information.getTitle()?has_content>
@@ -39,7 +39,10 @@
 				   <b>${rc.getMessage("resourcepage.keywordthesaurus")}:</b> ${page.information.getKeyword_thesaurus()}</br>
 			    </#if>
 			    <#if page.information.getAlternate_identifier()?has_content>
-			    <b>${rc.getMessage("resourcepage.alternateidentifier")}:</b> ${page.information.getAlternate_identifier()}
+			    <b>${rc.getMessage("resourcepage.alternateidentifier")}:</b> ${page.information.getAlternate_identifier()}</br>
+			    </#if>
+   			    <#if page.resource.getArchive_url()?has_content>
+			    <b>${rc.getMessage("resourcespage.archiveurl")}:</b> <a href="getArchive_url()" target="_blank">${page.resource.getArchive_url()}</a>
 			    </#if>
 		    
 			    <h2>${rc.getMessage("resourcepage.licensingandrights")}</h2>

@@ -1,7 +1,6 @@
-package net.canadensys.dataportal.resource.controller;
+package net.canadensys.dataportal.publisher.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,8 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.controller.ControllerHelper;
-import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
+import net.canadensys.dataportal.occurrence.model.PublisherInformationModel;
 import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.publisher.service.PublisherService;
 import net.canadensys.dataportal.resource.service.ResourceService;
 import net.canadensys.exception.web.ResourceNotFoundException;
 import net.canadensys.web.i18n.annotation.I18nTranslation;
@@ -26,23 +26,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Controller of all resource related features of the explorer.
+ * Controller of all Publisher related features of the explorer.
  * 
  * @author Pedro Guimarães
  * 
  */
 @Controller
-public class ResourceController {
+public class PublisherController {
 
 	// get log4j handler
 	private static final Logger LOGGER = Logger
-			.getLogger(ResourceController.class);
+			.getLogger(PublisherController.class);
 
 	@Autowired
-	private ResourceService resourceService;
+	private PublisherService publisherService;
 
 	@Autowired
 	private OccurrenceService occurrenceService;
+	
+	@Autowired
+	private ResourceService resourceService;
+
 
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
@@ -57,42 +61,40 @@ public class ResourceController {
 	private static final String PAGE_ONE = "1";
 
 	/**
-	 * Display a list of all current available resources with pagination support.
+	 * Display a list of all current available Publishers with pagination support.
 	 * 
 	 */
-	@RequestMapping(value = "/resources", method = RequestMethod.GET)
-	@I18nTranslation(resourceName = "resources", translateFormat = "/resources")
-	public ModelAndView handleResources(HttpServletRequest request) {
-		List<ResourceModel> resources = occurrenceService.loadResources();
-		ResourceModel temp = new ResourceModel();
+	@RequestMapping(value = "/publishers", method = RequestMethod.GET)
+	@I18nTranslation(resourceName = "publishers", translateFormat = "/publishers")
+	public ModelAndView handlePublishers(HttpServletRequest request) {
+		List<PublisherInformationModel> publishers = publisherService.loadPublishers();
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
-		if (resources != null) {
-			List<ResourceModel> pageResources = null;
-			// Get total number of resources
-			int totalResources = resources.size();
+		if (publishers != null) {
+			List<PublisherInformationModel> pagePublishers = null;
+			// Get total number of Publishers
+			int totalPublishers = publishers.size();
 			// Provide the number of pages
-			int totalPages = (totalResources / pageSize) + 1;
-			modelRoot.put("totalResources", totalResources);
+			int totalPages = (totalPublishers / pageSize) + 1;
+			modelRoot.put("totalPublishers", totalPublishers);
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
 			// A page number has been provided
-			if (pageNumber!=null) {
+			if (pageNumber != null) {
 				int page = Integer.parseInt(pageNumber);
 				modelRoot.put("currentPage", page);
 				// If the page is valid:
 				if (page > 0) {
-					// Treat page top limit:
 					if (page > totalPages) {
 						modelRoot.put("currentPage", PAGE_ONE);
-						if (totalResources == pageSize) {
-							pageResources = resources.subList(0,
+						if (totalPublishers == pageSize) {
+							pagePublishers = publishers.subList(0,
 								pageSize - 1);
 						} else {
-							pageResources = resources.subList(0,
-								totalResources);
+							pagePublishers = publishers.subList(0,
+								totalPublishers);
 						}
-						modelRoot.put("resources", pageResources);
+						modelRoot.put("Publishers", pagePublishers);
 					} else {
 						/**
 						 * Logic to load the records to a given page Ex.: Page 4 →
@@ -101,66 +103,58 @@ public class ResourceController {
 						 */
 						int shift = (page - 1) * pageSize;
 						// Avoid ouf of bounds by the upper limit:
-						if ((shift + pageSize) <= totalResources) {
-							pageResources = resources.subList(shift, (shift + pageSize));
+						if ((shift + pageSize) <= totalPublishers) {
+							pagePublishers = publishers.subList(shift, (shift + pageSize));
 						} else {
-							pageResources = resources.subList(shift, (shift + (totalResources-shift) ));
+							pagePublishers = publishers.subList(shift, (shift + (totalPublishers-shift) ));
 						}
-						modelRoot.put("resources", pageResources);
+						modelRoot.put("publishers", pagePublishers);
 					}
 				}
 			}
 			// No page provided, return first page
 			else {
 				modelRoot.put("currentPage", PAGE_ONE);
-				if (totalResources == pageSize) {
-					pageResources = resources.subList(0,
+				if (totalPublishers == pageSize) {
+					pagePublishers = publishers.subList(0,
 						pageSize - 1);
 				} else {
-					pageResources = resources.subList(0,
-						totalResources);
+					pagePublishers = publishers.subList(0,
+							totalPublishers);
 				}
-				modelRoot.put("resources", pageResources);
+				modelRoot.put("publishers", pagePublishers);
 			}
-		} 
+		}
 		// Set common stuff
-		ControllerHelper.setDatasetVariables(request, "resources", null,
+		ControllerHelper.setDatasetVariables(request, "publishers", null,
 				appConfig, modelRoot);
 		
-		return new ModelAndView("resources",
+		return new ModelAndView("publishers",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
-	 * Display a page with information about the current resource given its
+	 * Display a page with information about the current Publisher given its
 	 * auto_id value.
 	 * 
 	 */
-	@RequestMapping(value = "/resource/{auto_id}", method = RequestMethod.GET)
-	@I18nTranslation(resourceName = "resource", translateFormat = "/resource/{}")
-	public ModelAndView handleResource(@PathVariable String auto_id,
+	@RequestMapping(value = "/publisher/{auto_id}", method = RequestMethod.GET)
+	@I18nTranslation(resourceName = "publisher", translateFormat = "/publisher/{}")
+	public ModelAndView handlePublisher(@PathVariable String auto_id,
 			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		ResourceModel resource = occurrenceService
-				.loadResourceModelByAutoId(auto_id);
-		ResourceInformationModel information = occurrenceService
-				.loadResourceInformationModel(resource.getResource_uuid());
-		// Get current time to display in citation:
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		Date date = new Date(System.currentTimeMillis());
-		if (!resource.equals(null) && !information.equals(null)) {
-			modelRoot.put("resource", resource);
-			modelRoot.put("information", information);
-			modelRoot.put("currentTime", sdf.format(date));
+		PublisherInformationModel publisher = publisherService.loadPublisher(auto_id);
+		if (publisher != null) {
+			modelRoot.put("publisher", publisher);
 		} else {
-			LOGGER.error("ResourceNotFoundException at ResourceController.handleResource()");
+			LOGGER.error("*** Publisher not found!");
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setDatasetVariables(request, "resource", auto_id,
+		ControllerHelper.setDatasetVariables(request, "publisher", auto_id,
 				appConfig, modelRoot);
 
-		return new ModelAndView("resource",
+		return new ModelAndView("publisher",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 }
