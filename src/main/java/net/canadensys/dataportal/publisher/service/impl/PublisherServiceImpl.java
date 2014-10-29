@@ -5,8 +5,10 @@ import java.util.List;
 
 import net.canadensys.dataportal.occurrence.dao.PublisherInformationDAO;
 import net.canadensys.dataportal.occurrence.model.PublisherInformationModel;
+import net.canadensys.dataportal.publisher.controller.PublisherController;
 import net.canadensys.dataportal.publisher.service.PublisherService;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("PublisherService")
 public class PublisherServiceImpl implements PublisherService {
 
+	// get log4j handler
+		private static final Logger LOGGER = Logger
+				.getLogger(PublisherServiceImpl.class);
+	
 	@Autowired
 	private PublisherInformationDAO PublisherInformationDAO;
 
@@ -39,8 +45,9 @@ public class PublisherServiceImpl implements PublisherService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<PublisherInformationModel> loadPublishers() {
-		List<PublisherInformationModel> publishers = new ArrayList<PublisherInformationModel>(); 
-		for (PublisherInformationModel publisher: PublisherInformationDAO.loadPublisherInformations()) {
+		List<PublisherInformationModel> publishers = new ArrayList<PublisherInformationModel>();
+		for (PublisherInformationModel publisher: PublisherInformationDAO.loadPublishers()) {
+			LOGGER.error(publisher.getName());
 			if (!publishers.contains(publisher))
 				publishers.add(publisher);
 		}
