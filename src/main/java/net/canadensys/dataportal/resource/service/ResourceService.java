@@ -26,4 +26,11 @@ public interface ResourceService {
 	 * @return
 	 */
 	public ResourceModel loadResource(String auto_id);
+	
+	/**
+	 * Return a subset with only resources that already have records 
+	 * @param resources
+	 * @return
+	 */
+	public List<ResourceModel> filterResourcesWithoutRecords(List<ResourceModel> resources);
 }

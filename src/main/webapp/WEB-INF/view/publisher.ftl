@@ -44,7 +44,7 @@
 			<#else>
 			<h2>Sorry, no information found about this dataset.</h2>
 			</#if>
-			<!-- Provide list of all datasets published by this publisher-->
+			<!-- Provide list of the available datasets published by this publisher-->
 			<h2>${rc.getMessage("publisherpage.resources")}</h2>
 			<#list page.publisher.getResources() as resource>
 				<#assign count = resource.getRecord_count()?string>

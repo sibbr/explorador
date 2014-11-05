@@ -11,7 +11,7 @@
 <div id="body">
 	<a id="main-content"></a>
 	<div id="content" class="clear_fix no_side_bar">
-		<h1>${rc.getMessage("resourcespage.resourcelist")}</h1>
+		<h1>${rc.getMessage("resourcespage.resourcelist", [page.totalResources])}</h1>
 		<table class="sortable">
 			<thead>
 				<tr>

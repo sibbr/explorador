@@ -1,5 +1,6 @@
 package net.canadensys.dataportal.resource.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.canadensys.dataportal.occurrence.dao.ResourceDAO;
@@ -43,5 +44,15 @@ public class ResourceServiceImpl implements ResourceService {
 	@Transactional(readOnly = true)
 	public List<ResourceModel> loadResources() {
 		return resourceDAO.loadResources();
+	}
+	
+	public List<ResourceModel> filterResourcesWithoutRecords(List<ResourceModel> resources) {
+		ArrayList<ResourceModel> filledResources = new ArrayList<ResourceModel>();
+		for(ResourceModel resource: resources) {
+			if (resource.getRecord_count() > 0) {
+				filledResources.add(resource);
+			}	
+		}
+		return filledResources;
 	}
 }

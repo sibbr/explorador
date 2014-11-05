@@ -1,12 +1,13 @@
 package net.canadensys.dataportal.occurrence.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.cache.CacheManagementServiceIF;
 import net.canadensys.dataportal.occurrence.dao.OccurrenceDAO;
-import net.canadensys.dataportal.occurrence.dao.ResourceInformationDAO;
 import net.canadensys.dataportal.occurrence.dao.ResourceDAO;
+import net.canadensys.dataportal.occurrence.dao.ResourceInformationDAO;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
 import net.canadensys.dataportal.occurrence.model.ResourceModel;

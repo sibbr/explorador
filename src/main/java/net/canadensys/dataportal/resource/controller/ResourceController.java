@@ -49,22 +49,24 @@ public class ResourceController {
 	private OccurrencePortalConfig appConfig;
 
 	// Define maximum number of records per page
-	private static final int pageSize = 20;
+	private static final int pageSize = 15;
 
 	// Occurrence view tags
 	private static final String PAGE_PARAM = "page";
-	
+
 	private static final String PAGE_ONE = "1";
 
 	/**
-	 * Display a list of all current available resources with pagination support.
+	 * Display a list of all current available resources with pagination
+	 * support.
 	 * 
 	 */
 	@RequestMapping(value = "/resources", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "resources", translateFormat = "/resources")
 	public ModelAndView handleResources(HttpServletRequest request) {
 		List<ResourceModel> resources = occurrenceService.loadResources();
-		ResourceModel temp = new ResourceModel();
+		// filter to display only resources with records
+		resources = resourceService.filterResourcesWithoutRecords(resources);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (resources != null) {
@@ -72,12 +74,12 @@ public class ResourceController {
 			// Get total number of resources
 			int totalResources = resources.size();
 			// Provide the number of pages
-			int totalPages = (totalResources / pageSize) + 1;
+			int totalPages = totalResources / pageSize;
 			modelRoot.put("totalResources", totalResources);
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
 			// A page number has been provided
-			if (pageNumber!=null) {
+			if (pageNumber != null) {
 				int page = Integer.parseInt(pageNumber);
 				modelRoot.put("currentPage", page);
 				// If the page is valid:
@@ -85,26 +87,21 @@ public class ResourceController {
 					// Treat page top limit:
 					if (page > totalPages) {
 						modelRoot.put("currentPage", PAGE_ONE);
-						if (totalResources == pageSize) {
-							pageResources = resources.subList(0,
-								pageSize - 1);
-						} else {
-							pageResources = resources.subList(0,
-								totalResources);
-						}
-						modelRoot.put("resources", pageResources);
+						modelRoot.put("resources", resources.subList(0, pageSize));
 					} else {
 						/**
-						 * Logic to load the records to a given page Ex.: Page 4 →
-						 * Get From 61 to 80 → Shift interval on the index list is
-						 * from 60 final 79
+						 * Logic to load the records to a given page Ex.: Page 4
+						 * → Get From 61 to 80 → Shift interval on the index
+						 * list is from 60 final 79
 						 */
 						int shift = (page - 1) * pageSize;
 						// Avoid ouf of bounds by the upper limit:
 						if ((shift + pageSize) <= totalResources) {
-							pageResources = resources.subList(shift, (shift + pageSize));
+							pageResources = resources.subList(shift,
+									(shift + pageSize));
 						} else {
-							pageResources = resources.subList(shift, (shift + (totalResources-shift) ));
+							pageResources = resources.subList(shift,
+									(shift + (totalResources - shift)));
 						}
 						modelRoot.put("resources", pageResources);
 					}
@@ -113,20 +110,19 @@ public class ResourceController {
 			// No page provided, return first page
 			else {
 				modelRoot.put("currentPage", PAGE_ONE);
-				if (totalResources == pageSize) {
-					pageResources = resources.subList(0,
-						pageSize - 1);
+				// If the resources equals the page size
+				if (totalResources >= pageSize) {
+					pageResources = resources.subList(0, pageSize);
 				} else {
-					pageResources = resources.subList(0,
-						totalResources);
+					pageResources = resources.subList(0, totalResources);
 				}
 				modelRoot.put("resources", pageResources);
 			}
-		} 
+		}
 		// Set common stuff
 		ControllerHelper.setDatasetVariables(request, "resources", null,
 				appConfig, modelRoot);
-		
+
 		return new ModelAndView("resources",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}

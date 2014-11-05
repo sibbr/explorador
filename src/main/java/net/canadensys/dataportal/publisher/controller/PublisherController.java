@@ -2,7 +2,9 @@ package net.canadensys.dataportal.publisher.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -75,7 +77,7 @@ public class PublisherController {
 			// Get total number of Publishers
 			int totalPublishers = publishers.size();
 			// Provide the number of pages
-			int totalPages = (totalPublishers / pageSize) + 1;
+			int totalPages = totalPublishers / pageSize;
 			modelRoot.put("totalPublishers", totalPublishers);
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
@@ -115,9 +117,9 @@ public class PublisherController {
 			// No page provided, return first page
 			else {
 				modelRoot.put("currentPage", PAGE_ONE);
-				if (totalPublishers == pageSize) {
+				if (totalPublishers >= pageSize) {
 					pagePublishers = publishers.subList(0,
-						pageSize - 1);
+						pageSize);
 				} else {
 					pagePublishers = publishers.subList(0,
 							totalPublishers);
@@ -145,6 +147,11 @@ public class PublisherController {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		PublisherInformationModel publisher = publisherService.loadPublisher(auto_id);
 		if (publisher != null) {
+			// Filter resources with no records:
+			List<ResourceModel> filteredResourcesList = new ArrayList<ResourceModel>(publisher.getResources());
+			filteredResourcesList = resourceService.filterResourcesWithoutRecords(filteredResourcesList);
+			Set<ResourceModel> filteredResourcesSet = new HashSet<ResourceModel>(filteredResourcesList);
+			publisher.setResources(filteredResourcesSet);
 			modelRoot.put("publisher", publisher);
 		} else {
 			LOGGER.error("*** Publisher not found!");
