@@ -12,6 +12,7 @@
 <link rel="shortcut icon" href="http://buriti.lncc.br/wordpress/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
 
 <sitemesh:write property='head'/>
+<#include "/WEB-INF/view/inc/metatags.ftl">
 <#include "/WEB-INF/view/inc/ga.ftl">
 </head>
 <body>
