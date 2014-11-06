@@ -1,4 +1,7 @@
-<!-- JavaScript extend settings -->
+<script type="text/javascript" >
+ $(function() {    $( "#draggable" ).draggable({ containment: "window" }); });
+</script>
+.<!-- JavaScript extend settings -->
 <#macro controlJavaScriptSettings>
 	$.extend(EXPLORER.settings, { "baseUrl" : "${page.contextURL}", "wsPath" : "/ws/", "locale" : "${rc.getLocale().getLanguage()}" });
 </#macro>
@@ -118,8 +121,10 @@ ${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span i
 
 <!-- Text input -->
 <script type="text/template" id="filter_template_text_input">
-<p><input id="value_search" type="text"/></p>
+<p><input id="value_search" placeholder=" Ex.: Miconia brasiliensis" onfocus="this.placeholder = ''" onblur="this.placeholder = ' Ex.: Miconia brasiliensis'" type="text"/></p>
 </script>
+
+
 
 <!-- Select box -->
 <script type="text/template" id="filter_template_select">

@@ -1,5 +1,6 @@
 <title>${rc.getMessage("resourcespage.title")}</title>
 <div id="body">
+  <div class="boxcontent">
 	<div id="content" class="clear_fix no_side_bar">
 		<#if page.resource?has_content>
 			<h1>${page.resource.getName()!}</h1>
@@ -74,4 +75,5 @@
 			</#if>
 		</#if>	
 	</div>
+		</div>
 </div>	

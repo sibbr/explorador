@@ -10,9 +10,11 @@
 </head>
 <div id="body">
 	<a id="main-content"></a>
+	  <div class="boxcontent">
+	<div id="table_wrapper">
 	<div id="content" class="clear_fix no_side_bar">
 		<h1>${rc.getMessage("resourcespage.resourcelist")}</h1>
-		<table class="sortable">
+		<table id="results" class="sortable">
 			<thead>
 				<tr>
 					<th class="sorttable_alpha" scope="col">${rc.getMessage("resourcespage.resourcename")}</th>
@@ -42,4 +44,6 @@
 			<@pages 1..page.totalPages p />
 		</#if>
    	</div>
+	   	</div>
+		</div>
 </div>

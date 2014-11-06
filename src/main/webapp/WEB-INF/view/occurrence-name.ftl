@@ -11,21 +11,22 @@
 $(document).ready(function(){
 	$("#bhllink").click(function(evento){
 		evento.preventDefault();
-		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>Carregando dados - <strong>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</strong></div>");
+		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</strong></div>");
 		$("#servicecontent").load("?view=bhl #bhlcontent");
 	});
 })
 $(document).ready(function(){
 	$("#eollink").click(function(evento){
 		evento.preventDefault();
-		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>Carregando dados - <strong>${rc.getMessage("occpage.other.enciclopedia.of.life")}</strong></div>");
-		$("#servicecontent").load("?view=eol #eolcontent");
+		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.enciclopedia.of.life")}</strong></div>");
+	  	  $('#servicecontent').append("<scr" + "ipt type='text/javascript' src='/explorador/assets/js/lib/sorttable.js'></scr" + "ipt>");
+          $("#servicecontent").load("?view=eol #eolcontent");
 	});
 })
 </script>
-<!-- AND JQUERY LOAD BHL AND EOL -->
+<!-- END JQUERY LOAD BHL AND EOL -->
 <style>
-.boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;}
+.boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;	  border-top: none!important;}
 .round {background-color: #fff!important;border: none!important;}
 </style>
 </head>

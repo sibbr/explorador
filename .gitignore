@@ -17,3 +17,10 @@ bin/
 .settings/
 .gradle/
 
+src/main/webapp/WEB-INF/view/inc/_notes/dwsync.xml
+src/main/webapp/WEB-INF/classes/_notes/dwsync.xml
+META-INF/maven/br.gov.sibbr/web-theme/_notes/dwsync.xml
+META-INF/maven/br.gov.sibbr/web-theme/pom.properties
+src/main/webapp/decorators/layouts/sibbr/_notes/dwsync.xml
+WEB-INF/_notes/dwsync.xml
+src/main/webapp/WEB-INF/view/_notes/dwsync.xml
