@@ -13,11 +13,13 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import net.canadensys.chart.ChartModel;
+import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.autocomplete.AutoCompleteService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.config.OccurrenceSearchableFieldLanguageSupport;
 import net.canadensys.dataportal.occurrence.model.MapInfoModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
+import net.canadensys.dataportal.occurrence.model.ResourceModel;
 import net.canadensys.dataportal.occurrence.search.DownloadResultStatus;
 import net.canadensys.dataportal.occurrence.search.OccurrenceSearchService;
 import net.canadensys.dataportal.occurrence.search.OccurrenceSearchService.DownloadPropertiesEnum;
@@ -109,6 +111,9 @@ public class SearchController {
 
 	@Autowired
 	private OccurrenceSearchService occurrenceSearchService;
+	
+	@Autowired
+	private OccurrenceService occurrenceService;
 
 	@Autowired
 	private OccurrenceController occurrenceController;
@@ -408,10 +413,11 @@ public class SearchController {
 	@RequestMapping(value = "/occurrence-preview/{auto_id}", method = RequestMethod.GET)
 	public ModelAndView handleOccurrencePreview(@PathVariable Integer auto_id) {
 		OccurrenceModel occModel = occurrenceSearchService.getOccurrenceSummary(auto_id);
-
+		ResourceModel resourceModel = occurrenceService.loadResourceModel(occModel.getSourcefileid());
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		if (occModel != null) {
 			modelRoot.put("occModel", occModel);
+			modelRoot.put("resource", resourceModel);
 			modelRoot.put("occViewModel", occurrenceController.buildOccurrenceViewModel(occModel));
 		}
 		else {

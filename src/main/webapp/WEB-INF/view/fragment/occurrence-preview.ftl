@@ -25,7 +25,13 @@
 </#if>
 <dl class="occ_preview_data clear_fix">
 	<dt>${rc.getMessage("occ.institutioncode")}</dt><dd>${page.occModel.institutioncode!}</dd>
-	<dt>${rc.getMessage("occ.datasetname")}</dt><dd>${page.occModel.datasetname!}</dd>
+	<dt>${rc.getMessage("occ.datasetname")}</dt>
+	<#assign datasetName = page.occModel.datasetname!>
+	<#if datasetName?has_content>
+		<dd>${datasetName}</dd>
+	<#else>
+		<dd>${page.resource.getName()}</dd>
+	</#if>	
 </dl>
 <dl class="occ_preview_data clear_fix">
 	<dt>${rc.getMessage("occ.catalognumber")}</dt><dd>${page.occModel.catalognumber!}</dd>
@@ -52,10 +58,11 @@
 	</#if>	
 	<dt>${rc.getMessage("view.preview.altituderange")}</dt><dd>${altituteStr}</dd>
 </dl>
-<dl class="occ_preview_data clear_fix">
+<!-- dl class="occ_preview_data clear_fix">
 	<dt>${rc.getMessage("occ.habitat")}</dt><dd>${page.occModel.habitat!}</dd>
-</dl>
-<dl class="occ_preview_data clear_fix">
+</dl-->
+
+<!--dl class="occ_preview_data clear_fix">
 	<dt>${rc.getMessage("occ.associatedmedia")}</dt>
 	<dd>
 		<#if page.occViewModel.imageList?has_content>
@@ -64,5 +71,5 @@
 			<a href="${page.occViewModel.otherMediaList[0]}">${rc.getMessage("occpage.menu.associatedmedia")}</a>
 		</#if>
 	</dd>
-</dl>
+</dl-->
 </div>

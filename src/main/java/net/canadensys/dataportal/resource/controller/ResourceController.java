@@ -75,6 +75,8 @@ public class ResourceController {
 			int totalResources = resources.size();
 			// Provide the number of pages
 			int totalPages = totalResources / pageSize;
+			if (totalResources % pageSize != 0)
+				totalPages++;
 			modelRoot.put("totalResources", totalResources);
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
@@ -87,7 +89,8 @@ public class ResourceController {
 					// Treat page top limit:
 					if (page > totalPages) {
 						modelRoot.put("currentPage", PAGE_ONE);
-						modelRoot.put("resources", resources.subList(0, pageSize));
+						modelRoot.put("resources",
+								resources.subList(0, pageSize));
 					} else {
 						/**
 						 * Logic to load the records to a given page Ex.: Page 4
@@ -110,7 +113,7 @@ public class ResourceController {
 			// No page provided, return first page
 			else {
 				modelRoot.put("currentPage", PAGE_ONE);
-				// If the resources equals the page size
+				// If the number of resources equals the page size
 				if (totalResources >= pageSize) {
 					pageResources = resources.subList(0, pageSize);
 				} else {

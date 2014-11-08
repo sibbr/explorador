@@ -45,70 +45,74 @@ public class PublisherController {
 
 	@Autowired
 	private OccurrenceService occurrenceService;
-	
+
 	@Autowired
 	private ResourceService resourceService;
-
 
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
 
 	// Define maximum number of records per page
-	private static final int pageSize = 20;
+	private static final int pageSize = 10;
 
 	// Occurrence view tags
 	private static final String PAGE_PARAM = "page";
-	
+
 	private static final String PAGE_ONE = "1";
 
 	/**
-	 * Display a list of all current available Publishers with pagination support.
+	 * Display a list of all current available Publishers with pagination
+	 * support.
 	 * 
 	 */
 	@RequestMapping(value = "/publishers", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "publishers", translateFormat = "/publishers")
 	public ModelAndView handlePublishers(HttpServletRequest request) {
-		List<PublisherInformationModel> publishers = publisherService.loadPublishers();
+		List<PublisherInformationModel> publishers = publisherService
+				.loadPublishers();
+		// Used for map filling purposes:
+		List<PublisherInformationModel> allPublishers = publishers;
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (publishers != null) {
 			List<PublisherInformationModel> pagePublishers = null;
-			// Get total number of Publishers
+			// Get total number of publishers
 			int totalPublishers = publishers.size();
 			// Provide the number of pages
 			int totalPages = totalPublishers / pageSize;
+			if (totalPublishers % pageSize != 0)
+				totalPages++;
 			modelRoot.put("totalPublishers", totalPublishers);
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
+			LOGGER.error("Resources: " + totalPublishers);
+			LOGGER.error("Pages: " + totalPages);
 			// A page number has been provided
 			if (pageNumber != null) {
 				int page = Integer.parseInt(pageNumber);
 				modelRoot.put("currentPage", page);
 				// If the page is valid:
 				if (page > 0) {
+					// Treat page top limit:
 					if (page > totalPages) {
 						modelRoot.put("currentPage", PAGE_ONE);
-						if (totalPublishers == pageSize) {
-							pagePublishers = publishers.subList(0,
-								pageSize - 1);
-						} else {
-							pagePublishers = publishers.subList(0,
-								totalPublishers);
-						}
-						modelRoot.put("Publishers", pagePublishers);
+						modelRoot.put("publishers",
+								publishers.subList(0, pageSize));
 					} else {
 						/**
-						 * Logic to load the records to a given page Ex.: Page 4 →
-						 * Get From 61 to 80 → Shift interval on the index list is
-						 * from 60 final 79
+						 * Logic to load the records to a given page Ex.: Page 4
+						 * → Get From 61 to 80 → Shift interval on the index
+						 * list is from 60 final 79
 						 */
 						int shift = (page - 1) * pageSize;
 						// Avoid ouf of bounds by the upper limit:
 						if ((shift + pageSize) <= totalPublishers) {
-							pagePublishers = publishers.subList(shift, (shift + pageSize));
+							pagePublishers = publishers.subList(shift,
+									(shift + pageSize));
 						} else {
-							pagePublishers = publishers.subList(shift, (shift + (totalPublishers-shift) ));
+							pagePublishers = publishers.subList(shift,
+									(shift + (totalPublishers - shift)));
 						}
 						modelRoot.put("publishers", pagePublishers);
 					}
@@ -117,20 +121,21 @@ public class PublisherController {
 			// No page provided, return first page
 			else {
 				modelRoot.put("currentPage", PAGE_ONE);
+				// If the number of publishers equals the page size
 				if (totalPublishers >= pageSize) {
-					pagePublishers = publishers.subList(0,
-						pageSize);
+					pagePublishers = publishers.subList(0, pageSize);
 				} else {
-					pagePublishers = publishers.subList(0,
-							totalPublishers);
+					pagePublishers = publishers.subList(0, totalPublishers);
 				}
 				modelRoot.put("publishers", pagePublishers);
 			}
 		}
+		// Set all publishers for map:
+		modelRoot.put("allPublishers", allPublishers);
 		// Set common stuff
 		ControllerHelper.setDatasetVariables(request, "publishers", null,
 				appConfig, modelRoot);
-		
+
 		return new ModelAndView("publishers",
 				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
@@ -145,12 +150,16 @@ public class PublisherController {
 	public ModelAndView handlePublisher(@PathVariable String auto_id,
 			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		PublisherInformationModel publisher = publisherService.loadPublisher(auto_id);
+		PublisherInformationModel publisher = publisherService
+				.loadPublisher(auto_id);
 		if (publisher != null) {
 			// Filter resources with no records:
-			List<ResourceModel> filteredResourcesList = new ArrayList<ResourceModel>(publisher.getResources());
-			filteredResourcesList = resourceService.filterResourcesWithoutRecords(filteredResourcesList);
-			Set<ResourceModel> filteredResourcesSet = new HashSet<ResourceModel>(filteredResourcesList);
+			List<ResourceModel> filteredResourcesList = new ArrayList<ResourceModel>(
+					publisher.getResources());
+			filteredResourcesList = resourceService
+					.filterResourcesWithoutRecords(filteredResourcesList);
+			Set<ResourceModel> filteredResourcesSet = new HashSet<ResourceModel>(
+					filteredResourcesList);
 			publisher.setResources(filteredResourcesSet);
 			modelRoot.put("publisher", publisher);
 		} else {
