@@ -200,8 +200,10 @@ public class SearchServiceConfig {
 				"catalognumber").singleValue("catalognumber", String.class).likeOperator(QueryOperatorEnum.ELIKE).toOccurrenceSearchableField());
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.COLLECTION_CODE.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.COLLECTION_CODE.id,
 				"collectioncode").singleValue("collectioncode", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
+		
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.DATASET_NAME.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.DATASET_NAME.id,
 				"datasetname").singleValue("datasetname", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
+		
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.STATE_PROVINCE.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.STATE_PROVINCE.id,
 				"stateprovince").singleValue("stateprovince", String.class).eqOperator().likeOperator(QueryOperatorEnum.CLIKE).supportSuggestion()
 				.eqOperator().toOccurrenceSearchableField());

@@ -39,13 +39,12 @@
 							<option value="${page.availableFilters.family}">${rc.getMessage("filter.family")}</option>
 							<option value="${page.availableFilters.taxonrank}">${rc.getMessage("filter.taxonrank")}</option>
 						</optgroup>
-						<!-- Removed filter until further definition about dataset>
-							<optgroup label="${rc.getMessage("filter.group.dataset")}">
-								<option value="${page.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
-								<option value="${page.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option>
-								<option value="${page.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
-							</optgroup>
-						 -->
+ 						<!-- Removed filter until further definition about dataset>-->
+						<optgroup label="${rc.getMessage("filter.group.dataset")}">
+							<option value="${page.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
+							<option value="${page.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option>
+							<option value="${page.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
+						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.specimen")}">
 							<option value="${page.availableFilters.hastypestatus}">${rc.getMessage("filter.hastypestatus")}</option>
 							<option value="${page.availableFilters.recordedby}">${rc.getMessage("filter.recordedby")}</option>

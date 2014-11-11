@@ -86,8 +86,6 @@ public class PublisherController {
 			modelRoot.put("totalPublishers", totalPublishers);
 			modelRoot.put("totalPages", totalPages);
 			modelRoot.put("pageSize", pageSize);
-			LOGGER.error("Resources: " + totalPublishers);
-			LOGGER.error("Pages: " + totalPages);
 			// A page number has been provided
 			if (pageNumber != null) {
 				int page = Integer.parseInt(pageNumber);

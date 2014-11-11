@@ -1,6 +1,5 @@
 package net.canadensys.dataportal.occurrence.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.canadensys.dataportal.occurrence.OccurrenceService;
@@ -104,6 +103,6 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	@Override
 	@Transactional(readOnly = true)
 	public ResourceModel loadResourceModelByAutoId(String auto_id) {
-		return resourceDAO.loadByAutoId(auto_id);
+		return resourceDAO.loadByAutoId(Integer.parseInt(auto_id));
 	}
 }
