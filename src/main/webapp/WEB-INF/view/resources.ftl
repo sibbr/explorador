@@ -31,7 +31,7 @@
 										<tr>
 											<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a></td>
 											<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></td>
-											<td>${resource.getRecord_count()}</td>
+											<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcespage.occurrencelink")}${resource.getName()}" target="_blank">${resource.getRecord_count()}</a></td>
 										</tr>
 									</#if>
 								</#if>			

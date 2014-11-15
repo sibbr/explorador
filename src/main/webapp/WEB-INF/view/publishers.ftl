@@ -61,8 +61,8 @@
 				  			<#if (publisher.getRecord_count()?has_content)>
 				  				<tr>
 				     				<td align="center" valign="middle"><img src="${publisher.getLogo_url()}" alt="${publisher.getName()}" align="middle" style="height: 70px;" /></td>
-				    				<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></td>
-				    				<td>${publisher.getRecord_count()}</td>
+				    				<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target="_self">${publisher.getName()}</a></td>
+				    				<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.occurrencelink")}${publisher.getName()}" target="_blank">${publisher.getRecord_count()}</a></td>
 				  				</tr>
 				  			</#if>
 				  		</#list>

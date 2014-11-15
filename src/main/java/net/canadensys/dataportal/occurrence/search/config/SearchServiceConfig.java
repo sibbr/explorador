@@ -34,7 +34,7 @@ public class SearchServiceConfig {
 		COUNTRY(1), FAMILY(2), CONTINENT(3), TAXONRANK(4), DATE_RANGE(5), CATALOG_NUMBER(6), COLLECTION_CODE(7), DATASET_NAME(8), STATE_PROVINCE(9), ALTITUDE_RANGE(
 				10), LOCALITY(11), RECORDED_BY(12), RECORD_NUMBER(13), KINGDOM(14), ORDER(15), SCIENTIFIC_NAME(16), INSTITUTION_CODE(17), CLASS(18), PHYLUM(
 				19), HAS_COORDINATES(20), HAS_MEDIA(21), COUNTY(22), MUNICIPALITY(23), GENUS(24), SPECIES(25), DECADE(26), AVERAGE_ALTITUDE_ROUNDED(
-				27), SOURCE_FILE_ID(29), START_YEAR(30), HAS_TYPE_STATUS(31), GEO_RECTANGLE(32), GEO_POLYGON(33), GEO_ELLIPSE(34);
+				27), SOURCE_FILE_ID(29), START_YEAR(30), HAS_TYPE_STATUS(31), GEO_RECTANGLE(32), GEO_POLYGON(33), GEO_ELLIPSE(34), RESOURCE_NAME(35), PUBLISHER_NAME(36);
 
 		private int id;
 
@@ -200,10 +200,8 @@ public class SearchServiceConfig {
 				"catalognumber").singleValue("catalognumber", String.class).likeOperator(QueryOperatorEnum.ELIKE).toOccurrenceSearchableField());
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.COLLECTION_CODE.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.COLLECTION_CODE.id,
 				"collectioncode").singleValue("collectioncode", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
-		
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.DATASET_NAME.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.DATASET_NAME.id,
 				"datasetname").singleValue("datasetname", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
-		
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.STATE_PROVINCE.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.STATE_PROVINCE.id,
 				"stateprovince").singleValue("stateprovince", String.class).eqOperator().likeOperator(QueryOperatorEnum.CLIKE).supportSuggestion()
 				.eqOperator().toOccurrenceSearchableField());
@@ -247,7 +245,11 @@ public class SearchServiceConfig {
 				.supportSuggestion().toOccurrenceSearchableField());
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.SOURCE_FILE_ID.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.SOURCE_FILE_ID.id,
 				"sourcefileid").singleValue("sourcefileid", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
-
+		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.RESOURCE_NAME.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.RESOURCE_NAME.id,
+				"resourcename").singleValue("resourcename", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
+		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.PUBLISHER_NAME.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.PUBLISHER_NAME.id,
+				"publishername").singleValue("publishername", String.class).eqOperator().supportSelectionList().toOccurrenceSearchableField());
+		
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.GEO_RECTANGLE.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.GEO_RECTANGLE.id,
 				"georectangle").insideEnvelope("the_geom", "the_shifted_geom").inOperator().toOccurrenceSearchableField());
 		SEARCHABLE_FIELD_MAP.put(SearchableFieldEnum.GEO_POLYGON.id, new OccurrenceSearchableFieldBuilder(SearchableFieldEnum.GEO_POLYGON.id,

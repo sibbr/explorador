@@ -142,7 +142,6 @@ public class ResourceController {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		ResourceModel resource = occurrenceService
 				.loadResourceModelByAutoId(auto_id);
-		LOGGER.error("*** resource: " + resource);
 		ResourceInformationModel information = occurrenceService
 				.loadResourceInformationModel(resource.getResource_uuid());
 		// Get current time to display in citation:

@@ -39,11 +39,10 @@
 							<option value="${page.availableFilters.family}">${rc.getMessage("filter.family")}</option>
 							<option value="${page.availableFilters.taxonrank}">${rc.getMessage("filter.taxonrank")}</option>
 						</optgroup>
- 						<!-- Removed filter until further definition about dataset>-->
+ 						<!-- Removed filter until further definition about dataset -->
 						<optgroup label="${rc.getMessage("filter.group.dataset")}">
-							<option value="${page.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
-							<option value="${page.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option>
-							<option value="${page.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
+							<option value="${page.availableFilters.resourcename}">${rc.getMessage("filter.resourcename")}</option>
+							<option value="${page.availableFilters.publishername}">${rc.getMessage("filter.publishername")}</option>
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.specimen")}">
 							<option value="${page.availableFilters.hastypestatus}">${rc.getMessage("filter.hastypestatus")}</option>

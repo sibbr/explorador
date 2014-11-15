@@ -48,7 +48,7 @@
 			<h2>${rc.getMessage("publisherpage.resources")}</h2>
 			<#list page.publisher.getResources() as resource>
 				<#assign count = resource.getRecord_count()?string>
-			   	<li> <a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a> ${rc.getMessage("publisherpage.recordcount", [count])}</li>
+			   	<li> <a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a> <a href="${rc.getContextPath()}/${rc.getMessage("resourcespage.occurrencelink")}${resource.getName()}" target="_blank">${rc.getMessage("publisherpage.recordcount", [count])}</a></li>
 			</#list>
 		</#if>	
 	</div>

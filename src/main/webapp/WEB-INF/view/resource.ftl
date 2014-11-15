@@ -3,7 +3,7 @@
   <div class="boxcontent">
 	<div id="content" class="clear_fix no_side_bar">
 		<#if page.resource?has_content>
-			<h1>${page.resource.getName()!}</h1>
+			<h1>${page.resource.getName()!}  (<a href="${rc.getContextPath()}/${rc.getMessage("resourcespage.occurrencelink")}${page.resource.getName()}" target="_blank">${page.resource.getRecord_count()} ${rc.getMessage("publisherpage.records")}</a>)</h1>
 			<#if page.information?has_content>
 				<h2>${rc.getMessage("resourcepage.information")}</h2>
 			    <#if page.information.getResource_logo_url()?has_content>
@@ -16,11 +16,7 @@
 			    </#if>   
 			    <#if page.information.get_abstract()?has_content>
 			   		<b>${rc.getMessage("resourcepage.abstract")}:</b> ${page.information.get_abstract()!}</br>
-			    </#if>
-			    <#if page.information.getResource_uuid()?has_content>
-			   		<b>${rc.getMessage("resourcepage.uuid")}:</b>
-			   		<a href="http://www.gbif.org/dataset/${page.information.getResource_uuid()}" target="_blank">${page.information.getResource_uuid()}</a></br>
-			    </#if>   
+			    </#if>  
 			    <#if page.information.getCollection_identifier()?has_content>
 				   <b>${rc.getMessage("resourcepage.collectionidentifier")}:</b> ${page.information.getCollection_identifier()!}</br>
 			    </#if>
@@ -40,10 +36,12 @@
 				   <b>${rc.getMessage("resourcepage.keywordthesaurus")}:</b> ${page.information.getKeyword_thesaurus()}</br>
 			    </#if>
 			    <#if page.information.getAlternate_identifier()?has_content>
-			    <b>${rc.getMessage("resourcepage.alternateidentifier")}:</b> ${page.information.getAlternate_identifier()}</br>
+			    <b>${rc.getMessage("resourcepage.alternateidentifier")}:</b>  ${page.information.getAlternate_identifier()}</br>	    	
 			    </#if>
    			    <#if page.resource.getArchive_url()?has_content>
-			    <b>${rc.getMessage("resourcespage.archiveurl")}:</b> <a href="getArchive_url()" target="_blank">${page.resource.getArchive_url()}</a>
+			    <b>${rc.getMessage("resourcespage.archiveurl")}:</b> <a href="${page.resource.getArchive_url()}" target="_blank">${rc.getMessage("resourcepage.dwca")}</a></br>
+			    <#assign repository = page.resource.getArchive_url()?replace("archive","resource")>
+			    <b>${rc.getMessage("resourcepage.repository")}:</b> <a href="${repository}" target="_blank">${repository}</a>
 			    </#if>
 		    
 			    <h2>${rc.getMessage("resourcepage.licensingandrights")}</h2>
