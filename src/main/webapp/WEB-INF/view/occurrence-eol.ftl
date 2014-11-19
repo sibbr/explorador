@@ -1,9 +1,5 @@
-
-
-   
-               <div id="eolcontent">
-			   
-   <#assign species = "<i>${page.occModel.scientificname?if_exists}</i>"> 
+<div id="eolcontent">
+	<#assign species = "<i>${page.occModel.scientificname?if_exists}</i>"> 
 				   <!-- Enciclopedia of Life -->
 				   <h2>${rc.getMessage("occpage.other.enciclopedia.of.life")}</h2>
 				   </br>

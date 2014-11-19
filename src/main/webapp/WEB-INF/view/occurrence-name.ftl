@@ -9,6 +9,13 @@
 <!-- JQUERY LOAD BHL AND EOL -->
 <script type="text/javascript">
 $(document).ready(function(){
+	$("#nvvlink").click(function(evento){
+		evento.preventDefault();
+		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.namecheck")}</strong></div>");
+		$("#servicecontent").load("?view=nvv #nvvcontent");
+	});
+})
+$(document).ready(function(){
 	$("#bhllink").click(function(evento){
 		evento.preventDefault();
 		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</strong></div>");
@@ -51,6 +58,7 @@ $(document).ready(function(){
         <!-- NAME TAB -->
         <div id="name" class="current">
           <ul>
+            <li><a href="?view=nvv" id="nvvlink">${rc.getMessage("occpage.other.namecheck")}</a></li>
             <li><a href="?view=bhl" id="bhllink">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
             <li><a href="?view=eol" id="eollink">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
           </ul>

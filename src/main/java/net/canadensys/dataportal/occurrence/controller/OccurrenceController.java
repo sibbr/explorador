@@ -38,6 +38,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import br.gov.sibbr.json.response.bhl.BHLResponse;
 import br.gov.sibbr.json.response.eol.EOLResponse;
+import br.gov.sibbr.json.response.namecheck.NameCheckResponse;
 
 /**
  * Controller of all occurrence related features of the occurrence portal.
@@ -68,6 +69,7 @@ public class OccurrenceController {
 	private static final String NAME_VIEW = "name";
 	private static final String BHL_VIEW = "bhl";
 	private static final String EOL_VIEW = "eol";
+	private static final String NAME_VALIDATION_VIEW = "nvv";
 	private static final String CONTACT_VIEW = "contact";
 
 	@Autowired
@@ -157,6 +159,13 @@ public class OccurrenceController {
 					}
 				}
 				return new ModelAndView("occurrence-eol", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(NAME_VALIDATION_VIEW)) {
+				// Add name validation information
+				if (occModel != null) {
+					modelRoot.put("occNVV", new NameCheckResponse(occModel.getDwcaid()).getNames());
+				}
+				return new ModelAndView("occurrence-nvv", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 			}
 			else if (view.equalsIgnoreCase(CONTACT_VIEW)) {
 				return new ModelAndView("occurrence-contact", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);

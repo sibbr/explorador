@@ -27,6 +27,7 @@ public class JSONProcessor {
 	// Define API base url address:
 	private static final String bhlURL = "http://www.biodiversitylibrary.org/api2/httpquery.ashx?";
 	private static final String eolURL = "http://eol.org/api/search/1.0.json?";
+	private static final String nameCheckURL = "http://localhost:8080/dataquality-services/api/ocorrencia/busca/";
 
 	/**
 	 * Main test method
@@ -69,7 +70,7 @@ public class JSONProcessor {
 		JSONObject json = null;
 
 		// Mount full API URL adding parameters:
-		String mountedUrl = mountUrl(getBhlURL(), parameters);
+		String mountedUrl = mountUrl(getBhlUrl(), parameters);
 		try {
 			json = readJsonFromUrl(mountedUrl);
 		}
@@ -93,7 +94,7 @@ public class JSONProcessor {
 			params.put("namebankid", nameBankId);
 			params.put("apikey", "0b33c0fb-f19b-4a93-9c56-5d35e99d03a3");
 			params.put("format", "json");
-			mountedUrl = mountUrl(getBhlURL(), params);
+			mountedUrl = mountUrl(getBhlUrl(), params);
 			try {
 				json = readJsonFromUrl(mountedUrl);
 			}
@@ -125,7 +126,7 @@ public class JSONProcessor {
 		JSONObject json = null;
 
 		// Mount full API URL adding parameters:
-		String mountedUrl = mountUrl(getEolURL(), parameters);
+		String mountedUrl = mountUrl(getEolUrl(), parameters);
 		try {
 			json = readJsonFromUrl(mountedUrl);
 		}
@@ -170,6 +171,29 @@ public class JSONProcessor {
 	}
 
 	/**
+	 * Access name check service to find name information given an occurrence's dwcaid 
+	 * @param dwcaid
+	 * @return
+	 */
+	public static JSONObject fetchNameCheck(String dwcaid) {
+		// JSON response object:
+		JSONObject json = null;
+
+		// Mount full API URL adding parameters:
+		String mountedUrl = getNameCheckUrl() + dwcaid;
+		try {
+			json = readJsonFromUrl(mountedUrl);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+	
+	/**
 	 * Reads characters to string from reader
 	 * 
 	 * @param rd
@@ -198,6 +222,10 @@ public class JSONProcessor {
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
+			// Treat cases when response is just an array:
+			if (jsonText.charAt(0) == '[') {
+				jsonText = "{Result:" + jsonText + "}";
+			}	
 			JSONObject json = new JSONObject(jsonText);
 			return json;
 		}
@@ -232,7 +260,7 @@ public class JSONProcessor {
 	 * 
 	 * @return
 	 */
-	public static String getBhlURL() {
+	public static String getBhlUrl() {
 		return bhlURL;
 	}
 
@@ -241,8 +269,12 @@ public class JSONProcessor {
 	 * 
 	 * @return
 	 */
-	public static String getEolURL() {
+	public static String getEolUrl() {
 		return eolURL;
+	}
+
+	public static String getNameCheckUrl() {
+		return nameCheckURL;
 	}
 }
 // EOF

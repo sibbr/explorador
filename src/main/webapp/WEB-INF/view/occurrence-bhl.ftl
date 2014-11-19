@@ -1,5 +1,4 @@
-<div id="bhlcontent"> 
-  
+<div id="bhlcontent">
   <!-- Biodiversity Heritage Library -->
   <h2>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</h2>
   <ul>
@@ -35,4 +34,5 @@
   <#assign coordinateuncertaintyinmeters=0>
   <#if page.occRawModel.coordinateuncertaintyinmeters?? && (page.occRawModel.coordinateuncertaintyinmeters?length>0)>
   <#assign coordinateuncertaintyinmeters=page.occRawModel.coordinateuncertaintyinmeters?number>
-  </#if> </div>
+  </#if>
+</div>
