@@ -1,5 +1,10 @@
 <div id="nvvcontent">
 	<h2>${rc.getMessage("occpage.other.namecheck")}</h2>
+	<p>${rc.getMessage("occpage.nvv.description1")}</p>
+	<p>${rc.getMessage("occpage.nvv.description2")}</p>
+	<p>${rc.getMessage("occpage.nvv.description3")}</p>
+	<small>${rc.getMessage("occpage.nvv.description4")}</small>
+	</br></br>
 	<#if page.occNVV?has_content>
 		<table id="results" class="sortable">
 			<thead>

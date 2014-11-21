@@ -230,7 +230,7 @@ ${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span i
 		<p><label for="email">${rc.getMessage("control.download.email.label")}</label><input id="email" type="text"/></p>
 		<p class="clear_fix"><button type="button" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${page.occurrenceCount}']);">${rc.getMessage("control.download.button.send")}</button></p>
 	</div>
-	<div id="status" class="hidden">
+	<div id="status">
 		<p>${rc.getMessage("control.download.status.details1")}</p>
 		<p>${rc.getMessage("control.download.status.details2")}</p>
 	</div>

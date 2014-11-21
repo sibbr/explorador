@@ -1,5 +1,6 @@
 package net.canadensys.dataportal.publisher.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.canadensys.dataportal.occurrence.dao.PublisherInformationDAO;
@@ -43,6 +44,14 @@ public class PublisherServiceImpl implements PublisherService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<PublisherInformationModel> loadPublishers() {
-		return PublisherInformationDAO.loadPublishers();
+		List<PublisherInformationModel> publishers = PublisherInformationDAO.loadPublishers();
+		List<PublisherInformationModel> filteredPublishers = new ArrayList<PublisherInformationModel>();
+		for (PublisherInformationModel publisher: publishers) {
+			if (publisher.getRecord_count() > 0) {
+				filteredPublishers.add(publisher);
+			}
+		}
+		// Filter publishers without records:
+		return filteredPublishers;		
 	}
 }

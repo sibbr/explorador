@@ -185,8 +185,8 @@ public class OccurrenceController {
 	@RequestMapping(value = "/occurrences/{auto_id}", method = RequestMethod.POST)
 	@I18nTranslation(resourceName = "occurrence", translateFormat = "/occurrences/{}")
 	public ModelAndView handleResourceContactMsg(@PathVariable String auto_id, HttpServletRequest request) {
-		String sourceFileId = (String) request.getSession().getAttribute("sourceFileId");
-		ResourceInformationModel resourceInformationModel = occurrenceService.loadResourceInformationModel(sourceFileId);
+		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
+		ResourceInformationModel resourceInformationModel = occurrenceService.loadResourceInformationModel(occModel.getSourcefileid());
 		// Get resource contacts:
 		Set<ResourceContactModel> contacts = resourceInformationModel.getContacts();
 
@@ -232,7 +232,8 @@ public class OccurrenceController {
 			templateData.put("occurrenceUrl", occurrenceUrl);
 			templateData.put("time", new SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 			String templateName = appConfig.getContactEmailTemplateName(locale);
-			mailSender.sendMessage(mailto, subject, templateData, templateName);
+			boolean sent = mailSender.sendMessage(mailto, subject, templateData, templateName);
+			LOGGER.error("*** Email enviado para o publicador: " + sent);
 		}
 		// Redirect back to occurrence:
 
