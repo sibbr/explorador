@@ -1,3 +1,46 @@
+<link rel="stylesheet" href="/explorador/assets/styles/occportal.css" media="screen,print"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<style>
+.boxcontent {
+	margin: 0 0 20px;
+	background: rgb(255,255,255);
+	border-radius: 0px 5px 5px 5px;
+	-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;
+	box-shadow: rgb(223,223,223) 3px 0px 3px 2px;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-top: none!important;
+}
+.round {
+	background-color: #fff!important;
+	border: none!important;
+}
+</style>
+</head><a id="main-content"></a>
+<div id="body">
+  <div id="content" class="clear_fix">
+    <h1><i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})</h1>
+    <p class="details">${rc.getMessage("occpage.header.details")} <a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${page.resource.getId()}" target="_self">${page.information.getTitle()?if_exists}</a></p>
+    <!-- CONTENT TAB -->
+    <div id="tabwrap">
+      <ul id="tabs">
+        <li><a href="?view=interpreted">${rc.getMessage("occpage.header.button.normal")} <span class="question">${rc.getMessage("occpage.information.icon")}</span></a></li>
+        <li><a href="?view=original">${rc.getMessage("occpage.header.button.dwc")} <span class="question2">${rc.getMessage("occpage.information.icon")}</span></a></li>
+        <li class="current"><a href="?view=name">${rc.getMessage("occpage.other.information")}</a></li>
+        <li><a href="?view=contact">${rc.getMessage("occpage.menu.datasetcontact")}</a></li>
+      </ul>
+      <div id="content_tab" class="boxcontent"> 
+        <!-- NORMAL TAB-->
+        <div id="interpreted"></div>
+        <!-- DWC TAB-->
+        <div id="original"></div>
+        <!-- NAME TAB -->
+        <div id="name" class="current">
+          <ul>
+            <li><a href="?view=nvv" id="nvvlink">${rc.getMessage("occpage.other.namecheck")}</a></li>
+            <li><a href="?view=bhl" id="bhllink">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
+            <li><a href="?view=eol" id="eollink">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
+          </ul>
 <div id="bhlcontent">
   <!-- Biodiversity Heritage Library -->
   <h2>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</h2>
@@ -36,3 +79,12 @@
   <#assign coordinateuncertaintyinmeters=page.occRawModel.coordinateuncertaintyinmeters?number>
   </#if>
 </div>
+        </div>
+        <!-- CONTACT TAB -->
+        <div id="contact"></div>
+      </div>
+    </div>
+    <!-- END TAB content_tab --> 
+  </div>
+  <#-- content --> </div>
+<script type='text/javascript' src='/explorador/assets/js/lib/sorttable.js'>
