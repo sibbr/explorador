@@ -80,6 +80,92 @@
 					    </tbody>  
 				      </table>
 				      </#if>
+				      
+				      <!-- Media files related to the name -->
+				      <#assign mediaFiles = page.getMedia()>
+				      <#if mediaFiles?has_content>
+				      <h3> ${rc.getMessage("occpage.other.media.count", [mediaFiles?size])}:</h3>
+				      <#list mediaFiles as media>
+				      <li>
+				         <h2>
+				            ${media_index+1}.
+				            <#if media.getTitle()?has_content>
+				            ${media.getTitle()}
+				            <#else>
+				            ${rc.getMessage("occpage.other.object.title.not.provided")}
+				            </#if>
+				         </h2>
+				      </li>
+				      <ui>
+				      	 <#if media.getMediaURL()?contains("ogv")>
+				      	 	<video width="320" height="240" controls>
+				      	 		<source src="${media.getMediaURL()}" type="video/ogg">
+				      	 	</video>
+				      	 <#elseif media.getMediaURL()?contains("mp4")>
+				    		<video width="320" height="240" controls>
+				      	 		<source src="${media.getMediaURL()}" type="video/mp4">
+				      	 	</video>
+				      	 <#else>
+					         <audio controls>
+					            <source src="${media.getMediaURL()}" type="${media.getMimeType()}">
+					            ${rc.getMessage("occpage.other.media.no.support")}
+					         </audio>
+				         </#if>
+				         <li>
+				            <b>${rc.getMessage("occpage.other.data.source")}: </b>
+				            <a href="${media.getSource()}" target="_blank">${media.getSource()}</a>
+				         </li>
+				         <li><b>${rc.getMessage("occpage.other.data.mime.type")}: </b> <a href="${media.getDataType()}" target = "_blank">${media.getMimeType()}</a></li>
+				         <li><b>${rc.getMessage("occpage.other.data.license")}: </b>
+				            <#if media.getLicense()?has_content>
+				            ${media.getLicense()}
+				            <#else>
+				            ${rc.getMessage("occpage.other.data.not.provided")}
+				            </#if>
+				         </li>
+				         <li><b>${rc.getMessage("occpage.other.data.rights")}: </b> 
+				            <#if media.getRights()?has_content>
+				            ${media.getRights()}
+				            <#else>
+				            ${rc.getMessage("occpage.other.data.not.provided")}
+				            </#if>
+				         </li>
+				         <li><b>${rc.getMessage("occpage.other.data.rights.holder")}: </b>
+				            <#if media.getRightsHolder()?has_content>
+				            ${media.getRightsHolder()}
+				            <#else>
+				            ${rc.getMessage("occpage.other.data.not.provided")}
+				            </#if>	
+				         </li>
+				         <li><b>${rc.getMessage("occpage.other.data.description")}: </b>
+				            <#if media.getDescription()?has_content>
+				            ${media.getDescription()}
+				            <#else>
+				            ${rc.getMessage("occpage.other.data.not.provided")}
+				            </#if>
+				         </li>
+				      </ui>
+				      <#if media.getAgents()?has_content>
+				      <li><b>${rc.getMessage("occpage.other.agents")}:</b></li>
+				      <table style="border:1px solid black;border-collapse:collapse;">
+				         <tr>
+				            <th>${rc.getMessage("occpage.other.agents.full.name")}</th>
+				            <th>${rc.getMessage("occpage.other.data.rating")}</th>
+				            <th>${rc.getMessage("occpage.other.agents.role")}</th>
+				         </tr>
+				         <#list media.getAgents() as agent>
+				         <tr>
+				            <td>${agent.getFullName()}</td>
+				            <td>${agent.getHomepage()}</td>
+				            <td>${agent.getRole()}</td>
+				         </tr>
+				         </#list>
+				      </table>
+				      </#if>
+				      </br>
+				      </#list><!-- End media list -->
+				      </#if>
+				      
 				      <!-- Images related to the name -->
 				      <#assign images = page.getImages()>
 				      <#if images?has_content>
@@ -151,80 +237,7 @@
 				      </br>
 				      </#list><!-- End images list -->
 				      </#if>
-				      <!-- Audio related to the name -->
-				      <#assign audioFiles = page.getAudio()>
-				      <#if audioFiles?has_content>
-				      <h3> ${rc.getMessage("occpage.other.audio.count", [audioFiles?size])}:</h3>
-				      <#list audioFiles as audio>
-				      <li>
-				         <h2>
-				            ${audio_index+1}.
-				            <#if audio.getTitle()?has_content>
-				            ${audio.getTitle()}
-				            <#else>
-				            ${rc.getMessage("occpage.other.object.title.not.provided")}
-				            </#if>
-				         </h2>
-				      </li>
-				      <ui>
-				         <audio controls>
-				            <source src="${audio.getMediaURL()}" type="${audio.getMimeType()}">
-				            ${rc.getMessage("occpage.other.audio.no.support")}
-				         </audio>
-				         <li>
-				            </b>${rc.getMessage("occpage.other.data.source")}: </b>
-				            <a href="${audio.getSource()}" target="_blank">${audio.getSource()}</a>
-				         </li>
-				         <li><b>${rc.getMessage("occpage.other.data.mime.type")}: </b> <a href="${audio.getDataType()}" target = "_blank">${audio.getMimeType()}</a></li>
-				         <li><b>${rc.getMessage("occpage.other.data.license")}: </b>
-				            <#if audio.getLicense()?has_content>
-				            ${audio.getLicense()}
-				            <#else>
-				            ${rc.getMessage("occpage.other.data.not.provided")}
-				            </#if>
-				         </li>
-				         <li><b>${rc.getMessage("occpage.other.data.rights")}: </b> 
-				            <#if audio.getRights()?has_content>
-				            ${audio.getRights()}
-				            <#else>
-				            ${rc.getMessage("occpage.other.data.not.provided")}
-				            </#if>
-				         </li>
-				         <li><b>${rc.getMessage("occpage.other.data.rights.holder")}: </b>
-				            <#if audio.getRightsHolder()?has_content>
-				            ${audio.getRightsHolder()}
-				            <#else>
-				            ${rc.getMessage("occpage.other.data.not.provided")}
-				            </#if>	
-				         </li>
-				         <li><b>${rc.getMessage("occpage.other.data.description")}: </b>
-				            <#if audio.getDescription()?has_content>
-				            ${audio.getDescription()}
-				            <#else>
-				            ${rc.getMessage("occpage.other.data.not.provided")}
-				            </#if>
-				         </li>
-				      </ui>
-				      <#if audio.getAgents()?has_content>
-				      <li><b>${rc.getMessage("occpage.other.agents")}:</b></li>
-				      <table style="border:1px solid black;border-collapse:collapse;">
-				         <tr>
-				            <th>${rc.getMessage("occpage.other.agents.full.name")}</th>
-				            <th>${rc.getMessage("occpage.other.data.rating")}</th>
-				            <th>${rc.getMessage("occpage.other.agents.role")}</th>
-				         </tr>
-				         <#list audio.getAgents() as agent>
-				         <tr>
-				            <td>${agent.getFullName()}</td>
-				            <td>${agent.getHomepage()}</td>
-				            <td>${agent.getRole()}</td>
-				         </tr>
-				         </#list>
-				      </table>
-				      </#if>
-				      </br>
-				      </#list><!-- End images list -->
-				      </#if>
+				      
 				      <!-- Texts related to the name -->
 				      <#assign texts = page.getTexts()>
 				      <#if texts?has_content>

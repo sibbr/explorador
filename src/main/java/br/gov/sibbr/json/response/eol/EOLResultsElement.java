@@ -13,7 +13,7 @@ import br.gov.sibbr.util.JSONProcessor;
  * Controller for modelling a JSON "Results" object to the EOL API response
  * adding corresponding pages.
  * 
- * @author Pedro GUimarães
+ * @author Pedro Guimarães
  * 
  */
 public class EOLResultsElement {
@@ -66,10 +66,10 @@ public class EOLResultsElement {
 				JSONArray dataObjects = (JSONArray) json.get("dataObjects");
 				ArrayList<EOLImage> images = EOLImage.processJSON(dataObjects);
 				ArrayList<EOLText> texts = EOLText.processJSON(dataObjects);
-				ArrayList<EOLAudio> audio = EOLAudio.processJSON(dataObjects);
+				ArrayList<EOLMedia> media = EOLMedia.processJSON(dataObjects);
 
 				// Add new EOLPage to the object page list:
-				getPages().add(new EOLPage(id, richnessScore, synonyms, vernacularNames, taxonConcepts, images, texts, audio));
+				getPages().add(new EOLPage(id, richnessScore, synonyms, vernacularNames, taxonConcepts, images, texts, media));
 			}
 		}
 		catch (JSONException e) {

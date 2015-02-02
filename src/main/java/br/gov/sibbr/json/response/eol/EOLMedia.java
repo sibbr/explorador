@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EOLAudio extends EOLDataObject {
+public class EOLMedia extends EOLDataObject {
 
 	private String eolMediaURL;
 	private String mediaURL;
@@ -31,7 +31,7 @@ public class EOLAudio extends EOLDataObject {
 	 * @param eolMediaURL
 	 * @param agents
 	 */
-	public EOLAudio(String identifier, String dataObjectVersionID, String dataType, String vettedStatus, String dataRating, String mimeType,
+	public EOLMedia(String identifier, String dataObjectVersionID, String dataType, String vettedStatus, String dataRating, String mimeType,
 			String title, String language, String license, String rights, String rightsHolder, String source, String description, String mediaURL,
 			String eolMediaURL, List<EOLAgent> agents) {
 		setIdentifier(identifier);
@@ -52,8 +52,8 @@ public class EOLAudio extends EOLDataObject {
 		setAgents(agents);
 	}
 
-	public static ArrayList<EOLAudio> processJSON(JSONArray json) {
-		ArrayList<EOLAudio> images = new ArrayList<EOLAudio>();
+	public static ArrayList<EOLMedia> processJSON(JSONArray json) {
+		ArrayList<EOLMedia> images = new ArrayList<EOLMedia>();
 		try {
 			for (int i = 0; i < json.length(); i++) {
 				JSONObject item = (JSONObject) json.get(i);
@@ -63,7 +63,7 @@ public class EOLAudio extends EOLDataObject {
 					// Ensure lower case:
 					mime = mime.toLowerCase();
 					// Check this is an audio object:
-					if (mime.contains("ogg") || mime.contains("mp3") || mime.contains("wav") || mime.contains("mp4")) {
+					if (mime.contains("ogg") || mime.contains("mp3") || mime.contains("wav") || mime.contains("mp4") || mime.contains("ogv")) {
 						String identifier = "";
 						if (!item.isNull("identifier"))
 							identifier = (String) item.get("identifier");
@@ -129,7 +129,7 @@ public class EOLAudio extends EOLDataObject {
 							agents = EOLAgent.processJSON((JSONArray) item.getJSONArray("agents"));
 
 						// Create new EOLImage and add to list:
-						images.add(new EOLAudio(identifier, dataObjectVersionID, dataType, vettedStatus, dataRating, mimeType, title, language,
+						images.add(new EOLMedia(identifier, dataObjectVersionID, dataType, vettedStatus, dataRating, mimeType, title, language,
 								license, rights, rightsHolder, source, description, mediaUrl, eolMediaUrl, agents));
 					}
 				}

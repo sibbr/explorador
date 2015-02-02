@@ -12,13 +12,13 @@ public class EOLPage {
 	private List<EOLTaxonConcept> taxonConcepts;
 	private List<EOLImage> images;
 	private List<EOLText> texts;
-	private List<EOLAudio> audio;
+	private List<EOLMedia> media;
 
 	/**
 	 * Basic constructor for POJO
 	 */
 	public EOLPage(String id, String richnessScore, ArrayList<EOLSynonym> syonyms, ArrayList<EOLVernacularName> vernacularNames,
-			ArrayList<EOLTaxonConcept> taxonConcepts, ArrayList<EOLImage> images, ArrayList<EOLText> texts, ArrayList<EOLAudio> audio) {
+			ArrayList<EOLTaxonConcept> taxonConcepts, ArrayList<EOLImage> images, ArrayList<EOLText> texts, ArrayList<EOLMedia> media) {
 		setId(id);
 		setRichnessScore(richnessScore);
 		setSynonyms(syonyms);
@@ -26,7 +26,7 @@ public class EOLPage {
 		setTaxonConcepts(taxonConcepts);
 		setImages(images);
 		setTexts(texts);
-		setAudio(audio);
+		setAudio(media);
 	}
 
 	/**
@@ -51,8 +51,8 @@ public class EOLPage {
 		output += "\n \t Texts: " + getTexts().size() + "\n";
 		for (EOLText t : getTexts())
 			output += t.toString();
-		output += "\n \t Audio: " + getTexts().size() + "\n";
-		for (EOLAudio a : getAudio())
+		output += "\n \t Media: " + getTexts().size() + "\n";
+		for (EOLMedia a : getMedia())
 			output += a.toString();
 		return output;
 	}
@@ -165,16 +165,16 @@ public class EOLPage {
 	/**
 	 * @return the audio
 	 */
-	public List<EOLAudio> getAudio() {
-		return audio;
+	public List<EOLMedia> getMedia() {
+		return media;
 	}
 
 	/**
-	 * @param audio
+	 * @param media
 	 *            the audio to set
 	 */
-	public void setAudio(List<EOLAudio> audio) {
-		this.audio = audio;
+	public void setAudio(List<EOLMedia> media) {
+		this.media = media;
 	}
 
 } // EOF
