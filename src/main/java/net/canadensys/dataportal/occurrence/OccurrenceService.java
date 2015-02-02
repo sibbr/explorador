@@ -3,8 +3,8 @@ package net.canadensys.dataportal.occurrence;
 import java.util.List;
 
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
-import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
-import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
+import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
 
 /**
  * OccurrenceService layer interface to access occurrence related data. This interface handles only high-level methods.
@@ -56,7 +56,7 @@ public interface OccurrenceService {
 	 * @param sourcefileid
 	 * @return
 	 */
-	public ResourceInformationModel loadResourceInformationModel(String resourceUuid);
+	public ResourceMetadataModel loadResourceInformationModel(String resourceUuid);
 
 	/**
 	 * Load a ResourceModel based on the sourcefileid
@@ -64,9 +64,9 @@ public interface OccurrenceService {
 	 * @param sourcefileid
 	 * @return
 	 */
-	public ResourceModel loadResourceModel(String sourcefileid);
+	public DwcaResourceModel loadResourceModel(String sourcefileid);
 	
-	public List<ResourceModel> loadResources();
+	public List<DwcaResourceModel> loadResources();
 	
 
 	/**
@@ -75,5 +75,5 @@ public interface OccurrenceService {
 	 * @param sourcefileid
 	 * @return
 	 */
-	public ResourceModel loadResourceModelByAutoId(String auto_id);
+	public DwcaResourceModel loadResourceModelByAutoId(String auto_id);
 }

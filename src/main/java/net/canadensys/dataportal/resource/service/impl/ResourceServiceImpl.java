@@ -3,9 +3,9 @@ package net.canadensys.dataportal.resource.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.canadensys.dataportal.occurrence.dao.ResourceDAO;
-import net.canadensys.dataportal.occurrence.dao.ResourceInformationDAO;
-import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.occurrence.dao.DwcaResourceDAO;
+import net.canadensys.dataportal.occurrence.dao.ResourceMetadataDAO;
+import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
 import net.canadensys.dataportal.resource.service.ResourceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceServiceImpl implements ResourceService {
 
 	@Autowired
-	private ResourceDAO resourceDAO;
+	private DwcaResourceDAO resourceDAO;
 
 	@Autowired
-	private ResourceInformationDAO resourceInformationDAO;
+	private ResourceMetadataDAO resourceInformationDAO;
 	
 	/**
 	 * Fetch resource given its auto_id:
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ResourceModel loadResource(String auto_id) {
-		return resourceDAO.load(auto_id);
+	public DwcaResourceModel loadResource(String auto_id) {
+		return resourceDAO.loadBySourceFileId(auto_id);
 	}
 
 	/**
@@ -42,13 +42,13 @@ public class ResourceServiceImpl implements ResourceService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<ResourceModel> loadResources() {
+	public List<DwcaResourceModel> loadResources() {
 		return resourceDAO.loadResources();
 	}
 	
-	public List<ResourceModel> filterResourcesWithoutRecords(List<ResourceModel> resources) {
-		ArrayList<ResourceModel> filledResources = new ArrayList<ResourceModel>();
-		for(ResourceModel resource: resources) {
+	public List<DwcaResourceModel> filterResourcesWithoutRecords(List<DwcaResourceModel> resources) {
+		ArrayList<DwcaResourceModel> filledResources = new ArrayList<DwcaResourceModel>();
+		for(DwcaResourceModel resource: resources) {
 			if (resource.getRecord_count() > 0) {
 				filledResources.add(resource);
 			}	

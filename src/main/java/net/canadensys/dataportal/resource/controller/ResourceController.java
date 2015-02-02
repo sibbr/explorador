@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.controller.ControllerHelper;
-import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
-import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
+import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
 import net.canadensys.dataportal.resource.service.ResourceService;
 import net.canadensys.exception.web.ResourceNotFoundException;
 import net.canadensys.web.i18n.annotation.I18nTranslation;
@@ -64,13 +64,13 @@ public class ResourceController {
 	@RequestMapping(value = "/resources", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "resources", translateFormat = "/resources")
 	public ModelAndView handleResources(HttpServletRequest request) {
-		List<ResourceModel> resources = occurrenceService.loadResources();
+		List<DwcaResourceModel> resources = occurrenceService.loadResources();
 		// filter to display only resources with records
 		resources = resourceService.filterResourcesWithoutRecords(resources);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (resources != null) {
-			List<ResourceModel> pageResources = null;
+			List<DwcaResourceModel> pageResources = null;
 			// Get total number of resources
 			int totalResources = resources.size();
 			// Provide the number of pages
@@ -140,9 +140,9 @@ public class ResourceController {
 	public ModelAndView handleResource(@PathVariable String auto_id,
 			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		ResourceModel resource = occurrenceService
+		DwcaResourceModel resource = occurrenceService
 				.loadResourceModelByAutoId(auto_id);
-		ResourceInformationModel information = occurrenceService
+		ResourceMetadataModel information = occurrenceService
 				.loadResourceInformationModel(resource.getResource_uuid());
 		// Get current time to display in citation:
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");

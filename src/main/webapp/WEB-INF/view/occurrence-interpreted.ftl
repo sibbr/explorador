@@ -228,7 +228,7 @@
 	                     <th scope="row">${rc.getMessage("occpage.other.data.citation")}</th>
 	                     <td>
 	                     	<#if page.occModel.getBibliographiccitation()?has_content>
-	                     		${occModel.getBibliographiccitation()}
+	                     		${page.occModel.getBibliographiccitation()}
 	                     	<#else>
 	                     		${rc.getMessage("occ.not.provided.citation")}</br>
 	                     		<#if page.information.getCitation()?has_content>

@@ -21,7 +21,7 @@
 			<tbody>
 			   	<#list page.occNVV as result>
 			   		<#if result.getNome()?has_content>
-				   		<#if result.getNivelTaxonomico()?has_content && result.getNivelTaxonomico()?lower_case = "species">	
+				   		<#if result.getNivelTaxonomico()?has_content>	
 					   		<tr>
 				           		<td>${result.getNome()!}</td>
 				           		<td><#if result.getFonteAvaliadora()?has_content>${result.getFonteAvaliadora()?lower_case?cap_first}</#if></td>
@@ -52,7 +52,7 @@
 				          		</td>
 				          	</tr>
 				    	</#if>
-			    	</#if>
+			   		</#if>
 				</#list>
 			</tbody>
 		</table>	

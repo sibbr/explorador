@@ -27,7 +27,7 @@ public class JSONProcessor {
 	// Define API base url address:
 	private static final String bhlURL = "http://www.biodiversitylibrary.org/api2/httpquery.ashx?";
 	private static final String eolURL = "http://eol.org/api/search/1.0.json?";
-	private static final String nameCheckURL = "http://localhost:8080/dataquality-services/api/ocorrencia/busca/";
+	private static final String nameCheckURL = "http://localhost:8080/dataquality-services/api/ocorrencia/busca?dwca_id=";
 
 	/**
 	 * Main test method
