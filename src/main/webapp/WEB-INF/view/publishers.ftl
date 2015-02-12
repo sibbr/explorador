@@ -38,11 +38,12 @@
 			    	</#if>
 		        	<#if publisher.getDecimallongitude()?has_content>
 			    		<#assign longitude = publisher.getDecimallongitude()?string?replace(",",".")>
-			    	</#if>	
-		    		<#assign link = "<a href=" + "'" + rc.getMessage("publisherspage.publisherlink.map") + publisher.getAuto_id() + "'" + ">" + publisher.getName() + "</a>">
-		    		<#assign popuptxt = "</br>" + rc.getMessage("publisherspage.recordnumber") + " " + publisher.getRecord_count()?string>
-		   	        new L.marker([${latitude}, ${longitude}], {icon: institute}).bindPopup("${link} ${popuptxt}").addTo(map);
-							
+			    	</#if>
+			    	<#if latitude?has_content && longitude?has_content>
+			    		<#assign link = "<a href=" + "'" + rc.getMessage("publisherspage.publisherlink.map") + publisher.getAuto_id() + "'" + ">" + publisher.getName() + "</a>">
+			    		<#assign popuptxt = "</br>" + rc.getMessage("publisherspage.recordnumber") + " " + publisher.getRecord_count()?string>
+			   	        new L.marker([${latitude}, ${longitude}], {icon: institute}).bindPopup("${link} ${popuptxt}").addTo(map);
+		   	        </#if>	
 		        </#list>
 				L.control.fullscreen().addTo(map);
 	   	        map.on('click', onMarkerClick);

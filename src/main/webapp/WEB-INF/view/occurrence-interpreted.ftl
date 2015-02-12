@@ -260,7 +260,13 @@
 	                 </tr>
 	                 <tr>
 	                     <th scope="row">${rc.getMessage("occpage.other.data.accessrights")}</th>
-	                     <td><#if page.occRawModel.getAccessrights()?has_content>${occRawModel.getAccessrights()}<#else>${rc.getMessage("occ.not.provided")}</#if></td>
+	                     <td>
+	                     	<#if page.occRawModel.getAccessrights()?has_content>
+	                     		${occRawModel.getAccessrights()}
+	                     	<#else>
+	                     		${rc.getMessage("occ.not.provided")}
+	                     	</#if>
+	                     </td>
 	                 </tr>
 	              </tbody>
 	           </table>      
