@@ -30,10 +30,10 @@ if test -n $1 ; then
 fi
 
 # export Java JDK:
-export JAVA_HOME="/opt/jdk1.7.0_51/"
+export JAVA_HOME="/opt/jdk1.7.0_79/"
 
 #Tomcat base diretory:
-TOMCAT_DIR="/opt/apache-tomcat-8.0.12"
+TOMCAT_DIR="/opt/apache-tomcat-8.0.22"
 
 #Package name:
 PACKAGE_NAME="explorador.war"

@@ -4,12 +4,12 @@ import java.util.List;
 
 import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.cache.CacheManagementServiceIF;
+import net.canadensys.dataportal.occurrence.dao.DwcaResourceDAO;
 import net.canadensys.dataportal.occurrence.dao.OccurrenceDAO;
-import net.canadensys.dataportal.occurrence.dao.ResourceDAO;
-import net.canadensys.dataportal.occurrence.dao.ResourceInformationDAO;
+import net.canadensys.dataportal.occurrence.dao.ResourceMetadataDAO;
+import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
-import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
-import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +31,10 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	private OccurrenceDAO occurrenceDAO;
 
 	@Autowired
-	private ResourceInformationDAO resourceInformationDAO;
+	private ResourceMetadataDAO resourceInformationDAO;
 
 	@Autowired
-	private ResourceDAO resourceDAO;
+	private DwcaResourceDAO resourceDAO;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -73,7 +73,7 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public ResourceInformationModel loadResourceInformationModel(String resourceUuid) {
+	public ResourceMetadataModel loadResourceMetadataModel(String resourceUuid) {
 		return resourceInformationDAO.load(resourceUuid);
 	}
 
@@ -85,13 +85,13 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	@Override
 	@Transactional(readOnly = true)
 	@Cacheable(value = CacheManagementServiceIF.RESOURCE_MODEL_CACHE_KEY, key = "#sourcefileid", condition = "#sourcefileid != null")
-	public ResourceModel loadResourceModel(String sourcefileid) {
-		return resourceDAO.load(sourcefileid);
+	public DwcaResourceModel loadResourceModel(String sourcefileid) {
+		return resourceDAO.loadBySourceFileId(sourcefileid);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<ResourceModel> loadResources() {
+	public List<DwcaResourceModel> loadResources() {
 		return resourceDAO.loadResources();
 	}
 	
@@ -102,7 +102,7 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ResourceModel loadResourceModelByAutoId(String auto_id) {
-		return resourceDAO.loadByAutoId(Integer.parseInt(auto_id));
+	public DwcaResourceModel loadResourceModelByAutoId(String auto_id) {
+		return resourceDAO.load(Integer.parseInt(auto_id));
 	}
 }

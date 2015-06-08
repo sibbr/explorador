@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
+import net.canadensys.dataportal.occurrence.model.ContactModel;
+import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceViewModel;
-import net.canadensys.dataportal.occurrence.model.ResourceContactModel;
-import net.canadensys.dataportal.occurrence.model.ResourceInformationModel;
-import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
 import net.canadensys.exception.web.ResourceNotFoundException;
 import net.canadensys.mail.TemplateMailSender;
 import net.canadensys.web.i18n.I18nUrlBuilder;
@@ -88,14 +88,14 @@ public class OccurrenceController {
 	public ModelAndView handleOccurrencePerResource(@PathVariable String auto_id, HttpServletRequest request) {
 		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		ResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
-		ResourceInformationModel resourceInformation = occurrenceService.loadResourceInformationModel(resource.getResource_uuid());
+		DwcaResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
+		ResourceMetadataModel resourceInformation = occurrenceService.loadResourceMetadataModel(resource.getGbif_package_id());
 		// Load resource contact data:
-		Set<ResourceContactModel> contacts = resourceInformation.getContacts();
-		ResourceContactModel contact = null;
+		Set<ContactModel> contacts = resourceInformation.getContacts();
+		ContactModel contact = null;
 		if (contacts != null) {
-			for (ResourceContactModel rcm : contacts) {
-				if (rcm.getContact_type().equalsIgnoreCase("contact")) {
+			for (ContactModel rcm : contacts) {
+				if (rcm.getRole().equalsIgnoreCase("contact")) {
 					contact = rcm;
 					break;
 				}
@@ -186,9 +186,9 @@ public class OccurrenceController {
 	@I18nTranslation(resourceName = "occurrence", translateFormat = "/occurrences/{}")
 	public ModelAndView handleResourceContactMsg(@PathVariable String auto_id, HttpServletRequest request) {
 		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
-		ResourceInformationModel resourceInformationModel = occurrenceService.loadResourceInformationModel(occModel.getSourcefileid());
+		ResourceMetadataModel resourceInformationModel = occurrenceService.loadResourceMetadataModel(occModel.getSourcefileid());
 		// Get resource contacts:
-		Set<ResourceContactModel> contacts = resourceInformationModel.getContacts();
+		Set<ContactModel> contacts = resourceInformationModel.getContacts();
 
 		// URL from the previous URL accessed that led to the contact form:
 		Locale locale = RequestContextUtils.getLocale(request);
@@ -203,9 +203,9 @@ public class OccurrenceController {
 		ControllerHelper.setPageHeaderVariables(request, "contact", new String[] { auto_id }, appConfig, modelRoot);
 
 		Map<String, Object> templateData = new HashMap<String, Object>();
-		ResourceContactModel contact = null;
-		for (ResourceContactModel rcm : contacts) {
-			if (rcm.getContact_type().equalsIgnoreCase("contact")) {
+		ContactModel contact = null;
+		for (ContactModel rcm : contacts) {
+			if (rcm.getRole().equalsIgnoreCase("contact")) {
 				contact = rcm;
 				// Add contacts information
 				modelRoot.put("contact", contact);
@@ -295,7 +295,7 @@ public class OccurrenceController {
 		}
 
 		// handle data source page URL (url to the resource page)
-		ResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
+		DwcaResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
 		if (resource != null) {
 			if (StringUtils.contains(resource.getArchive_url(), IPT_ARCHIVE_PATTERN)) {
 				occViewModel.setDataSourcePageURL(StringUtils.replace(resource.getArchive_url(), IPT_ARCHIVE_PATTERN, IPT_RESOURCE_PATTERN));

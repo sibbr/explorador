@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.controller.ControllerHelper;
-import net.canadensys.dataportal.occurrence.model.PublisherInformationModel;
-import net.canadensys.dataportal.occurrence.model.ResourceModel;
+import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
+import net.canadensys.dataportal.occurrence.model.PublisherModel;
 import net.canadensys.dataportal.publisher.service.PublisherService;
 import net.canadensys.dataportal.resource.service.ResourceService;
 import net.canadensys.exception.web.ResourceNotFoundException;
@@ -69,14 +69,14 @@ public class PublisherController {
 	@RequestMapping(value = "/publishers", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "publishers", translateFormat = "/publishers")
 	public ModelAndView handlePublishers(HttpServletRequest request) {
-		List<PublisherInformationModel> publishers = publisherService
+		List<PublisherModel> publishers = publisherService
 				.loadPublishers();
 		// Used for map filling purposes:
-		List<PublisherInformationModel> allPublishers = publishers;
+		List<PublisherModel> allPublishers = publishers;
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		String pageNumber = request.getParameter(PAGE_PARAM);
 		if (publishers != null) {
-			List<PublisherInformationModel> pagePublishers = null;
+			List<PublisherModel> pagePublishers = null;
 			// Get total number of publishers
 			int totalPublishers = publishers.size();
 			// Provide the number of pages
@@ -148,15 +148,15 @@ public class PublisherController {
 	public ModelAndView handlePublisher(@PathVariable String auto_id,
 			HttpServletRequest request) {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		PublisherInformationModel publisher = publisherService
+		PublisherModel publisher = publisherService
 				.loadPublisher(auto_id);
 		if (publisher != null) {
 			// Filter resources with no records:
-			List<ResourceModel> filteredResourcesList = new ArrayList<ResourceModel>(
+			List<DwcaResourceModel> filteredResourcesList = new ArrayList<DwcaResourceModel>(
 					publisher.getResources());
 			filteredResourcesList = resourceService
 					.filterResourcesWithoutRecords(filteredResourcesList);
-			Set<ResourceModel> filteredResourcesSet = new HashSet<ResourceModel>(
+			Set<DwcaResourceModel> filteredResourcesSet = new HashSet<DwcaResourceModel>(
 					filteredResourcesList);
 			publisher.setResources(filteredResourcesSet);
 			modelRoot.put("publisher", publisher);

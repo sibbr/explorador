@@ -28,7 +28,7 @@
 		        }).addTo(map);
 				
 				var institute = L.icon({
-				    iconUrl: 'http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/markers/marker-7.png',
+				    iconUrl: 'http://gbif.sibbr.gov.br/style/img/markers/marker-7.png',
 				    iconAnchor:   [17, 42], // point of the icon which will correspond to marker's location
 				});	
 				

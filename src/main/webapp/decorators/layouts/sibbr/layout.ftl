@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title><sitemesh:write property='title'>Title goes here</sitemesh:write></title>
-<link rel="stylesheet" href="http://buriti.lncc.br/wordpress/wp-content/themes/portal/styles/data-common.css" media="screen,print"/>
+<link rel="stylesheet" href="http://gbif.sibbr.gov.br/style/data-common.css" media="screen,print"/>
 
-<link rel="icon" href="http://buriti.lncc.br/wordpress/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
-<link rel="shortcut icon" href="http://buriti.lncc.br/wordpress/wp-content/themes/portal/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="http://gbif.sibbr.gov.br/style/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="http://gbif.sibbr.gov.br/style/favicon.ico" type="image/x-icon" />
 
 <sitemesh:write property='head'/>
 <#include "/WEB-INF/view/inc/metatags.ftl">

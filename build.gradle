@@ -9,7 +9,7 @@ ext {
 }
 
 //Use Canadensys common web build file
-apply from: "https://raw.github.com/Canadensys/canadensys-common/master/gradle/canadensys_web_build.gradle"
+apply from: "https://raw.github.com/Canadensys/canadensys-common/master/gradle/canadensys_web_build_21.gradle"
 apply from: "http://dl.bintray.com/scalding/generic/waroverlay.gradle"
 
 //Check for theme override
@@ -26,8 +26,11 @@ System.setProperty('file.encoding', 'UTF-8')
 def group = 'br.gov.sibbr'
 
 ext {
-	sourceCompatibility = JavaVersion.VERSION_1_6
+	sourceCompatibility = JavaVersion.VERSION_1_7
 	sourceEncoding = 'UTF-8'
+	
+	versionFile = project.file("config/production/version.properties")
+	appVersion = versionFile.getText().replace("version.current=", "${appVersion}")
 	
 	springVersion = '4.0.2.RELEASE'
 	hibernateVersion = '4.3.2.Final'
@@ -37,9 +40,8 @@ ext {
 	ehCacheVersion = '2.6.8'
 	sitemeshVersion = '3.0.0'
 	
-	dataAccessVersion = '2.13.0-SNAPSHOT'
-	webCoreVersion = '0.2'
-	canadensysWebThemeVersion = '0.1'
+	dataAccessVersion = '2.13.0'
+	webCoreVersion = '0.7'
 
 	tomcatVersion = '8.0.12'
 	seleniumVersion = '2.42.2'

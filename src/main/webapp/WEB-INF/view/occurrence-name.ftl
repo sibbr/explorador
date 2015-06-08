@@ -11,7 +11,7 @@
 $(document).ready(function(){
 	$("#nvvlink").click(function(evento){
 		evento.preventDefault();
-		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.namecheck")}</strong></div>");
+		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://gbif.sibbr.gov.br/style/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.namecheck")}</strong></div>");
 		$("#servicecontent").load("?view=nvv #nvvcontent");
 
 	});
@@ -19,7 +19,7 @@ $(document).ready(function(){
 $(document).ready(function(){
 	$("#bhllink").click(function(evento){
 		evento.preventDefault();
-		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</strong></div>");
+		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://gbif.sibbr.gov.br/style/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.biodiversity.heritage.library")}</strong></div>");
 		$("#servicecontent").load("?view=bhl #bhlcontent");
 
 	});
@@ -27,7 +27,7 @@ $(document).ready(function(){
 $(document).ready(function(){
 	$("#eollink").click(function(evento){
 		evento.preventDefault();
-		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://buriti.lncc.br/wordpress/wp-content/themes/portal/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.enciclopedia.of.life")}</strong></div>");
+		$("#servicecontent").html("<div id='load' style='width: 100%;position:relative; top: 80px;vertical-align: middle;height:200px;margin: auto 0;text-align:center;'><img src='http://gbif.sibbr.gov.br/style/img/carregando.gif'/><p>${rc.getMessage("occpage.name.loading")} - <strong>${rc.getMessage("occpage.other.enciclopedia.of.life")}</strong></div>");
           $("#servicecontent").load("?view=eol #eolcontent");
 
 	});

@@ -36,7 +36,7 @@
  | <a id="viewsourcerecord" href="${page.occModel._references}" target="_blank">${rc.getMessage("view.preview.viewsourcerecord")}</a></p>
 </#if>
 <dl class="occ_preview_data clear_fix">
-	<#assign publisher = page.resource.getPublisherInformation()>
+	<#assign publisher = page.resource.getPublisher()>
 	<dt>${rc.getMessage("occ.institutioncode")}</dt><dd>${page.occModel.institutioncode!}</dd>
 	<dt>${rc.getMessage("occ.publishername")}</dt><dd><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></dd>
 	<dt>${rc.getMessage("occ.datasetname")}</dt>

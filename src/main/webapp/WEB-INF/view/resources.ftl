@@ -27,7 +27,7 @@
 							<#list page.resources as resource>
 								<#if resource?has_content>
 									<#if (resource.getRecord_count()>0)>
-										<#assign publisher = resource.getPublisherInformation()>
+										<#assign publisher = resource.getPublisher()>
 										<tr>
 											<td><a href="${rc.getContextPath()}/${rc.getMessage("resourcepage.resource")}/${resource.getId()}" target"_self">${resource.getName()}</a></td>
 											<td><a href="${rc.getContextPath()}/${rc.getMessage("publisherspage.publisherlink")}/${publisher.getAuto_id()}" target"_self">${publisher.getName()}</a></td>
