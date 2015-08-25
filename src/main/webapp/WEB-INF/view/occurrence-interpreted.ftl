@@ -263,12 +263,17 @@
 	                     <td><#if page.occRawModel.getAccessrights()?has_content>${occRawModel.getAccessrights()}<#else>${rc.getMessage("occ.not.provided")}</#if></td>
 	                 </tr>
 	              </tbody>
-	           </table>      
+	           </table>
                <!-- Image content -->
                <#if page.occViewModel.imageList?has_content>
+			   <h2>${rc.getMessage("occpage.group.images")}</h2>
                <div id="occpage_image">
                   <#list page.occViewModel.imageList as currImg>
-                  <a class="round" href="${currImg}"><span><img src="${currImg}" alt="<i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})"/></span></a>
+                  	<a class="round" href="${currImg}">
+                  		<span>
+                  			<img src="${currImg}" alt="<i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})"/>
+                  		</span>
+                  	</a>
                   </#list>
                </div>
                </#if>

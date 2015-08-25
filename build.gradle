@@ -30,7 +30,6 @@ ext {
 	sourceEncoding = 'UTF-8'
 	
 	versionFile = project.file("config/production/version.properties")
-	appVersion = versionFile.getText().replace("version.current=", "${appVersion}")
 	
 	springVersion = '4.0.2.RELEASE'
 	hibernateVersion = '4.3.2.Final'
