@@ -42,6 +42,7 @@
 				<value>net.canadensys.dataportal.occurrence.model.UniqueValuesModel</value>
 				<value>net.canadensys.dataportal.occurrence.model.OccurrenceModel</value>
 				<value>net.canadensys.dataportal.occurrence.model.OccurrenceRawModel</value>
+				<value>net.canadensys.dataportal.occurrence.model.OccurrenceExtensionModel</value>
 				<value>net.canadensys.dataportal.occurrence.model.DownloadLogModel</value>
 				<value>net.canadensys.dataportal.occurrence.model.ContactModel</value>
 				<value>net.canadensys.dataportal.occurrence.model.DwcaResourceModel</value>
@@ -55,7 +56,7 @@
 			</props>
 		</property>
 	</bean>
-	
+
 	<bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />

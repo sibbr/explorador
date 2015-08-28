@@ -18,14 +18,16 @@ import net.canadensys.web.i18n.annotation.I18nTranslationHandler;
 import org.apache.log4j.Logger;
 
 /**
- * General configurations for the Occurrence Portal. Those configurations are not tied to a specific service.
+ * General configurations for the Occurrence Portal. Those configurations are
+ * not tied to a specific service.
  * 
  * @author canadensys
  * 
  */
 public class OccurrencePortalConfig {
 	// get log4j handler
-	private static final Logger LOGGER = Logger.getLogger(OccurrencePortalConfig.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(OccurrencePortalConfig.class);
 
 	public static final String CONFIG_FILENAME = "/WEB-INF/portal-config.properties";
 	public static final String DEFAULT_LANGUAGE_KEY = "i18n.defaultLanguage";
@@ -55,6 +57,8 @@ public class OccurrencePortalConfig {
 
 	// Associated sequences related
 	private Properties sequenceProvidersProperties;
+
+	private Map<String, List<String>> licenseInfo;
 
 	// Unique key that is managed by the portal
 	public static final String OCCURRENCE_MANAGED_ID_FIELD = "auto_id";
@@ -86,16 +90,15 @@ public class OccurrencePortalConfig {
 				currLocale = new Locale(currLang);
 				if (currLocale.getISO3Language() != null) {
 					supportedLanguagesList.add(currLang.toLowerCase());
-					resourceBundleByLocale.put(currLocale, UTF8PropertyResourceBundle.getBundle(BUNDLE_NAME, currLocale));
+					resourceBundleByLocale.put(currLocale,
+							UTF8PropertyResourceBundle.getBundle(BUNDLE_NAME,
+									currLocale));
 				}
-			}
-			catch (MissingResourceException mrEx) {
+			} catch (MissingResourceException mrEx) {
 				LOGGER.fatal("Can't load Language defined by " + currLang, mrEx);
-			}
-			catch (UnsupportedEncodingException e) {
+			} catch (UnsupportedEncodingException e) {
 				LOGGER.fatal("Can't load Language defined by " + currLang, e);
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				LOGGER.fatal("Can't load Language defined by " + currLang, e);
 			}
 		}
@@ -110,7 +113,8 @@ public class OccurrencePortalConfig {
 	}
 
 	/**
-	 * Return the resource bundle defined by the Locale or null of no bundle is associated with the Locale.
+	 * Return the resource bundle defined by the Locale or null of no bundle is
+	 * associated with the Locale.
 	 * 
 	 * @param locale
 	 * @return
@@ -120,9 +124,9 @@ public class OccurrencePortalConfig {
 	}
 
 	/**
-	 * Get a URL resource bundle used to support i18n URLs
-	 * Warning: URL resource bundle are inverted resource, the translated term is the key and the 'key' is the value.
-	 * e.g. Locale.FR, arbre=tree.
+	 * Get a URL resource bundle used to support i18n URLs Warning: URL resource
+	 * bundle are inverted resource, the translated term is the key and the
+	 * 'key' is the value. e.g. Locale.FR, arbre=tree.
 	 * 
 	 * @param locale
 	 * @return
@@ -175,16 +179,43 @@ public class OccurrencePortalConfig {
 	 * 
 	 * @param sequenceProviderProperties
 	 */
-	public void setSequenceProvidersProperties(Properties sequenceProviderProperties) {
+	public void setSequenceProvidersProperties(
+			Properties sequenceProviderProperties) {
 		this.sequenceProvidersProperties = sequenceProviderProperties;
 	}
 
 	public String getSequenceProviderUrlFormat(String sequenceProvider) {
-		return sequenceProvidersProperties.getProperty(sequenceProvider + SEQ_URL_FORMAT_SUFFIX);
+		return sequenceProvidersProperties.getProperty(sequenceProvider
+				+ SEQ_URL_FORMAT_SUFFIX);
 	}
 
 	public String getSequenceProviderDisplayName(String sequenceProvider) {
-		return sequenceProvidersProperties.getProperty(sequenceProvider + SEQ_DISPLAY_NAME_SUFFIX);
+		return sequenceProvidersProperties.getProperty(sequenceProvider
+				+ SEQ_DISPLAY_NAME_SUFFIX);
+	}
+
+	public void setLicenseInfo(Map<String, List<String>> licenseInfo) {
+		this.licenseInfo = licenseInfo;
+	}
+
+	/**
+	 * Get a license shortname (e.g. by-nc) from an Uri. Uri must be defined in
+	 * the license configuration file.
+	 * 
+	 * @param licenseUri
+	 * @return
+	 */
+	public String getLicenseShortName(String licenseUri) {
+		if (licenseInfo != null) {
+			for (String currKey : licenseInfo.keySet()) {
+				for (String currUri : licenseInfo.get(currKey)) {
+					if (currUri.equalsIgnoreCase(licenseUri)) {
+						return currKey;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -194,7 +225,8 @@ public class OccurrencePortalConfig {
 	 * @return
 	 */
 	public String getDownloadEmailTemplateName(Locale locale) {
-		return String.format(DOWNLOAD_EMAIL_TEMPLATE_FORMAT, locale.getLanguage());
+		return String.format(DOWNLOAD_EMAIL_TEMPLATE_FORMAT,
+				locale.getLanguage());
 	}
 
 	/**
@@ -204,6 +236,7 @@ public class OccurrencePortalConfig {
 	 * @return
 	 */
 	public String getContactEmailTemplateName(Locale locale) {
-		return String.format(CONTACT_EMAIL_TEMPLATE_FORMAT, locale.getLanguage());
+		return String.format(CONTACT_EMAIL_TEMPLATE_FORMAT,
+				locale.getLanguage());
 	}
 }

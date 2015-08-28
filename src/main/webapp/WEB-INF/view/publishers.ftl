@@ -33,8 +33,12 @@
 				});	
 				
 		        <#list page.allPublishers as publisher>
-		    		<#assign latitude = publisher.getDecimallatitude()?string?replace(",",".")>
-		    		<#assign longitude = publisher.getDecimallongitude()?string?replace(",",".")>
+			        <#if (publisher.getDecimallatitude()?has_content)>
+			    		<#assign latitude = publisher.getDecimallatitude()?string?replace(",",".")>
+			    	</#if>
+			    	<#if (publisher.getDecimallongitude()?has_content)>
+			    		<#assign longitude = publisher.getDecimallongitude()?string?replace(",",".")>
+			    	</#if>
 		    		<#assign link = "<a href=" + "'" + rc.getMessage("publisherspage.publisherlink.map") + publisher.getAuto_id() + "'" + ">" + publisher.getName() + "</a>">
 		    		<#assign popuptxt = "</br>" + rc.getMessage("publisherspage.recordnumber") + " " + publisher.getRecord_count()?string>
 		   	        new L.marker([${latitude}, ${longitude}], {icon: institute}).bindPopup("${link} ${popuptxt}").addTo(map);

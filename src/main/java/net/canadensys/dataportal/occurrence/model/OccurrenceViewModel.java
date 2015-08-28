@@ -1,99 +1,87 @@
 package net.canadensys.dataportal.occurrence.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * This model is tailored for views.
  * It contains additional information that is relevant for display purpose.
- * 
  * @author canadensys
- * 
+ *
  */
 public class OccurrenceViewModel {
 
 	private String dataSourcePageURL;
-	private String dataSourceName;
-	private List<String> imageList;
-	private List<String> otherMediaList;
-
-	private Map<String, List<Pair<String, String>>> associatedSequencesPerProviderMap;
-
-	public void addImage(String image) {
-		if (imageList == null) {
-			imageList = new ArrayList<String>();
+	private String recommendedCitation;
+	
+	private List<MultimediaViewModel> multimediaViewModelList;
+	private List<String> associatedSequences;
+	
+	//prefiltered list
+	private List<MultimediaViewModel> imageViewModelList;
+	private List<MultimediaViewModel> otherMediaViewModelList;
+		
+	public void addMultimediaViewModel(MultimediaViewModel multimediaViewModel){
+		if(multimediaViewModelList == null){
+			multimediaViewModelList = new ArrayList<MultimediaViewModel>();
 		}
-		imageList.add(image);
-	}
-
-	public void addOtherMedia(String otherMedia) {
-		if (otherMediaList == null) {
-			otherMediaList = new ArrayList<String>();
+		multimediaViewModelList.add(multimediaViewModel);
+		
+		if(multimediaViewModel.isImage()){
+			if(imageViewModelList == null){
+				imageViewModelList = new ArrayList<MultimediaViewModel>();
+			}
+			imageViewModelList.add(multimediaViewModel);
 		}
-		otherMediaList.add(otherMedia);
+		else{
+			if(otherMediaViewModelList == null){
+				otherMediaViewModelList = new ArrayList<MultimediaViewModel>();
+			}
+			otherMediaViewModelList.add(multimediaViewModel);
+		}
 	}
-
+	
+	public List<MultimediaViewModel> getMultimediaViewModelList(){
+		return multimediaViewModelList;
+	}
+	
 	/**
-	 * @param sequenceProvider
-	 * @param providedSequenceId
-	 *            identifier for the sequence including the provider e.g. GenBank:KC251652
-	 * @param link
+	 * Return List of MultimediaViewModel including only the MultimediaViewModel where isImage is true
+	 * @return
 	 */
-	public void addAssociatedSequenceLink(String sequenceProvider, String providedSequenceId, String link) {
-		if (associatedSequencesPerProviderMap == null) {
-			associatedSequencesPerProviderMap = new HashMap<String, List<Pair<String, String>>>();
-		}
-
-		if (associatedSequencesPerProviderMap.get(sequenceProvider) == null) {
-			associatedSequencesPerProviderMap.put(sequenceProvider, new ArrayList<Pair<String, String>>());
-		}
-		associatedSequencesPerProviderMap.get(sequenceProvider).add(Pair.of(providedSequenceId, link));
+	public List<MultimediaViewModel> getImageViewModelList(){
+		return imageViewModelList;
 	}
-
-	public List<String> getImageList() {
-		return imageList;
-	}
-
-	public void setImageList(List<String> imageList) {
-		this.imageList = imageList;
-	}
-
-	public List<String> getOtherMediaList() {
-		return otherMediaList;
-	}
-
-	public void setOtherMediaList(List<String> otherMediaList) {
-		this.otherMediaList = otherMediaList;
-	}
-
-	public Map<String, List<Pair<String, String>>> getAssociatedSequencesPerProviderMap() {
-		return associatedSequencesPerProviderMap;
+	
+	/**
+	 * Return List of MultimediaViewModel including only the MultimediaViewModel where isImage is false
+	 * @return
+	 */
+	public List<MultimediaViewModel> getOtherMediaViewModelList(){
+		return otherMediaViewModelList;
 	}
 
 	public String getDataSourcePageURL() {
 		return dataSourcePageURL;
 	}
-
 	public void setDataSourcePageURL(String dataSourcePageURL) {
 		this.dataSourcePageURL = dataSourcePageURL;
 	}
 
-	/**
-	 * @return the dataSourceName
-	 */
-	public String getDataSourceName() {
-		return dataSourceName;
+	public String getRecommendedCitation() {
+		return recommendedCitation;
 	}
 
-	/**
-	 * @param dataSourceName
-	 *            the dataSourceName to set
-	 */
-	public void setDataSourceName(String dataSourceName) {
-		this.dataSourceName = dataSourceName;
+	public void setRecommendedCitation(String recommendedCitation) {
+		this.recommendedCitation = recommendedCitation;
 	}
+
+	public List<String> getAssociatedSequences() {
+		return associatedSequences;
+	}
+
+	public void setAssociatedSequences(List<String> associatedSequences) {
+		this.associatedSequences = associatedSequences;
+	}
+
 }

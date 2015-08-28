@@ -6,8 +6,11 @@
    <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
    <style>
+		 
       .boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;border-top: none!important;}
+      
       .round {background-color: #fff!important;border: none!important;}
+      
    </style>   
 </head>
 <a id="main-content"></a>
@@ -264,29 +267,58 @@
 	                 </tr>
 	              </tbody>
 	           </table>
-               <!-- Image content -->
-               <#if page.occViewModel.imageList?has_content>
-			   <h2>${rc.getMessage("occpage.group.images")}</h2>
-               <div id="occpage_image">
-                  <#list page.occViewModel.imageList as currImg>
-                  	<a class="round" href="${currImg}">
-                  		<span>
-                  			<img src="${currImg}" alt="<i>${page.occModel.scientificname?if_exists}</i> (${page.occModel.collectioncode?if_exists} ${page.occModel.catalognumber?if_exists})"/>
-                  		</span>
-                  	</a>
-                  </#list>
-               </div>
-               </#if>
-               <!-- Media content -->
-               <#if page.occViewModel.otherMediaList?has_content>
-               <div id="occpage_media">
-                  <#assign mediaNumber = 1>
-                  <#list page.occViewModel.otherMediaList as currOm>
-                  <p><a class="round big_button" href="${currOm}" target="_blank">${rc.getMessage("occpage.menu.associatedmedia")} ${mediaNumber}</a></p>
-                  <#assign mediaNumber = mediaNumber + 1>
-                  </#list>
-               </div>
-               </#if>
+	           
+               <!-- Multimedia content
+               <#if page.occViewModel.multimediaViewModelList?has_content>
+					<h2>${rc.getMessage("occpage.group.multimedia")}</h2>
+					<div id="occpage_image">
+						<ul>
+							<#list page.occViewModel.multimediaViewModelList as currMultimediaViewModel>
+								<li><a href="${currMultimediaViewModel.references!}"><img src="${currMultimediaViewModel.identifier!}"/></a>
+									<div>
+										<#if currMultimediaViewModel.licenseShortname?has_content>
+											<a href="${currMultimediaViewModel.license}"><img src="${rc.getContextUrl("/assets/images/"+currMultimediaViewModel.licenseShortname+".png")}"/></a>
+										<#else>
+											<@printIfNotEmpty text=rc.getMessage("occ.multimedia.license")+": " variable=currMultimediaViewModel.license/>
+										</#if>
+										<@printIfNotEmpty text=rc.getMessage("occ.multimedia.creator")+": " variable=currMultimediaViewModel.creator/>
+									</div>
+								</li>
+							</#list>
+						</ul>
+					</div>
+				</#if>
+				-->
+				
+				<!--  Multimedia content -->
+				<#if page.occViewModel.imageViewModelList?has_content>
+					<h2>${rc.getMessage("occpage.group.images")}</h2>
+					<div id="occpage_image">
+						<ul class="clear_fix">
+							<#list page.occViewModel.imageViewModelList as currMultimediaViewModel>
+								<li>
+									<div vocab="http://schema.org/" typeof="ImageObject">
+										<a href="${currMultimediaViewModel.identifier!}" target="_blank">
+											<img src="${currMultimediaViewModel.identifier!}" title="${currMultimediaViewModel.title!}" alt="${currMultimediaViewModel.title!}" property="contentUrl" class="images-gal"/>
+										</a>	
+										<@licenseDiv license=currMultimediaViewModel.license! licenseShortname=currMultimediaViewModel.licenseShortname! creator=currMultimediaViewModel.creator!/>
+									</div>
+								</li>
+							</#list>
+						</ul>
+					</div>
+				</#if>
+				<#if page.occViewModel.otherMediaViewModelList?has_content>
+					<h2>${rc.getMessage("occpage.group.multimedia")}</h2>
+					<ul>
+						<#list page.occViewModel.otherMediaViewModelList as currOm>
+							<li>
+								<a href="${currOm.references!}">${currOm.title!}</a>
+								<@licenseDiv license=currOm.license! licenseShortname=currOm.licenseShortname! creator=currOm.creator!/>
+							</li>
+						</#list>
+					</ul>
+				</#if>
             </div>
             <!-- ORIGINAL TAB-->
             <div id="original"></div>

@@ -418,7 +418,7 @@ public class SearchController {
 		if (occModel != null) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("resource", resourceModel);
-			modelRoot.put("occViewModel", occurrenceController.buildOccurrenceViewModel(occModel));
+			modelRoot.put("occViewModel", occurrenceController.buildOccurrenceViewModel(occModel, null, null, null));
 		}
 		else {
 			throw new ResourceNotFoundException();

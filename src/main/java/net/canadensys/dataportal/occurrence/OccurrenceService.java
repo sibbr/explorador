@@ -3,11 +3,13 @@ package net.canadensys.dataportal.occurrence;
 import java.util.List;
 
 import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
+import net.canadensys.dataportal.occurrence.model.OccurrenceExtensionModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
 
 /**
- * OccurrenceService layer interface to access occurrence related data. This interface handles only high-level methods.
+ * OccurrenceService layer interface to access occurrence related data. This
+ * interface handles only high-level methods.
  * 
  * @author canadensys
  * 
@@ -39,7 +41,8 @@ public interface OccurrenceService {
 	 *            unique within the dataset
 	 * @return
 	 */
-	public OccurrenceModel loadOccurrenceModel(String sourcefileid, String dwcaId, boolean loadRawModel);
+	public OccurrenceModel loadOccurrenceModel(String sourcefileid,
+			String dwcaId, boolean loadRawModel);
 
 	/**
 	 * Load an occurrence model based on the unique key auto_id
@@ -48,7 +51,20 @@ public interface OccurrenceService {
 	 * @param loadRawModel
 	 * @return
 	 */
-	public OccurrenceModel loadOccurrenceModel(String autoId, boolean loadRawModel);
+	public OccurrenceModel loadOccurrenceModel(String autoId,
+			boolean loadRawModel);
+
+	/**
+	 * Load all OccurrenceExtensionModel of the specified type based on the
+	 * unique key resourceUUID/dwcaId.
+	 * 
+	 * @param extensionType
+	 * @param resourceUUID
+	 * @param dwcaId
+	 * @return
+	 */
+	public List<OccurrenceExtensionModel> loadOccurrenceExtensionModel(
+			String extensionType, String resourceUUID, String dwcaId);
 
 	/**
 	 * Load a ResourceInformationModel based on the resource_uuid
@@ -65,9 +81,8 @@ public interface OccurrenceService {
 	 * @return
 	 */
 	public DwcaResourceModel loadResourceModel(String sourcefileid);
-	
+
 	public List<DwcaResourceModel> loadResources();
-	
 
 	/**
 	 * Load a ResourceModel based on the auto_id

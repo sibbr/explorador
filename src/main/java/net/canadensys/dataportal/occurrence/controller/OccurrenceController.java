@@ -2,10 +2,13 @@ package net.canadensys.dataportal.occurrence.controller;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +17,8 @@ import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.model.ContactModel;
 import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
+import net.canadensys.dataportal.occurrence.model.MultimediaViewModel;
+import net.canadensys.dataportal.occurrence.model.OccurrenceExtensionModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceViewModel;
 import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
@@ -24,6 +29,7 @@ import net.canadensys.web.i18n.annotation.I18nTranslation;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.gbif.dwc.terms.GbifTerm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -39,6 +45,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import br.gov.sibbr.json.response.bhl.BHLResponse;
 import br.gov.sibbr.json.response.eol.EOLResponse;
 import br.gov.sibbr.json.response.namecheck.NameCheckResponse;
+import br.gov.sibbr.util.Formatter;
+
+import com.google.common.collect.Lists;
 
 /**
  * Controller of all occurrence related features of the occurrence portal.
@@ -90,6 +99,7 @@ public class OccurrenceController {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 		DwcaResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
 		ResourceMetadataModel resourceInformation = occurrenceService.loadResourceMetadataModel(resource.getGbif_package_id());
+		Locale locale = RequestContextUtils.getLocale(request);
 		// Load resource contact data:
 		Set<ContactModel> contacts = resourceInformation.getContacts();
 		ContactModel contact = null;
@@ -104,10 +114,15 @@ public class OccurrenceController {
 		// Get current time to display in citation:
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date date = new Date(System.currentTimeMillis());
+		
+		// load multimedia extension data
+		List<OccurrenceExtensionModel> occMultimediaExtModelList = occurrenceService.loadOccurrenceExtensionModel(
+			GbifTerm.Multimedia.simpleName(), resource.getSourcefileid(), auto_id);
+				
 		if (!occModel.equals(null)) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel", occModel.getRawModel());
-			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel));
+			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel, resource, occMultimediaExtModelList, locale));
 			modelRoot.put("resource", resource);
 			modelRoot.put("information", resourceInformation);
 			modelRoot.put("contact", contact);
@@ -244,67 +259,80 @@ public class OccurrenceController {
 
 	/**
 	 * Build and fill A OccurrenceViewModel based on a OccurrenceModel.
-	 * 
 	 * @param occModel
 	 * @return OccurrenceViewModel instance, never null
 	 */
-	public OccurrenceViewModel buildOccurrenceViewModel(OccurrenceModel occModel) {
+	public OccurrenceViewModel buildOccurrenceViewModel(OccurrenceModel occModel, DwcaResourceModel resourceModel, List<OccurrenceExtensionModel> occMultimediaExtModelList, Locale locale){
 		OccurrenceViewModel occViewModel = new OccurrenceViewModel();
-
-		// handle media
-		if (StringUtils.isNotEmpty(occModel.getAssociatedmedia())) {
-			// assumes that data are coming from harvester
+		ResourceBundle bundle = appConfig.getResourceBundle(locale);
+		
+		//handle multimedia first (priority over associatedmedia)
+		if(occMultimediaExtModelList != null){
+			String multimediaFormat, multimediaLicense, multimediaReference, multimediaIdentifier, licenseShortname;
+			boolean isImage;
+			MultimediaViewModel multimediaViewModel;
+			Map<String,String> extData;
+			
+			for(OccurrenceExtensionModel currMultimediaExt : occMultimediaExtModelList){
+				extData = currMultimediaExt.getExt_data();
+				
+				multimediaFormat = StringUtils.defaultString(extData.get("format"));
+				multimediaLicense = StringUtils.defaultString(extData.get("license"));
+				multimediaIdentifier = extData.get("identifier");
+				//if reference is blank, use the identifier
+				multimediaReference = StringUtils.defaultIfBlank(extData.get("references"), multimediaIdentifier);
+				
+				//check if it's an image
+				isImage = multimediaFormat.startsWith("image");
+				licenseShortname = appConfig.getLicenseShortName(multimediaLicense);
+				
+				multimediaViewModel = new MultimediaViewModel(multimediaIdentifier, multimediaReference,
+						extData.get("title"), multimediaLicense, extData.get("creator"), isImage, licenseShortname);
+				occViewModel.addMultimediaViewModel(multimediaViewModel);
+			}
+		}
+		
+		//handle media (only if occMultimediaExtModelList was not provided)
+		if((occMultimediaExtModelList == null || occMultimediaExtModelList.isEmpty()) && StringUtils.isNotEmpty(occModel.getAssociatedmedia())){
+			//assumes that data are coming from harvester
 			String[] media = occModel.getAssociatedmedia().split("; ");
-			for (String currentMedia : media) {
-				if (MIME_TYPE_MAP.getContentType(currentMedia).startsWith("image")) {
-					occViewModel.addImage(currentMedia);
+			
+			MultimediaViewModel multimediaViewModel;
+			boolean isImage;
+			String title;
+			int imageNumber=1, otherMediaNumber=1;
+			for(String currentMedia : media){
+				isImage = MIME_TYPE_MAP.getContentType(currentMedia).startsWith("image");
+				if(isImage){
+					title = bundle.getString("occ.image") + " " + imageNumber;
+					imageNumber++;
 				}
-				else {
-					occViewModel.addOtherMedia(currentMedia);
+				else{
+					title = bundle.getString("occ.associatedmedia") + " " + otherMediaNumber;
+					otherMediaNumber++;
 				}
+				
+				multimediaViewModel = new MultimediaViewModel(currentMedia,currentMedia,
+						title, null, null, isImage, null);
+				occViewModel.addMultimediaViewModel(multimediaViewModel);
 			}
 		}
-
-		// handle associated sequences
-		if (StringUtils.isNotEmpty(occModel.getAssociatedsequences())) {
-			String[] sequences = StringUtils.split(occModel.getAssociatedsequences(), ASSOCIATED_SEQUENCES_SEPARATOR);
-
-			String seqProvider, seqId, seqProviderUrlFormat;
-			for (String currentSequence : sequences) {
-				seqProvider = StringUtils.substringBefore(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim().toLowerCase();
-				seqId = StringUtils.substringAfter(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
-				seqProviderUrlFormat = appConfig.getSequenceProviderUrlFormat(seqProvider);
-
-				// set display name if defined, otherwise keep extracted name
-				if (appConfig.getSequenceProviderDisplayName(seqProvider) != null) {
-					seqProvider = appConfig.getSequenceProviderDisplayName(seqProvider);
-				}
-
-				if (seqProvider != null && seqId != null) {
-					if (StringUtils.isBlank(seqProviderUrlFormat)) {
-						occViewModel.addAssociatedSequenceLink(seqProvider, seqId, "");
-					}
-					else {
-						occViewModel.addAssociatedSequenceLink(seqProvider, seqId, MessageFormat.format(seqProviderUrlFormat, seqId));
-					}
-				}
-				else {
-					LOGGER.warn("associatedSequences [" + occModel.getAssociatedsequences() + "] cannot be parsed.");
-				}
+		
+		//handle associated sequences
+		handleAssociatedSequence(occModel, occViewModel);
+		
+		//handle data source page URL (url to the resource page)
+		if(resourceModel != null){
+			if(StringUtils.contains(resourceModel.getArchive_url(),IPT_ARCHIVE_PATTERN)){
+				occViewModel.setDataSourcePageURL(StringUtils.replace(resourceModel.getArchive_url(), IPT_ARCHIVE_PATTERN, IPT_RESOURCE_PATTERN));
 			}
 		}
-
-		// handle data source page URL (url to the resource page)
-		DwcaResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
-		if (resource != null) {
-			if (StringUtils.contains(resource.getArchive_url(), IPT_ARCHIVE_PATTERN)) {
-				occViewModel.setDataSourcePageURL(StringUtils.replace(resource.getArchive_url(), IPT_ARCHIVE_PATTERN, IPT_RESOURCE_PATTERN));
-			}
-			// Add data source name to view:
-			occViewModel.setDataSourceName(resource.getName());
-		}
+		
+		//handle Recommended Citation
+		occViewModel.setRecommendedCitation(Formatter.buildRecommendedCitation(occModel, occViewModel.getDataSourcePageURL(), bundle));
 		return occViewModel;
 	}
+	
 
 	/**
 	 * Feedback page with form to receive comments
@@ -359,5 +387,38 @@ public class OccurrenceController {
 		RedirectView rv = new RedirectView(request.getContextPath());
 		rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		return new ModelAndView(rv);
+	}
+	
+	/**
+	 * Handle the received associated sequences string and fill the list in OccurrenceViewModel if any.
+	 * 
+	 * @param occModel
+	 * @param occViewModel
+	 */
+	private void handleAssociatedSequence(OccurrenceModel occModel, OccurrenceViewModel occViewModel){
+		if(StringUtils.isEmpty(occModel.getAssociatedsequences())){
+			return;
+		}
+		
+		String[] sequences = StringUtils.split(occModel.getAssociatedsequences(), ASSOCIATED_SEQUENCES_SEPARATOR);
+		List<String> associatedSequences = Lists.newArrayList();
+		
+		String seqProvider, seqId, seqProviderUrlFormat;
+		boolean knownFormat = false;
+		for(String currentSequence : sequences){
+			seqProvider = StringUtils.substringBefore(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim().toLowerCase();
+			seqId = StringUtils.substringAfter(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
+			seqProviderUrlFormat = appConfig.getSequenceProviderUrlFormat(seqProvider);
+			knownFormat = StringUtils.isNotBlank(seqProviderUrlFormat);
+			if(seqProvider != null && seqId != null && knownFormat){
+				associatedSequences.add(MessageFormat.format(seqProviderUrlFormat, seqId));
+			}
+			else{
+				associatedSequences.add(currentSequence);
+			}
+		}
+		
+		Collections.sort(associatedSequences);
+		occViewModel.setAssociatedSequences(associatedSequences);
 	}
 }

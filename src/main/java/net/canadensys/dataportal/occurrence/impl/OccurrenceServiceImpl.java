@@ -6,8 +6,10 @@ import net.canadensys.dataportal.occurrence.OccurrenceService;
 import net.canadensys.dataportal.occurrence.cache.CacheManagementServiceIF;
 import net.canadensys.dataportal.occurrence.dao.DwcaResourceDAO;
 import net.canadensys.dataportal.occurrence.dao.OccurrenceDAO;
+import net.canadensys.dataportal.occurrence.dao.OccurrenceExtensionDAO;
 import net.canadensys.dataportal.occurrence.dao.ResourceMetadataDAO;
 import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
+import net.canadensys.dataportal.occurrence.model.OccurrenceExtensionModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.model.ResourceMetadataModel;
 
@@ -35,6 +37,9 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 
 	@Autowired
 	private DwcaResourceDAO resourceDAO;
+	
+	@Autowired
+	private OccurrenceExtensionDAO occurrenceExtensionDAO;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -71,6 +76,12 @@ public class OccurrenceServiceImpl implements OccurrenceService {
 		return occModel;
 	}
 
+	@Override
+ 	@Transactional(readOnly=true)
+	public List<OccurrenceExtensionModel> loadOccurrenceExtensionModel(String extensionType, String resourceUUID, String dwcaId) {
+		return occurrenceExtensionDAO.load(extensionType, resourceUUID, dwcaId);
+	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	public ResourceMetadataModel loadResourceMetadataModel(String resourceUuid) {
