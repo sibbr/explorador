@@ -1,14 +1,17 @@
-<!-- JavaScript extend settings -->
+<script type="text/javascript" >
+ $(function() {    $( "#draggable" ).draggable({ containment: "window" }); });
+</script>
+.<!-- JavaScript extend settings -->
 <#macro controlJavaScriptSettings>
-	$.extend(EXPLORER.settings, { "baseUrl" : "${root.contextURL}", "wsPath" : "/ws/", "locale" : "${rc.getLocale().getLanguage()}" });
+	$.extend(EXPLORER.settings, { "baseUrl" : "${page.contextURL}", "wsPath" : "/ws/", "locale" : "${rc.getLocale().getLanguage()}" });
 </#macro>
 
 <!-- JavaScript init call related to controls -->
 <#macro controlJavaScriptInit>
-	EXPLORER.i18n.setLanguageResources(${root.languageResources});
-	EXPLORER.backbone.setAvailableSearchFields(${root.availableFiltersMap});
-	EXPLORER.backbone.initActiveFilters(${root.searchCriteria}, _.has(EXPLORER, 'map') ? EXPLORER.map.setBounds : {}, this);
-	EXPLORER.backbone.setNumberOfResult(${root.occurrenceCount?c});
+	EXPLORER.i18n.setLanguageResources(${page.languageResources});
+	EXPLORER.backbone.setAvailableSearchFields(${page.availableFiltersMap});
+	EXPLORER.backbone.initActiveFilters(${page.searchCriteria}, _.has(EXPLORER, 'map') ? EXPLORER.map.setBounds : {}, this);
+	EXPLORER.backbone.setNumberOfResult(${page.occurrenceCount?c});
 </#macro>
 
 <div id="control">
@@ -28,41 +31,45 @@
 				<div id="filter_select">
 					<select id="key_select">
 						<optgroup label="${rc.getMessage("filter.group.classification")}">
-							<option value="${root.availableFilters.scientificname}">${rc.getMessage("filter.scientificname")}</option>
-							<option value="${root.availableFilters.kingdom}">${rc.getMessage("filter.kingdom")}</option>
-							<option value="${root.availableFilters.phylum}">${rc.getMessage("filter.phylum")}</option>
-							<option value="${root.availableFilters._class}">${rc.getMessage("filter._class")}</option>
-							<option value="${root.availableFilters._order}">${rc.getMessage("filter._order")}</option>
-							<option value="${root.availableFilters.family}">${rc.getMessage("filter.family")}</option>
-							<option value="${root.availableFilters.taxonrank}">${rc.getMessage("filter.taxonrank")}</option>
+							<option value="${page.availableFilters.scientificname}">${rc.getMessage("filter.scientificname")}</option>
+							<option value="${page.availableFilters.kingdom}">${rc.getMessage("filter.kingdom")}</option>
+							<option value="${page.availableFilters.phylum}">${rc.getMessage("filter.phylum")}</option>
+							<option value="${page.availableFilters._class}">${rc.getMessage("filter._class")}</option>
+							<option value="${page.availableFilters._order}">${rc.getMessage("filter._order")}</option>
+							<option value="${page.availableFilters.family}">${rc.getMessage("filter.family")}</option>
+							<option value="${page.availableFilters.taxonrank}">${rc.getMessage("filter.taxonrank")}</option>
 						</optgroup>
+ 						<!-- Removed filter until further definition about dataset -->
 						<optgroup label="${rc.getMessage("filter.group.dataset")}">
-							<option value="${root.availableFilters.institutioncode}">${rc.getMessage("filter.institutioncode")}</option>
-							<option value="${root.availableFilters.datasetname}">${rc.getMessage("filter.datasetname")}</option>
-							<option value="${root.availableFilters.sourcefileid}">${rc.getMessage("filter.sourcefileid")}</option>
+							<option value="${page.availableFilters.resourcename}">${rc.getMessage("filter.resourcename")}</option>
+							<option value="${page.availableFilters.publishername}">${rc.getMessage("filter.publishername")}</option>
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.specimen")}">
-							<option value="${root.availableFilters.collectioncode}">${rc.getMessage("filter.collectioncode")}</option>
-							<option value="${root.availableFilters.catalognumber}">${rc.getMessage("filter.catalognumber")}</option>
-							<option value="${root.availableFilters.recordedby}">${rc.getMessage("filter.recordedby")}</option>
-							<option value="${root.availableFilters.recordnumber}">${rc.getMessage("filter.recordnumber")}</option>
+							<option value="${page.availableFilters.hastypestatus}">${rc.getMessage("filter.hastypestatus")}</option>
+							<option value="${page.availableFilters.recordedby}">${rc.getMessage("filter.recordedby")}</option>
+							<!-- Removed filter until further definition about how to add the "add" button>
+								<option value="${page.availableFilters.collectioncode}">${rc.getMessage("filter.collectioncode")}</option>
+								<option value="${page.availableFilters.catalognumber}">${rc.getMessage("filter.catalognumber")}</option>
+								<option value="${page.availableFilters.recordnumber}">${rc.getMessage("filter.recordnumber")}</option>
+							-->
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.date")}">
-							<option value="${root.availableFilters.daterange}">${rc.getMessage("filter.daterange")}</option>
+							<option value="${page.availableFilters.daterange}">${rc.getMessage("filter.daterange")}</option>
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.location")}">
-							<option value="${root.availableFilters.continent}">${rc.getMessage("filter.continent")}</option>
-							<option value="${root.availableFilters.country}">${rc.getMessage("filter.country")}</option>
-							<option value="${root.availableFilters.stateprovince}">${rc.getMessage("filter.stateprovince")}</option>
-							<option value="${root.availableFilters.county}">${rc.getMessage("filter.county")}</option>
-							<option value="${root.availableFilters.municipality}">${rc.getMessage("filter.municipality")}</option>
-							<option value="${root.availableFilters.locality}">${rc.getMessage("filter.locality")}</option>
-							<option value="${root.availableFilters.altituderange}">${rc.getMessage("filter.altituderange")}</option>
+							<option value="${page.availableFilters.continent}">${rc.getMessage("filter.continent")}</option>
+							<option value="${page.availableFilters.country}">${rc.getMessage("filter.country")}</option>
+							<option value="${page.availableFilters.stateprovince}">${rc.getMessage("filter.stateprovince")}</option>
+							<option value="${page.availableFilters.county}">${rc.getMessage("filter.county")}</option>
+							<option value="${page.availableFilters.municipality}">${rc.getMessage("filter.municipality")}</option>
+							<!-- Removed filter until further definition about how to add the "add" button>
+							<option value="${page.availableFilters.locality}">${rc.getMessage("filter.locality")}</option>
+							-->
+							<option value="${page.availableFilters.altituderange}">${rc.getMessage("filter.altituderange")}</option>
 						</optgroup>
 						<optgroup label="${rc.getMessage("filter.group.extra")}">
-							<option value="${root.availableFilters.hascoordinates}">${rc.getMessage("filter.hascoordinates")}</option>
-							<option value="${root.availableFilters.hasmedia}">${rc.getMessage("filter.hasmedia")}</option>
-							<option value="${root.availableFilters.hastypestatus}">${rc.getMessage("filter.hastypestatus")}</option>
+							<option value="${page.availableFilters.hascoordinates}">${rc.getMessage("filter.hascoordinates")}</option>
+							<option value="${page.availableFilters.hasmedia}">${rc.getMessage("filter.hasmedia")}</option>
 						</optgroup>
 					</select>
 				</div>
@@ -72,7 +79,7 @@
 				
 				<h3>${rc.getMessage("control.search.current.title")}</h3>
 				<form method="get" action="<@i18nResource resourceName="search"/>">
-					<input type="hidden" name="view" value="${root.currentView}">
+					<input type="hidden" name="view" value="${page.currentView}">
 					<ul id="filter_current" class="custom_list">
 						<li id="filter_empty">${rc.getMessage("control.search.current.empty")}</li>
 					</ul>
@@ -104,14 +111,18 @@
 <!-- Partial match -->
 <script type="text/template" id="filter_template_partial_match">
 <p id="partial_match" class="clear_fix">
-<button type="button">${rc.getMessage("control.search.button.add")}</button> ${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span id="partial_match_value"></span>
+<!-- Removed the "Filter contains" text:
+${rc.getMessage("control.search.partial.operatorprefix")} <%= opText %>: <span id="partial_match_value"></span>
+-->
 </p>
 </script>
 
 <!-- Text input -->
 <script type="text/template" id="filter_template_text_input">
-<p><input id="value_search" type="text"/></p>
+<p><input id="value_search" placeholder=" Ex.: Miconia brasiliensis" onfocus="this.placeholder = ''" onblur="this.placeholder = ' Ex.: Miconia brasiliensis'" type="text"/></p>
 </script>
+
+
 
 <!-- Select box -->
 <script type="text/template" id="filter_template_select">
@@ -158,14 +169,14 @@
 		<span id="date_start">
 		<label for="date_start_y" class="label_single">${rc.getMessage("control.search.date.singledate")}</label>
 		<label for="date_start_y" class="label_range hidden">${rc.getMessage("control.search.date.startdate")}</label>
-			<input id="date_start_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/>
+			<input id="date_start_d" class="validationDay" type="text" maxlength="2" placeholder="dd"/>	
 			<input id="date_start_m" class="validationMonth" type="text" maxlength="2" placeholder="mm"/>
-			<input id="date_start_d" class="validationDay" type="text" maxlength="2" placeholder="dd"/> 
+			<input id="date_start_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/> 
 		</span>
 		<span id="date_end"><label for="date_end_y">${rc.getMessage("control.search.date.enddate")}</label>
-			<input id="date_end_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/>
-			<input id="date_end_m" class="validationMonth" type="text" maxlength="2" placeholder="mm"/>
 			<input id="date_end_d" class="validationDay" type="text" maxlength="2" placeholder="dd"/>
+			<input id="date_end_m" class="validationMonth" type="text" maxlength="2" placeholder="mm"/>
+			<input id="date_end_y" class="validationYear" type="text" maxlength="4" placeholder="yyyy"/>
 		</span>
 	</p>
 	<p class="clear_fix"><button type="button">${rc.getMessage("control.search.button.add")}</button>
@@ -213,13 +224,13 @@
 <!-- Download templates -->
 <script type="text/template" id="download_template_email">
 	<div id="request">
-		<p>${rc.getMessage("control.download.request.details1")} <strong>${root.occurrenceCount}</strong> ${rc.getMessage("control.download.request.details2")}</p>
+		<p>${rc.getMessage("control.download.request.details1")} <strong>${page.occurrenceCount}</strong> ${rc.getMessage("control.download.request.details2")}</p>
 		<p>${rc.getMessage("control.download.request.details3")}</p>
 		<p>${rc.getMessage("control.download.request.details4")}</p>
 		<p><label for="email">${rc.getMessage("control.download.email.label")}</label><input id="email" type="text"/></p>
-		<p class="clear_fix"><button type="button" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${root.occurrenceCount}']);">${rc.getMessage("control.download.button.send")}</button></p>
+		<p class="clear_fix"><button type="button" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${page.occurrenceCount}']);">${rc.getMessage("control.download.button.send")}</button></p>
 	</div>
-	<div id="status" class="hidden">
+	<div id="status">
 		<p>${rc.getMessage("control.download.status.details1")}</p>
 		<p>${rc.getMessage("control.download.status.details2")}</p>
 	</div>

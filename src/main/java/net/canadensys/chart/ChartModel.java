@@ -5,26 +5,27 @@ import java.util.List;
 
 /**
  * Model representing a chart.
+ * 
  * @author canadensys
- *
+ * 
  */
 public class ChartModel {
-	
+
 	private List<Object[]> rows;
-	
-	public ChartModel(){
+
+	public ChartModel() {
 		rows = new ArrayList<Object[]>();
 	}
-	
-	public void addRow(Object value[]){
+
+	public void addRow(Object value[]) {
 		rows.add(value);
 	}
-	
+
 	public List<Object[]> getRows() {
 		return rows;
 	}
-	
-	public int getRowCount(){
+
+	public int getRowCount() {
 		return rows.size();
 	}
 }

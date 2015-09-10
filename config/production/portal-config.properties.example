@@ -1,3 +1,10 @@
+#Set ISO 639-1 code for supported languages
+i18n.supportedLanguages=en,fr
+
+#Set ISO 639-1 code for default language in case it was unspecified by the request (or the browser).
+#If omitted, English will be used.
+i18n.defaultLanguage=en
+
 #Do we use the minified version of JavaScript and CSS files. Always use minified when using versioning.
 url.useMinified=true
 
@@ -6,8 +13,8 @@ googleanalytics.siteVerification=YOUR_VALUE
 googleanalytics.account=YOUR_VALUE
 
 #Database
-database.driver=org.h2.Driver
-database.url=jdbc:h2:mem:postgresql;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;TRACE_LEVEL_SYSTEM_OUT=2;
+database.driver=org.postgresql.Driver
+database.url=jdbc:postgresql://YOUR_DATABASE_SERVER/dataportal
 database.user=YOUR_VALUE
 database.password=YOUR_VALUE
 database.idleConnectionTestPeriod=60
@@ -18,8 +25,13 @@ hibernate.jdbc.fetch_size=1000
 #Email sender configurations
 email.smtpServer=YOUR_VALUE
 email.port=25
+#should we hash the email or store the plain text version
 email.hashAddress=true
+#if we hash it, should we 'salt' it? (ignored if email.hashAddress=false)
 email.salt=6SFDW$PTkp04yogq>vyEfku
+
+# Optional, if you want to overwrite the location of the Freemarker email templates.
+# email.templateFolder=/WEB-INF/email/
 
 #The URL of the tile server
 tiler.protocol=http
@@ -29,7 +41,7 @@ tiler.port=80
 #The URL of your feedback system. Could also be a mailto or can be removed if no feedback is required.
 feedback.url=http://code.google.com/p/canadensys/issues/entry?template=Explorer%20-%20Interface%20issue
 
-#The path of the folder to store the generated content. Must ends with a slash. Make sure Tomcat can read/write in this folder.
+#The path of the folder to store the generated content. Make sure system user running Tomcat can read/write in this folder.
 searchServiceConfig.generatedContentFolder=YOUR_VALUE
 #The public URL to reach the generated content. Must ends with a slash.
 searchServiceConfig.publicDownloadURL=YOUR_VALUE

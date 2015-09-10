@@ -4,20 +4,32 @@ apply plugin: 'eclipse'
 
 ext {
     tomcatContextPath = 'explorer'
+    defaultTheme = 'config/gradle/default/theme.gradle'
+    overrideTheme = 'config/gradle/theme.gradle'
 }
 
 //Use Canadensys common web build file
-apply from: "https://raw.github.com/Canadensys/canadensys-common/master/gradle/canadensys_web_build.gradle"
+apply from: "https://raw.github.com/Canadensys/canadensys-common/master/gradle/canadensys_web_build_21.gradle"
 apply from: "http://dl.bintray.com/scalding/generic/waroverlay.gradle"
+
+//Check for theme override
+if( file(overrideTheme).exists()){
+	apply from: overrideTheme
+}
+else{
+	apply from: defaultTheme
+}
 
 //Make sure tomcat will run with the right encoding
 System.setProperty('file.encoding', 'UTF-8')
 
-def group = 'net.canadensys'
+def group = 'br.gov.sibbr'
 
 ext {
-	sourceCompatibility = JavaVersion.VERSION_1_6
+	sourceCompatibility = JavaVersion.VERSION_1_7
 	sourceEncoding = 'UTF-8'
+	
+	versionFile = project.file("config/production/version.properties")
 	
 	springVersion = '4.0.2.RELEASE'
 	hibernateVersion = '4.3.2.Final'
@@ -25,13 +37,13 @@ ext {
 	apacheCodecVersion = '1.9'
 	rewriteVersion = '2.0.12.Final'
 	ehCacheVersion = '2.6.8'
-	sitemeshVersion = '3.0.0-SNAPSHOT'
+	sitemeshVersion = '3.0.0'
+	snakeYamlVersion = '1.14'
 	
-	dataAccessVersion = '2.7.1'
-	webCoreVersion = '0.1.1'
-	canadensysWebThemeVersion = '0.1'
+	dataAccessVersion = '2.13.0'
+	webCoreVersion = '0.7'
 
-	tomcatVersion = '6.0.29'
+	tomcatVersion = '8.0.12'
 	seleniumVersion = '2.42.2'
 
 	h2Version = '1.3.175'
@@ -45,19 +57,21 @@ repositories {
     maven {
         url "http://repository.gbif.org/content/groups/gbif"
         url "https://oss.sonatype.org/content/repositories/snapshots"
+        url "http://jcenter.bintray.com/"
     }
 }
 
 compileJava.options.encoding = sourceEncoding
 compileTestJava.options.encoding = sourceEncoding
+compileJava.sourceCompatibility = sourceCompatibility
+compileJava.targetCompatibility = targetCompatibility
 
 dependencies {
 	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 	
-	compile group: 'net.canadensys', name: 'canadensys-data-access', version: dataAccessVersion
+	compile group: 'winglongitude', name: 'liger-data-access', version: dataAccessVersion
 	compile group: 'net.canadensys', name: 'canadensys-web-core', version: webCoreVersion
 	compile("net.canadensys:canadensys-webapp-core:${webCoreVersion}@war")
-	compile("net.canadensys:canadensys-web-theme:${canadensysWebThemeVersion}@war")
 	
 	compile group: 'log4j', name: 'log4j', version: '1.2.17'
 	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.2'
@@ -66,13 +80,14 @@ dependencies {
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
 	compile group: 'org.springframework', name: 'spring-context-support', version: springVersion
-	compile group: 'postgresql', name: 'postgresql', version: '9.1-901.jdbc4'
+	compile group: 'org.postgresql', name: 'postgresql', version: '9.2-1004-jdbc4'
 	compile group: 'org.hibernate', name: 'hibernate-c3p0', version: hibernateVersion
 	compile group: 'org.freemarker', name: 'freemarker', version: freemarkerVersion
 	compile group: 'commons-codec', name: 'commons-codec', version: apacheCodecVersion
 	compile group: 'org.ocpsoft.rewrite', name: 'rewrite-servlet', version: rewriteVersion
 	compile group: 'net.sf.ehcache', name: 'ehcache-core', version: ehCacheVersion
 	compile group: 'org.sitemesh', name: 'sitemesh', version: sitemeshVersion
+	compile group: 'org.yaml', name: 'snakeyaml', version: snakeYamlVersion
 
 	//h2 is included to allow integration testing using a mock database
     compile group: 'com.h2database', name: 'h2', version: h2Version
@@ -91,6 +106,7 @@ dependencies {
 
 //WAR plugin settings
 war {
+	exclude("decorators/layouts")
 	from("${additionalWebFilesDir}/js"){
         into("js")
         include ("**/*.js")
@@ -127,6 +143,7 @@ task useLocalDataSource{
 		if( file("config/local/data-source.xml").exists()){
 			war.excludes = ['WEB-INF/data-source.xml']
 			war.webInf { from 'config/local/data-source.xml' }
+			war.webInf { from 'src/test/resources/h2/h2setup.sql' }
 			war.webInf { from 'src/test/resources/insert_test_data.sql' }
 		}
 	}

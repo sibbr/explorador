@@ -104,7 +104,7 @@ EXPLORER.map = (function() {
               self.map.fitBounds(bounds);
             } else {
               self.map.setZoom(2);
-              self.map.setCenter(new google.maps.LatLng(35, -15));
+              self.map.setCenter(new google.maps.LatLng(-16, -49));
             }
           }
         });

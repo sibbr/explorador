@@ -22,46 +22,52 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
  * ControllerAdvice to handle exceptions allow usage of template/decorator.
+ * 
  * @author canadensys
- *
+ * 
  */
 @ControllerAdvice
 @Controller
 public class HttpErrorController {
-	
-	//get log4j handler
-	private static final Logger LOGGER = Logger.getLogger(HttpErrorController.class);
-	
+
+	// get log4j handler
+	private static final Logger LOGGER = Logger
+			.getLogger(HttpErrorController.class);
+
 	@Autowired
 	@Qualifier("occurrencePortalConfig")
 	private OccurrencePortalConfig appConfig;
 
-	@ExceptionHandler({NoHandlerFoundException.class, ResourceNotFoundException.class})
-	@ResponseStatus(value=HttpStatus.NOT_FOUND)
-	public ModelAndView handleNotFoundException(HttpServletRequest req){
-		HashMap<String,Object> modelRoot = new HashMap<String,Object>();
-		//Set common stuff (GoogleAnalytics, language, ...)
-		ControllerHelper.setPageHeaderVariables(appConfig, modelRoot);
-        return new ModelAndView("error/404","root",modelRoot);
+	@ExceptionHandler({ NoHandlerFoundException.class,
+			ResourceNotFoundException.class })
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ModelAndView handleNotFoundException(HttpServletRequest req) {
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		ControllerHelper.setPageHeaderVariables(req, "404", null, appConfig,
+				modelRoot);
+		return new ModelAndView("error/404",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
-	
-	@RequestMapping(value="/404")
-	@I18nTranslation(resourceName="404", translateFormat = "/404")
-	@ResponseStatus(value=HttpStatus.NOT_FOUND)
-	public ModelAndView handleNotFound(HttpServletRequest req){
-		HashMap<String,Object> modelRoot = new HashMap<String,Object>();
-		//Set common stuff (GoogleAnalytics, language, ...)
-		ControllerHelper.setPageHeaderVariables(appConfig, modelRoot);
-        return new ModelAndView("error/404","root",modelRoot);
+
+	@RequestMapping(value = "/404")
+	@I18nTranslation(resourceName = "404", translateFormat = "/404")
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ModelAndView handleNotFound(HttpServletRequest req) {
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		ControllerHelper.setPageHeaderVariables(req, "404", null, appConfig,
+				modelRoot);
+		return new ModelAndView("error/404",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
-	
+
 	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
-	public ModelAndView handleError(HttpServletRequest req, Exception exception){
-		LOGGER.error("Error handled by HttpErrorController",exception);
-		HashMap<String,Object> modelRoot = new HashMap<String,Object>();
-		//Set common stuff (GoogleAnalytics, language, ...)
-		ControllerHelper.setPageHeaderVariables(appConfig, modelRoot);
-        return new ModelAndView("error/error","root",modelRoot);
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	public ModelAndView handleError(HttpServletRequest req, Exception exception) {
+		LOGGER.error("Error handled by HttpErrorController", exception);
+		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		ControllerHelper.setPageHeaderVariables(req, "search", null, appConfig,
+				modelRoot);
+		return new ModelAndView("error/error",
+				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 }

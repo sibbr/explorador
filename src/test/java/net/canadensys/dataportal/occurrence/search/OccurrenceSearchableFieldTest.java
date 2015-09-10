@@ -15,54 +15,55 @@ import org.junit.Test;
 
 /**
  * Test OccurrenceSearchableField equals and hashCode.
+ * 
  * @author cgendreau
- *
+ * 
  */
 public class OccurrenceSearchableFieldTest {
-	
-	
+
 	/**
-	 * Ensure that 2 different OccurrenceSearchableField, with the exact same content are equals.
+	 * Ensure that 2 different OccurrenceSearchableField, with the exact same
+	 * content are equals.
 	 */
 	@Test
-	public void testEquals(){
+	public void testEquals() {
 		OccurrenceSearchableField obj1 = new OccurrenceSearchableField();
 		initObject(obj1);
-		
+
 		OccurrenceSearchableField obj2 = new OccurrenceSearchableField();
 		initObject(obj2);
-		
-		assertEquals(obj1,obj2);
+
+		assertEquals(obj1, obj2);
 	}
-	
+
 	@Test
-	public void testNotEquals(){
+	public void testNotEquals() {
 		OccurrenceSearchableField obj1 = new OccurrenceSearchableField();
 		initObject(obj1);
-		
+
 		OccurrenceSearchableField obj2 = new OccurrenceSearchableField();
 		initObject(obj2);
 		obj2.addExtraProperty("key2", "value2");
-		assertNotEquals(obj1,obj2);
+		assertNotEquals(obj1, obj2);
 	}
-	
+
 	@Test
-	public void testHashCode(){
+	public void testHashCode() {
 		OccurrenceSearchableField obj1 = new OccurrenceSearchableField();
 		initObject(obj1);
-		
+
 		OccurrenceSearchableField obj2 = new OccurrenceSearchableField();
 		initObject(obj2);
-		
+
 		List<OccurrenceSearchableField> occurrenceSearchableFieldList = new ArrayList<OccurrenceSearchableField>();
 		occurrenceSearchableFieldList.add(obj1);
 		assertTrue(occurrenceSearchableFieldList.contains(obj2));
-		
+
 		obj2.addExtraProperty("key2", "value2");
 		assertFalse(occurrenceSearchableFieldList.contains(obj2));
 	}
-	
-	private void initObject(OccurrenceSearchableField obj){
+
+	private void initObject(OccurrenceSearchableField obj) {
 		obj.setSearchableFieldId(1);
 		obj.setSearchableFieldName("searchField");
 		obj.setType(String.class);

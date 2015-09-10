@@ -2,27 +2,34 @@ package net.canadensys.dataportal.occurrence.cache;
 
 /**
  * Service used to manage Explorer cache.
+ * 
  * @author cgendreau
- *
+ * 
  */
 public interface CacheManagementServiceIF {
-	
-	public static final String CACHE_NAME_DISTINCT_VALUES_COUNT = "distinctValuesCountCache";
-	
+
+	public static final String DISTINCT_VALUES_COUNT_CACHE_KEY = "distinctValuesCountCache";
+	public static final String RESOURCE_MODEL_CACHE_KEY = "resourceModelCache";
+
 	/**
-	 * Preload elements in cache that are expensive in time to create but cheap in memory to hold.
+	 * Preload elements in cache that are expensive in time to create but cheap
+	 * in memory to hold.
 	 */
 	public void preLoadCache();
-	
+
 	/**
-	 * Reload elements in cache that are expensive in time to create but cheap in memory to hold.
+	 * Purge all elements in the cache managed by the CacheManagementServiceIF
+	 * implementation. The implementation could also trigger other methods (e.g.
+	 * reload a pre-loaded cache)
 	 */
-	public void reloadPreLoadedCache();
-	
+	public void purgeCache();
+
 	/**
-	 * Get the timestamp of the current preloaded cache content.
+	 * Get the timestamp of the current cache content. The timestamp is defined
+	 * by when the cache was last purged. The initial value is 0.
+	 * 
 	 * @return
 	 */
-	public long getPreLoadedCacheTimestamp();
+	public long getCacheTimestamp();
 
 }

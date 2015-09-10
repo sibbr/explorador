@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Check for parameters:
+if test -n $1 ; then
+  case $1 in 
+  "-d" ) if test -z $2 ; then
+           echo "ERROR! You must provide the parameter for the -d option!";
+           exit 1
+         else 
+           TOMCAT_DIR=$2
+         fi 
+         ;;
+  "-j" ) if test -z $2 ; then
+ 	   echo "ERROR! You must provide the parameter for the -j option!";
+           exit 1
+         else
+	   export JAVA_HOME=$2;
+           echo "JAVA_HOME=$JAVA_HOME"
+         fi
+         ;;
+  "--help" )    echo "deploy.sh Help menu.";
+    echo "This script will assist you in automatizing the building process for the dataporal code.";
+    echo "List of available commands:";
+    echo "-d TOMCAT_PATH  // Sets Apache Tomcat directory for build.";
+    echo "-j JAVA_HOME    // Sets prefered JAVA_HOME to system environment variable";
+    echo "--help          // Display this help menu.";
+    exit 0
+    ;;
+    esac
+fi
+
+# export Java JDK:
+export JAVA_HOME="/opt/jdk1.7.0_79/"
+
+#Tomcat base diretory:
+TOMCAT_DIR="/opt/apache-tomcat-8.0.22"
+
+#Package name:
+PACKAGE_NAME="explorador.war"
+
+echo "*** Stopping tomcat:"
+sh $TOMCAT_DIR/bin/shutdown.sh
+
+echo "*** Building application with gradle..."
+gradle clean -x test buildProduction
+
+echo "*** Tomcat directory set to: $TOMCAT_DIR"
+echo "*** Cleaning old data from tomcat ***"
+echo ""
+rm -r $TOMCAT_DIR/work/Catalina/localhost/*
+rm -r $TOMCAT_DIR/webapps/explorador/
+rm $TOMCAT_DIR/webapps/$PACKAGE_NAME
+echo ""
+echo "*** Moving recently built" $PACKAGE_NAME "file to tomcat webapps directory ***"
+mv ./build/libs/$PACKAGE_NAME $TOMCAT_DIR/webapps/$PACKAGE_NAME
+echo "*** Starting tomcat:"
+sh $TOMCAT_DIR/bin/startup.sh
+echo "*** Done. Server must me up in a few seconds."
+
+#Uncomment only if running redis for map points and tiler server locally
+#echo "*** Flushing Redis."
+#redis-cli FLUSHALL

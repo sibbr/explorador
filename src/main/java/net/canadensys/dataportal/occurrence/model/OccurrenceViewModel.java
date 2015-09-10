@@ -4,42 +4,89 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This model is tailored for views.
- * It contains additional information that is relevant for display purpose.
+ * This model is tailored for views. It contains additional information that is
+ * relevant for display purpose.
+ * 
  * @author canadensys
  *
  */
 public class OccurrenceViewModel {
 
-	private List<String> imageList;
-	private List<String> otherMediaList;
-	
-	public void addImage(String image){
-		if(imageList == null){
-			imageList = new ArrayList<String>();
+	private String dataSourcePageURL;
+	private String recommendedCitation;
+
+	private List<MultimediaViewModel> multimediaViewModelList;
+	private List<String> associatedSequences;
+
+	// prefiltered list
+	private List<MultimediaViewModel> imageViewModelList;
+	private List<MultimediaViewModel> otherMediaViewModelList;
+
+	public void addMultimediaViewModel(MultimediaViewModel multimediaViewModel) {
+		if (multimediaViewModelList == null) {
+			multimediaViewModelList = new ArrayList<MultimediaViewModel>();
 		}
-		imageList.add(image);
-	}
-	
-	public void addOtherMedia(String otherMedia){
-		if(otherMediaList == null){
-			otherMediaList = new ArrayList<String>();
+		multimediaViewModelList.add(multimediaViewModel);
+
+		if (multimediaViewModel.isImage()) {
+			if (imageViewModelList == null) {
+				imageViewModelList = new ArrayList<MultimediaViewModel>();
+			}
+			imageViewModelList.add(multimediaViewModel);
+		} else {
+			if (otherMediaViewModelList == null) {
+				otherMediaViewModelList = new ArrayList<MultimediaViewModel>();
+			}
+			otherMediaViewModelList.add(multimediaViewModel);
 		}
-		otherMediaList.add(otherMedia);
 	}
-	
-	public List<String> getImageList() {
-		return imageList;
+
+	public List<MultimediaViewModel> getMultimediaViewModelList() {
+		return multimediaViewModelList;
 	}
-	public void setImageList(List<String> imageList) {
-		this.imageList = imageList;
+
+	/**
+	 * Return List of MultimediaViewModel including only the MultimediaViewModel
+	 * where isImage is true
+	 * 
+	 * @return
+	 */
+	public List<MultimediaViewModel> getImageViewModelList() {
+		return imageViewModelList;
 	}
-	public List<String> getOtherMediaList() {
-		return otherMediaList;
+
+	/**
+	 * Return List of MultimediaViewModel including only the MultimediaViewModel
+	 * where isImage is false
+	 * 
+	 * @return
+	 */
+	public List<MultimediaViewModel> getOtherMediaViewModelList() {
+		return otherMediaViewModelList;
 	}
-	public void setOtherMediaList(List<String> otherMediaList) {
-		this.otherMediaList = otherMediaList;
+
+	public String getDataSourcePageURL() {
+		return dataSourcePageURL;
 	}
-	
-	
+
+	public void setDataSourcePageURL(String dataSourcePageURL) {
+		this.dataSourcePageURL = dataSourcePageURL;
+	}
+
+	public String getRecommendedCitation() {
+		return recommendedCitation;
+	}
+
+	public void setRecommendedCitation(String recommendedCitation) {
+		this.recommendedCitation = recommendedCitation;
+	}
+
+	public List<String> getAssociatedSequences() {
+		return associatedSequences;
+	}
+
+	public void setAssociatedSequences(List<String> associatedSequences) {
+		this.associatedSequences = associatedSequences;
+	}
+
 }

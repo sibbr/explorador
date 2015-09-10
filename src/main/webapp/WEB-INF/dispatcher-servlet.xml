@@ -7,6 +7,7 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/context
@@ -16,11 +17,13 @@
 	http://www.springframework.org/schema/tx
 	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 	http://www.springframework.org/schema/task
-	http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+	http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<import resource="data-source.xml" />
 
-	<context:component-scan base-package="net.canadensys.dataportal.occurrence"/>
+	<context:component-scan base-package="net.canadensys.dataportal.occurrence, net.canadensys.dataportal.resource, net.canadensys.dataportal.publisher"/>
 	
 	<!-- use to return JSON -->
 	<mvc:annotation-driven/>
@@ -45,7 +48,7 @@
 	
 	<!-- Locale/language configuration -->
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<property name="defaultLocale" value="en" />
+		<property name="defaultLocale" value="${i18n.defaultLanguage:pt}" />
 	</bean>
 	<mvc:interceptors>
     	<!-- Changes the locale when a 'lang' request parameter is sent; e.g. /?lang=fr -->
@@ -63,7 +66,15 @@
 			</list>
         </property>
 	    <property name="defaultEncoding" value="UTF-8"/>
+	    <property name="fallbackToSystemLocale" value="false"/>
 	</bean>
+
+	<bean id="licenseInfo" class="net.canadensys.dataportal.occurrence.config.YamlLoader" factory-method="fromFile">
+		<constructor-arg type="java.lang.String" value="references/license.yml"/>
+	</bean>
+
+	<!-- Load reference resources -->
+	<util:properties id="sequenceProvidersProperties" location="classpath:references/sequenceProviders.properties"/>
 
 	<!-- Wrap the URLHelper -->
 	<bean id="freemarkerDefaultBeansWrapper" class="freemarker.ext.beans.BeansWrapper"
@@ -74,7 +85,18 @@
 	<bean id="URLHelper" factory-bean="freemarkerStaticModels" factory-method="get">
           <constructor-arg value="net.canadensys.web.freemarker.FreemarkerURLHelper"/>
  	</bean>
-	
+ 	
+	<bean id="occurrencePortalConfig" class="net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig">
+		<property name="currentVersion" value="${version.current:}" />
+		<property name="useMinified" value="${url.useMinified}" />
+		<property name="dwcaTermUsed" value="${dwca.termUsed}" />
+		<property name="hashEmailAddress" value="${email.hashAddress:false}" />
+		<property name="emailSalt" value="${email.salt:null}" />
+		<property name="supportedLanguages" value="${i18n.supportedLanguages:pt, en, fr}" />
+		<property name="sequenceProvidersProperties" ref="sequenceProvidersProperties" />
+		<property name="licenseInfo" ref="licenseInfo" />
+	</bean>
+
 	<!-- Freemarker config -->
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
   		<property name="templateLoaderPath" value="/WEB-INF/view/"/>
@@ -83,20 +105,13 @@
           <entry key="tilerDomain" value="${tiler.domain:}"/>
           <entry key="tilerProtocol" value="${tiler.protocol:}"/>
           <entry key="tilerPort" value="${tiler.port:}"/>
-          <entry key="feedbackURL" value="${feedback.url:}"/>
+          <entry key="feedbackMailTo" value="${feedback.mail.to:}"/>
+          <entry key="domainName" value="${domain.name:}"/>
           <entry key="URLHelper" value-ref="URLHelper"/>
         </map>
 		</property>
 	</bean>
 
-	<bean id="occurrencePortalConfig" class="net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig">
-		<property name="currentVersion" value="${version.current:}" />
-		<property name="useMinified" value="${url.useMinified}" />
-		<property name="dwcaTermUsed" value="${dwca.termUsed}" />
-		<property name="hashEmailAddress" value="${email.hashAddress:false}" />
-		<property name="emailSalt" value="${email.salt:null}" />
-	</bean>
-	
 	<bean id ="mapServerAccess" class="net.canadensys.dataportal.occurrence.map.impl.WindshaftMapServerAccess">
 		<property name="tableUsed" value="occurrence"/>
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -114,7 +129,7 @@
 	</bean>
 	
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-		<property name="templateLoaderPath" value="/WEB-INF/email/" />
+		<property name="templateLoaderPath" value="${email.templateFolder:/WEB-INF/email/}" />
 	</bean>
 		
 	<!-- Warning, those 2 ViewResolver are based on UrlBasedViewResolver. That means that the

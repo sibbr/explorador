@@ -9,18 +9,19 @@ import org.junit.Test;
 
 /**
  * This test ensures the SearchServiceConfig is correctly setup.
+ * 
  * @author canadensys
- *
+ * 
  */
 public class SearchServiceConfigTest {
-	
+
 	/**
 	 * Test that all Search fields actually exist
 	 */
 	@Test
-	public void testOccurrenceSearchFieldsConstant(){
+	public void testOccurrenceSearchFieldsConstant() {
 		Class<OccurrenceModel> occClass = OccurrenceModel.class;
-		for(String fieldName : SearchServiceConfig.OCCURRENCE_SEARCH_FIELDS){
+		for (String fieldName : SearchServiceConfig.OCCURRENCE_SEARCH_FIELDS) {
 			try {
 				occClass.getDeclaredField(fieldName);
 			} catch (SecurityException e) {
@@ -30,14 +31,14 @@ public class SearchServiceConfigTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Test that all Summary fields actually exist
 	 */
 	@Test
-	public void testOccurrenceSummaryFieldsConstant(){
+	public void testOccurrenceSummaryFieldsConstant() {
 		Class<OccurrenceModel> occClass = OccurrenceModel.class;
-		for(String fieldName : SearchServiceConfig.OCCURENCE_SUMMARY_FIELDS){
+		for (String fieldName : SearchServiceConfig.OCCURENCE_SUMMARY_FIELDS) {
 			try {
 				occClass.getDeclaredField(fieldName);
 			} catch (SecurityException e) {
@@ -47,19 +48,25 @@ public class SearchServiceConfigTest {
 			}
 		}
 	}
-	
+
 	/**
-	 * Make sure everything is setup correctly by calling the right Interpreter on all Searchable Fields.
+	 * Make sure everything is setup correctly by calling the right Interpreter
+	 * on all Searchable Fields.
 	 */
 	@Test
-	public void testSearchableFieldMap(){
+	public void testSearchableFieldMap() {
 		SearchServiceConfig searchServiceConfig = new SearchServiceConfig();
-		
+
 		QueryPartInterpreter interpreter;
-		for(Integer key : searchServiceConfig.getSearchableFieldMap().keySet()){
-			interpreter = QueryPartInterpreterResolver.getQueryPartInterpreter(searchServiceConfig.getSearchableFieldbyId(key).getSearchableFieldTypeEnum());
-			if(!interpreter.canHandleSearchableField(searchServiceConfig.getSearchableFieldbyId(key))){
-				fail("OccurrenceSearchableField :" + key + " can't be handled by the proper Interpreter");
+		for (Integer key : searchServiceConfig.getSearchableFieldMap().keySet()) {
+			interpreter = QueryPartInterpreterResolver
+					.getQueryPartInterpreter(searchServiceConfig
+							.getSearchableFieldbyId(key)
+							.getSearchableFieldTypeEnum());
+			if (!interpreter.canHandleSearchableField(searchServiceConfig
+					.getSearchableFieldbyId(key))) {
+				fail("OccurrenceSearchableField :" + key
+						+ " can't be handled by the proper Interpreter");
 			}
 		}
 	}

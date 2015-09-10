@@ -1,4 +1,5 @@
-<#-- Copyright 2011-2013 Canadensys -->
+<#-- Copyright 2011-2014 Canadensys -->
+<#-- Relies on variables: URLHelper,rc,Request  -->
 
 <#function formatdate y m d>
 	<#assign formattedDate = "">
@@ -32,17 +33,13 @@
 	<#return rc.getContextUrl(URLHelper.getUriWithLanguage(uri,rc.getLocale().getLanguage()))>
 </#function>
 
-<#macro i18nResource resourceName params=[]>
-${rc.getContextUrl(URLHelper.toI18nResource(rc.getLocale().getLanguage(),resourceName,params))}
+<#macro i18nResource resourceName param="">
+${rc.getContextUrl(URLHelper.toI18nResource(rc.getLocale().getLanguage(),resourceName,param))}
 </#macro>
 
-<#macro i18nLanguageSwitch resourceName params=[]>
-${URLHelper.getLanguageSwitchPath(Request,rc.getLocale().getLanguage(),resourceName,params)}
-</#macro>
-
-<#-- root.searchParameters should exists-->
+<#-- page.searchParameters should exists-->
 <#macro searchViewUrl view>
-${URLHelper.newQueryStringBuilder().add("view",view).add(root.searchParameters!).toQueryString()}
+${URLHelper.newQueryStringBuilder().add("view",view).add(page.searchParameters!).toQueryString()}
 </#macro>
 
 <#function isImageMimeType url>
@@ -87,3 +84,20 @@ ${URLHelper.newQueryStringBuilder().add("view",view).add(root.searchParameters!)
   </#if>
   <#return tag>
 </#function>
+
+<#-- Print license div block-->
+<#macro licenseDiv license licenseShortname="" creator="">
+	<div class="attribution">
+		<#if licenseShortname?has_content>
+			<a href="${license}" rel="license">
+				<img src="${rc.getContextUrl("/assets/images/"+licenseShortname+".png")}" alt="CC ${licenseShortname?upper_case}" />
+			</a>
+			<br>
+		<#else>
+			<@printIfNotEmpty text=rc.getMessage("occ.multimedia.license")+": " variable=license/><br>
+		</#if>
+		<#if creator?has_content>
+			${rc.getMessage("occ.multimedia.creator")}: <span property="author">${creator}</span>
+		</#if>
+	</div>
+</#macro>
