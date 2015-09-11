@@ -8,8 +8,7 @@
 <@jsLibAsset libName="sorttable.js"/>
 
 <!-- Leaflet related configuration-->
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/leaflet.fullscreen.css' rel='stylesheet' />
+<link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
 </head>
 <div id="body">
 	<a id="main-content"></a>
@@ -17,14 +16,13 @@
 	    <div id="content" class="clear_fix no_side_bar">
 			<h1>${rc.getMessage("publisherspage.publisherlist",  [page.totalPublishers])}</h1>
 			<div id="map" style="width: 100%; height: 480px"></div>
-	      <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-		  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/Leaflet.fullscreen.min.js'></script>
+	      <script src="http://leafletjs.com/dist/leaflet.js"></script>
 	      <script>
 		    	var map = L.map('map').setView([-16.0, -50.0], 4);
 				
-		    	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+		    	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2liYnIiLCJhIjoiOTE2MTBjNDNmY2M0YWJhYTU0YjMzOTM0YzFjNzdkNGIifQ.cBomlrmbSqAkjlsg83mufw', {
 		        	maxZoom: 18,
-		            id: 'examples.map-i875mjb7'
+		            id: 'sibbr.cieg1r2r302ikrvm8goa4nlgv'
 		        }).addTo(map);
 				
 				var institute = L.icon({
