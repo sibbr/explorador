@@ -191,19 +191,11 @@
                <#-- associatedSequences, optional section -->
                <#if page.occViewModel.associatedSequencesPerProviderMap?has_content>
                <h2>${rc.getMessage("occpage.group.associatedsequences")}</h2>
-               <table class="occpage_group">
-                  <tbody>
-                     <#list page.occViewModel.associatedSequencesPerProviderMap?keys as sequenceProvider>
-                     <#list page.occViewModel.associatedSequencesPerProviderMap[sequenceProvider] as associatedSequence>
-                     <tr>
-                        <#-- dont repeat header text -->
-                        <th scope="row"><#if associatedSequence_index == 0>${sequenceProvider}</#if></th>
-                        <td><@hrefIfNotEmpty text=associatedSequence.getLeft() link=associatedSequence.getRight()/></td>
-                     </tr>
-                     </#list>
-                     </#list>
-                  </tbody>
-               </table>
+               <ul class="clear_fix">
+					<#list page.occViewModel.associatedSequences as associatedSequence>
+						<li><@hrefIfUrl text=associatedSequence /></li>
+					</#list>
+				</ul>
                </#if>
                <!-- Record information --> 
                <h2>${rc.getMessage("occpage.group.record")}</h2>
@@ -267,28 +259,6 @@
 	                 </tr>
 	              </tbody>
 	           </table>
-	           
-               <!-- Multimedia content
-               <#if page.occViewModel.multimediaViewModelList?has_content>
-					<h2>${rc.getMessage("occpage.group.multimedia")}</h2>
-					<div id="occpage_image">
-						<ul>
-							<#list page.occViewModel.multimediaViewModelList as currMultimediaViewModel>
-								<li><a href="${currMultimediaViewModel.references!}"><img src="${currMultimediaViewModel.identifier!}"/></a>
-									<div>
-										<#if currMultimediaViewModel.licenseShortname?has_content>
-											<a href="${currMultimediaViewModel.license}"><img src="${rc.getContextUrl("/assets/images/"+currMultimediaViewModel.licenseShortname+".png")}"/></a>
-										<#else>
-											<@printIfNotEmpty text=rc.getMessage("occ.multimedia.license")+": " variable=currMultimediaViewModel.license/>
-										</#if>
-										<@printIfNotEmpty text=rc.getMessage("occ.multimedia.creator")+": " variable=currMultimediaViewModel.creator/>
-									</div>
-								</li>
-							</#list>
-						</ul>
-					</div>
-				</#if>
-				-->
 				
 				<!--  Multimedia content -->
 				<#if page.occViewModel.imageViewModelList?has_content>

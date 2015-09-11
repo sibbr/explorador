@@ -19,6 +19,7 @@ import net.canadensys.dataportal.occurrence.config.OccurrencePortalConfig;
 import net.canadensys.dataportal.occurrence.config.OccurrenceSearchableFieldLanguageSupport;
 import net.canadensys.dataportal.occurrence.model.DwcaResourceModel;
 import net.canadensys.dataportal.occurrence.model.MapInfoModel;
+import net.canadensys.dataportal.occurrence.model.OccurrenceExtensionModel;
 import net.canadensys.dataportal.occurrence.model.OccurrenceModel;
 import net.canadensys.dataportal.occurrence.search.DownloadResultStatus;
 import net.canadensys.dataportal.occurrence.search.OccurrenceSearchService;
@@ -48,6 +49,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.gbif.dwc.terms.GbifTerm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -464,17 +466,19 @@ public class SearchController {
 	 * @return
 	 */
 	@RequestMapping(value = "/occurrence-preview/{auto_id}", method = RequestMethod.GET)
-	public ModelAndView handleOccurrencePreview(@PathVariable Integer auto_id) {
+	public ModelAndView handleOccurrencePreview(@PathVariable Integer auto_id, HttpServletRequest request) {
 		OccurrenceModel occModel = occurrenceSearchService
 				.getOccurrenceSummary(auto_id);
 		DwcaResourceModel resourceModel = occurrenceService
 				.loadResourceModel(occModel.getSourcefileid());
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
+		Locale locale = RequestContextUtils.getLocale(request);
 		if (occModel != null) {
+			List<OccurrenceExtensionModel> occMultimediaExtModelList = occurrenceService.loadOccurrenceExtensionModel(GbifTerm.Multimedia.simpleName(), resourceModel.getGbif_package_id(), occModel.getDwcaid());
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("resource", resourceModel);
 			modelRoot.put("occViewModel", occurrenceController
-					.buildOccurrenceViewModel(occModel, null, null, null));
+					.buildOccurrenceViewModel(occModel, resourceModel, occMultimediaExtModelList, locale));
 		} else {
 			throw new ResourceNotFoundException();
 		}

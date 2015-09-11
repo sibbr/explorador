@@ -61,8 +61,7 @@ import com.google.common.collect.Lists;
 public class OccurrenceController {
 
 	// get log4j handler
-	private static final Logger LOGGER = Logger
-			.getLogger(OccurrenceController.class);
+	private static final Logger LOGGER = Logger.getLogger(OccurrenceController.class);
 	private static final ConfigurableMimeFileTypeMap MIME_TYPE_MAP = new ConfigurableMimeFileTypeMap();
 
 	// separators
@@ -95,15 +94,11 @@ public class OccurrenceController {
 
 	@RequestMapping(value = "/occurrences/{auto_id}", method = RequestMethod.GET)
 	@I18nTranslation(resourceName = "occurrence", translateFormat = "/occurrences/{}")
-	public ModelAndView handleOccurrencePerResource(
-			@PathVariable String auto_id, HttpServletRequest request) {
-		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(
-				auto_id, true);
+	public ModelAndView handleOccurrencePerResource(@PathVariable String auto_id, HttpServletRequest request) {
+		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
-		DwcaResourceModel resource = occurrenceService
-				.loadResourceModel(occModel.getSourcefileid());
-		ResourceMetadataModel resourceInformation = occurrenceService
-				.loadResourceMetadataModel(resource.getGbif_package_id());
+		DwcaResourceModel resource = occurrenceService.loadResourceModel(occModel.getSourcefileid());
+		ResourceMetadataModel resourceInformation = occurrenceService.loadResourceMetadataModel(resource.getGbif_package_id());
 		Locale locale = RequestContextUtils.getLocale(request);
 		// Load resource contact data:
 		Set<ContactModel> contacts = resourceInformation.getContacts();
@@ -121,94 +116,78 @@ public class OccurrenceController {
 		Date date = new Date(System.currentTimeMillis());
 
 		// load multimedia extension data
-		List<OccurrenceExtensionModel> occMultimediaExtModelList = occurrenceService
-				.loadOccurrenceExtensionModel(GbifTerm.Multimedia.simpleName(),
-						resource.getSourcefileid(), auto_id);
+		List<OccurrenceExtensionModel> occMultimediaExtModelList = occurrenceService.loadOccurrenceExtensionModel(GbifTerm.Multimedia.simpleName(),
+				resource.getSourcefileid(), auto_id);
 
 		if (!occModel.equals(null)) {
 			modelRoot.put("occModel", occModel);
 			modelRoot.put("occRawModel", occModel.getRawModel());
-			modelRoot.put(
-					"occViewModel",
-					buildOccurrenceViewModel(occModel, resource,
-							occMultimediaExtModelList, locale));
+			modelRoot.put("occViewModel", buildOccurrenceViewModel(occModel, resource, occMultimediaExtModelList, locale));
 			modelRoot.put("resource", resource);
 			modelRoot.put("information", resourceInformation);
 			modelRoot.put("contact", contact);
 			modelRoot.put("currentTime", sdf.format(date));
-		} else {
+		}
+		else {
 			throw new ResourceNotFoundException();
 		}
 		// Set common stuff
-		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id,
-				appConfig, modelRoot);
+		ControllerHelper.setOccurrenceVariables(request, "occurrence", auto_id, appConfig, modelRoot);
 
 		// Load objects depending on the view and forward to the proper view:
 		String view = request.getParameter(VIEW_PARAM);
 		if (view != null) {
 			if (view.equalsIgnoreCase(ORIGINAL_VIEW)) {
-				return new ModelAndView("occurrence-original",
-						OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-			} else if (view.equalsIgnoreCase(NAME_VIEW)) {
-				return new ModelAndView("occurrence-name",
-						OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-			} else if (view.equalsIgnoreCase(BHL_VIEW)) {
+				return new ModelAndView("occurrence-original", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(NAME_VIEW)) {
+				return new ModelAndView("occurrence-name", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(BHL_VIEW)) {
 				// Add BHL data related to the taxon:
 				if (occModel != null) {
-					String scientificName = occModel.getScientificname()
-							.replace(' ', '+');
+					String scientificName = occModel.getScientificname().replace(' ', '+');
 					// When register has no scientificName, use Genus:
-					if (scientificName.equalsIgnoreCase(" ")
-							|| scientificName.equals(null)) {
+					if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
 						String genus = occModel.getGenus().replace(' ', '+');
-						modelRoot.put("occBHL",
-								new BHLResponse(genus).getResults());
+						modelRoot.put("occBHL", new BHLResponse(genus).getResults());
 					}
 					// Defaults to use scientific name:
 					else {
-						modelRoot.put("occBHL",
-								new BHLResponse(scientificName).getResults());
+						modelRoot.put("occBHL", new BHLResponse(scientificName).getResults());
 					}
 				}
-				return new ModelAndView("occurrence-bhl",
-						OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-			} else if (view.equalsIgnoreCase(EOL_VIEW)) {
+				return new ModelAndView("occurrence-bhl", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(EOL_VIEW)) {
 				// Add BHL data related to the taxon:
 				if (occModel != null) {
-					String scientificName = occModel.getScientificname()
-							.replace(' ', '+');
+					String scientificName = occModel.getScientificname().replace(' ', '+');
 					// When register has no scientificName, use Genus:
-					if (scientificName.equalsIgnoreCase(" ")
-							|| scientificName.equals(null)) {
+					if (scientificName.equalsIgnoreCase(" ") || scientificName.equals(null)) {
 						String genus = occModel.getGenus().replace(' ', '+');
-						modelRoot.put("occEOL",
-								new EOLResponse(genus).getResults());
+						modelRoot.put("occEOL", new EOLResponse(genus).getResults());
 					}
 					// Defaults to use scientific name:
 					else {
-						modelRoot.put("occEOL",
-								new EOLResponse(scientificName).getResults());
+						modelRoot.put("occEOL", new EOLResponse(scientificName).getResults());
 					}
 				}
-				return new ModelAndView("occurrence-eol",
-						OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-			} else if (view.equalsIgnoreCase(NAME_VALIDATION_VIEW)) {
+				return new ModelAndView("occurrence-eol", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(NAME_VALIDATION_VIEW)) {
 				// Add name validation information
 				if (occModel != null) {
-					modelRoot.put("occNVV",
-							new NameCheckResponse(occModel.getDwcaid())
-									.getNames());
+					modelRoot.put("occNVV", new NameCheckResponse(occModel.getDwcaid()).getNames());
 				}
-				return new ModelAndView("occurrence-nvv",
-						OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
-			} else if (view.equalsIgnoreCase(CONTACT_VIEW)) {
-				return new ModelAndView("occurrence-contact",
-						OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+				return new ModelAndView("occurrence-nvv", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+			}
+			else if (view.equalsIgnoreCase(CONTACT_VIEW)) {
+				return new ModelAndView("occurrence-contact", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 			}
 		}
 		// Defaults to interpreted view
-		return new ModelAndView("occurrence-interpreted",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		return new ModelAndView("occurrence-interpreted", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
@@ -220,12 +199,9 @@ public class OccurrenceController {
 	 */
 	@RequestMapping(value = "/occurrences/{auto_id}", method = RequestMethod.POST)
 	@I18nTranslation(resourceName = "occurrence", translateFormat = "/occurrences/{}")
-	public ModelAndView handleResourceContactMsg(@PathVariable String auto_id,
-			HttpServletRequest request) {
-		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(
-				auto_id, true);
-		ResourceMetadataModel resourceInformationModel = occurrenceService
-				.loadResourceMetadataModel(occModel.getSourcefileid());
+	public ModelAndView handleResourceContactMsg(@PathVariable String auto_id, HttpServletRequest request) {
+		OccurrenceModel occModel = occurrenceService.loadOccurrenceModel(auto_id, true);
+		ResourceMetadataModel resourceInformationModel = occurrenceService.loadResourceMetadataModel(occModel.getSourcefileid());
 		// Get resource contacts:
 		Set<ContactModel> contacts = resourceInformationModel.getContacts();
 
@@ -234,14 +210,12 @@ public class OccurrenceController {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		// Get full URL:
-		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale
-				.getLanguage(), OccurrencePortalConfig.I18N_TRANSLATION_HANDLER
-				.getTranslationFormat("occurrence"), new String[] { auto_id });
+		String occurrenceUrl = I18nUrlBuilder.generateI18nResourcePath(locale.getLanguage(),
+				OccurrencePortalConfig.I18N_TRANSLATION_HANDLER.getTranslationFormat("occurrence"), new String[] { auto_id });
 		String domainName = request.getParameter("domainName");
 		occurrenceUrl = domainName + request.getContextPath() + occurrenceUrl;
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "contact",
-				new String[] { auto_id }, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "contact", new String[] { auto_id }, appConfig, modelRoot);
 
 		Map<String, Object> templateData = new HashMap<String, Object>();
 		ContactModel contact = null;
@@ -271,11 +245,9 @@ public class OccurrenceController {
 			templateData.put("namefrom", namefrom);
 			templateData.put("message", message);
 			templateData.put("occurrenceUrl", occurrenceUrl);
-			templateData.put("time", new SimpleDateFormat(
-					"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+			templateData.put("time", new SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 			String templateName = appConfig.getContactEmailTemplateName(locale);
-			boolean sent = mailSender.sendMessage(mailto, subject,
-					templateData, templateName);
+			boolean sent = mailSender.sendMessage(mailto, subject, templateData, templateName);
 			LOGGER.error("*** Email enviado para o publicador: " + sent);
 		}
 		// Redirect back to occurrence:
@@ -291,13 +263,10 @@ public class OccurrenceController {
 	 * @param occModel
 	 * @return OccurrenceViewModel instance, never null
 	 */
-	public OccurrenceViewModel buildOccurrenceViewModel(
-			OccurrenceModel occModel, DwcaResourceModel resourceModel,
-			List<OccurrenceExtensionModel> occMultimediaExtModelList,
-			Locale locale) {
+	public OccurrenceViewModel buildOccurrenceViewModel(OccurrenceModel occModel, DwcaResourceModel resourceModel,
+			List<OccurrenceExtensionModel> occMultimediaExtModelList, Locale locale) {
 		OccurrenceViewModel occViewModel = new OccurrenceViewModel();
 		ResourceBundle bundle = appConfig.getResourceBundle(locale);
-
 		// handle multimedia first (priority over associatedmedia)
 		if (occMultimediaExtModelList != null) {
 			String multimediaFormat, multimediaLicense, multimediaReference, multimediaIdentifier, licenseShortname;
@@ -308,32 +277,24 @@ public class OccurrenceController {
 			for (OccurrenceExtensionModel currMultimediaExt : occMultimediaExtModelList) {
 				extData = currMultimediaExt.getExt_data();
 
-				multimediaFormat = StringUtils.defaultString(extData
-						.get("format"));
-				multimediaLicense = StringUtils.defaultString(extData
-						.get("license"));
+				multimediaFormat = StringUtils.defaultString(extData.get("format"));
+				multimediaLicense = StringUtils.defaultString(extData.get("license"));
 				multimediaIdentifier = extData.get("identifier");
 				// if reference is blank, use the identifier
-				multimediaReference = StringUtils.defaultIfBlank(
-						extData.get("references"), multimediaIdentifier);
+				multimediaReference = StringUtils.defaultIfBlank(extData.get("references"), multimediaIdentifier);
 
 				// check if it's an image
 				isImage = multimediaFormat.startsWith("image");
-				licenseShortname = appConfig
-						.getLicenseShortName(multimediaLicense);
+				licenseShortname = appConfig.getLicenseShortName(multimediaLicense);
 
-				multimediaViewModel = new MultimediaViewModel(
-						multimediaIdentifier, multimediaReference,
-						extData.get("title"), multimediaLicense,
+				multimediaViewModel = new MultimediaViewModel(multimediaIdentifier, multimediaReference, extData.get("title"), multimediaLicense,
 						extData.get("creator"), isImage, licenseShortname);
 				occViewModel.addMultimediaViewModel(multimediaViewModel);
 			}
 		}
 
 		// handle media (only if occMultimediaExtModelList was not provided)
-		if ((occMultimediaExtModelList == null || occMultimediaExtModelList
-				.isEmpty())
-				&& StringUtils.isNotEmpty(occModel.getAssociatedmedia())) {
+		if ((occMultimediaExtModelList == null || occMultimediaExtModelList.isEmpty()) && StringUtils.isNotEmpty(occModel.getAssociatedmedia())) {
 			// assumes that data are coming from harvester
 			String[] media = occModel.getAssociatedmedia().split("; ");
 
@@ -342,19 +303,18 @@ public class OccurrenceController {
 			String title;
 			int imageNumber = 1, otherMediaNumber = 1;
 			for (String currentMedia : media) {
-				isImage = MIME_TYPE_MAP.getContentType(currentMedia)
-						.startsWith("image");
+				isImage = MIME_TYPE_MAP.getContentType(currentMedia).startsWith("image");
+				String image = bundle.getString("occ.image");
 				if (isImage) {
-					title = bundle.getString("occ.image") + " " + imageNumber;
+					title = image + " " + imageNumber;
 					imageNumber++;
-				} else {
-					title = bundle.getString("occ.associatedmedia") + " "
-							+ otherMediaNumber;
+				}
+				else {
+					title = bundle.getString("occ.associatedmedia") + " " + otherMediaNumber;
 					otherMediaNumber++;
 				}
 
-				multimediaViewModel = new MultimediaViewModel(currentMedia,
-						currentMedia, title, null, null, isImage, null);
+				multimediaViewModel = new MultimediaViewModel(currentMedia, currentMedia, title, null, null, isImage, null);
 				occViewModel.addMultimediaViewModel(multimediaViewModel);
 			}
 		}
@@ -364,17 +324,15 @@ public class OccurrenceController {
 
 		// handle data source page URL (url to the resource page)
 		if (resourceModel != null) {
-			if (StringUtils.contains(resourceModel.getArchive_url(),
-					IPT_ARCHIVE_PATTERN)) {
-				occViewModel.setDataSourcePageURL(StringUtils.replace(
-						resourceModel.getArchive_url(), IPT_ARCHIVE_PATTERN,
-						IPT_RESOURCE_PATTERN));
+			if (StringUtils.contains(resourceModel.getArchive_url(), IPT_ARCHIVE_PATTERN)) {
+				occViewModel.setDataSourcePageURL(StringUtils.replace(resourceModel.getArchive_url(), IPT_ARCHIVE_PATTERN, IPT_RESOURCE_PATTERN));
 			}
 		}
 
 		// handle Recommended Citation
-		occViewModel.setRecommendedCitation(Formatter.buildRecommendedCitation(
-				occModel, occViewModel.getDataSourcePageURL(), bundle));
+		String datasourcePageUrl = occViewModel.getDataSourcePageURL();
+		if (datasourcePageUrl != null)
+			occViewModel.setRecommendedCitation(Formatter.buildRecommendedCitation(occModel, datasourcePageUrl, bundle));
 		return occViewModel;
 	}
 
@@ -391,10 +349,8 @@ public class OccurrenceController {
 		String previousURL = (String) request.getAttribute("previousURL");
 		modelRoot.put("previousURL", previousURL);
 		request.setAttribute("previousURL", request.getRequestURL());
-		ControllerHelper.setPageHeaderVariables(request, "feedback",
-				new String[] {}, appConfig, modelRoot);
-		return new ModelAndView("feedback",
-				OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "feedback", new String[] {}, appConfig, modelRoot);
+		return new ModelAndView("feedback", OccurrencePortalConfig.PAGE_ROOT_MODEL_KEY, modelRoot);
 	}
 
 	/**
@@ -412,8 +368,7 @@ public class OccurrenceController {
 		HashMap<String, Object> modelRoot = new HashMap<String, Object>();
 
 		// Set common stuff
-		ControllerHelper.setPageHeaderVariables(request, "feedback",
-				new String[] {}, appConfig, modelRoot);
+		ControllerHelper.setPageHeaderVariables(request, "feedback", new String[] {}, appConfig, modelRoot);
 
 		Map<String, Object> templateData = new HashMap<String, Object>();
 
@@ -426,8 +381,7 @@ public class OccurrenceController {
 		templateData.put("mailfrom", mailfrom);
 		templateData.put("namefrom", namefrom);
 		templateData.put("message", message);
-		templateData.put("time", new SimpleDateFormat(
-				"EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
+		templateData.put("time", new SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm z", locale).format(new Date()));
 		String templateName = appConfig.getContactEmailTemplateName(locale);
 		mailSender.sendMessage(mailto, subject, templateData, templateName);
 
@@ -444,33 +398,25 @@ public class OccurrenceController {
 	 * @param occModel
 	 * @param occViewModel
 	 */
-	private void handleAssociatedSequence(OccurrenceModel occModel,
-			OccurrenceViewModel occViewModel) {
+	private void handleAssociatedSequence(OccurrenceModel occModel, OccurrenceViewModel occViewModel) {
 		if (StringUtils.isEmpty(occModel.getAssociatedsequences())) {
 			return;
 		}
 
-		String[] sequences = StringUtils.split(
-				occModel.getAssociatedsequences(),
-				ASSOCIATED_SEQUENCES_SEPARATOR);
+		String[] sequences = StringUtils.split(occModel.getAssociatedsequences(), ASSOCIATED_SEQUENCES_SEPARATOR);
 		List<String> associatedSequences = Lists.newArrayList();
 
 		String seqProvider, seqId, seqProviderUrlFormat;
 		boolean knownFormat = false;
 		for (String currentSequence : sequences) {
-			seqProvider = StringUtils
-					.substringBefore(currentSequence,
-							ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim()
-					.toLowerCase();
-			seqId = StringUtils.substringAfter(currentSequence,
-					ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
-			seqProviderUrlFormat = appConfig
-					.getSequenceProviderUrlFormat(seqProvider);
+			seqProvider = StringUtils.substringBefore(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim().toLowerCase();
+			seqId = StringUtils.substringAfter(currentSequence, ASSOCIATED_SEQUENCES_PROVIDER_SEPARATOR).trim();
+			seqProviderUrlFormat = appConfig.getSequenceProviderUrlFormat(seqProvider);
 			knownFormat = StringUtils.isNotBlank(seqProviderUrlFormat);
 			if (seqProvider != null && seqId != null && knownFormat) {
-				associatedSequences.add(MessageFormat.format(
-						seqProviderUrlFormat, seqId));
-			} else {
+				associatedSequences.add(MessageFormat.format(seqProviderUrlFormat, seqId));
+			}
+			else {
 				associatedSequences.add(currentSequence);
 			}
 		}

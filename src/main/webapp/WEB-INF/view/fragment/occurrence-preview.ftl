@@ -80,14 +80,20 @@
 	<dt>${rc.getMessage("occ.habitat")}</dt><dd>${page.occModel.habitat!}</dd>
 </dl-->
 
-<!--dl class="occ_preview_data clear_fix">
+<dl class="occ_preview_data clear_fix">
 	<dt>${rc.getMessage("occ.associatedmedia")}</dt>
 	<dd>
-		<#if page.occViewModel.imageList?has_content>
-			<a href="${page.occViewModel.imageList[0]}"><img src="${page.occViewModel.imageList[0]}" alt="${page.occModel.scientificname!} (${page.occModel.collectioncode!} ${page.occModel.catalognumber!})" target="_blank"/></a>
-		<#elseif page.occViewModel.otherMediaList?has_content>
-			<a href="${page.occViewModel.otherMediaList[0]}">${rc.getMessage("occpage.menu.associatedmedia")}</a>
+		<#if page.occViewModel.imageViewModelList?has_content>
+			${page.occViewModel.imageViewModelList?size} ${rc.getMessage("occpreview.image")}
+		<#else/>
+			0 ${rc.getMessage("occpreview.image")}
 		</#if>
 	</dd>
-</dl-->
+	<#if page.occViewModel.otherMediaViewModelList?has_content>
+		<dd>
+			${page.occViewModel.otherMediaViewModelList?size} ${rc.getMessage("occpreview.othermultimedia")}
+		</dd>
+	</#if>
+	</dd>
+</dl>
 </div>

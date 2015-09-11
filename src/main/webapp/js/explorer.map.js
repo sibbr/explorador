@@ -127,7 +127,7 @@ EXPLORER.map = (function() {
     cartoDBgenerateTile: function() {
       CartoDBLayer.prototype._generateTileJson = function() {
         var core_url = this._generateUrl("tiler"),
-            base_url = core_url + '/database/dataportal/table/' + this.options.table_name + '/{z}/{x}/{y}',
+            base_url = core_url + '/tiles/tiler/database/dataportal/table/' + this.options.table_name + '/{z}/{x}/{y}',
             tile_url = base_url + '.png',
             grid_url = base_url + '.grid.json',
             query, style, interactivity;
