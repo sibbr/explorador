@@ -316,14 +316,12 @@
         EXPLORER.details.setupSingleOccurrenceMap('occpage_map',${safeNumber(page.occModel.decimallatitude!"","undefined")},${safeNumber(page.occModel.decimallongitude!"","undefined")},${coordinateuncertaintyinmeters?c});
       });
    </script>
+   <!--  Script to remove the right button mouse options for images -->
    <script>
-
-document.oncontextmenu = function(e){
-	var target = (typeof e !="undefined")? e.target: event.srcElement
-	if (target.tagName == "IMG" || (target.tagName == 'A' && target.firstChild.tagName == 'IMG'))
-		return false
-
-}
-
-</script>
+		document.oncontextmenu = function(e){
+			var target = (typeof e !="undefined")? e.target: event.srcElement
+			if (target.tagName == "IMG" || (target.tagName == 'A' && target.firstChild.tagName == 'IMG'))
+				return false
+		}
+	</script>
 </content>
