@@ -268,9 +268,7 @@
 							<#list page.occViewModel.imageViewModelList as currMultimediaViewModel>
 								<li>
 									<div vocab="http://schema.org/" typeof="ImageObject">
-										<a href="${currMultimediaViewModel.identifier!}" target="_blank">
-											<img src="${currMultimediaViewModel.identifier!}" title="${currMultimediaViewModel.title!}" alt="${currMultimediaViewModel.title!}" property="contentUrl" class="images-gal"/>
-										</a>	
+										<img src="${currMultimediaViewModel.identifier!}" title="${currMultimediaViewModel.title!}" alt="${currMultimediaViewModel.title!}" property="contentUrl" class="images-gal"/>
 										<@licenseDiv license=currMultimediaViewModel.license! licenseShortname=currMultimediaViewModel.licenseShortname! creator=currMultimediaViewModel.creator!/>
 									</div>
 								</li>
@@ -318,4 +316,14 @@
         EXPLORER.details.setupSingleOccurrenceMap('occpage_map',${safeNumber(page.occModel.decimallatitude!"","undefined")},${safeNumber(page.occModel.decimallongitude!"","undefined")},${coordinateuncertaintyinmeters?c});
       });
    </script>
+   <script>
+
+document.oncontextmenu = function(e){
+	var target = (typeof e !="undefined")? e.target: event.srcElement
+	if (target.tagName == "IMG" || (target.tagName == 'A' && target.firstChild.tagName == 'IMG'))
+		return false
+
+}
+
+</script>
 </content>
