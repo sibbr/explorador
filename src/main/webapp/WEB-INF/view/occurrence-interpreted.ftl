@@ -5,13 +5,11 @@
    <title>${rc.getMessage("occpage.title")}</title>
    <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+   <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
    <style>
-		 
       .boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;border-top: none!important;}
-      
       .round {background-color: #fff!important;border: none!important;}
-      
-   </style>   
+   </style>
 </head>
 <a id="main-content"></a>
 <div id="body">
@@ -71,6 +69,7 @@
                      </tr>
                   </tbody>
                </table>
+               
                <!-- Geographic information -->
                <h2>${rc.getMessage("occpage.group.location")}</h2>
                <table class="occpage_group">
@@ -98,26 +97,54 @@
                         <td><#if page.occModel.locality?has_content>${page.occModel.locality?if_exists}<#else>${rc.getMessage("occ.not.provided")}</#if></td>
                      </tr>
                   </tbody>
+                  
                   <!-- Only needs to check one coordinate to know other values will not be relevant: -->
                   <#if page.occModel.decimallatitude?has_content>
-                  <tbody>
-                     <tr>
-                        <th scope="row">${rc.getMessage("occ.decimallatitude")}</th>
-                        <td>${safeNumber(page.occModel.decimallatitude!"","")}</td>
-                     </tr>
-                     <tr>
-                        <th scope="row">${rc.getMessage("occ.decimallongitude")}</th>
-                        <td>${safeNumber(page.occModel.decimallongitude!"","")}</td>
-                     </tr>
-                     <#if page.occRawModel.coordinateuncertaintyinmeters?has_content>
-                     <tr>
-                        <th scope="row">${rc.getMessage("occ.coordinateuncertaintyinmeters")}</th>
-                        <td>${page.occRawModel.coordinateuncertaintyinmeters?if_exists}</td>
-                     </tr>
-                     </#if>
-                  </tbody>
-                  </#if>
-                  <tbody>
+	                 <#assign latitude = page.occModel.decimallatitude?string?replace(",",".")>
+					 <#assign longitude = page.occModel.decimallongitude?string?replace(",",".")>
+	                 <tbody>
+	                     <tr>
+	                        <th scope="row">${rc.getMessage("occ.decimallatitude")}</th>
+	                        <td>${safeNumber(page.occModel.decimallatitude!"","")}</td>
+	                     </tr>
+	                     <tr>
+	                        <th scope="row">${rc.getMessage("occ.decimallongitude")}</th>
+	                        <td>${safeNumber(page.occModel.decimallongitude!"","")}</td>
+	                     </tr>
+	                     <!-- If there is coordinateUncertaintyInMeters, draw map with the radius -->
+	                     <#if page.occRawModel.coordinateuncertaintyinmeters?has_content>
+		                     <tr>
+		                        <th scope="row">${rc.getMessage("occ.coordinateuncertaintyinmeters")}</th>
+		                        <td>${page.occRawModel.coordinateuncertaintyinmeters?if_exists}</td>
+		                     </tr>
+		                 </#if>
+		             </tbody>
+				     <#if page.occRawModel.coordinateuncertaintyinmeters?has_content>
+			 	       <#assign uncertainty = page.occRawModel.coordinateuncertaintyinmeters?string?replace(",",".")>
+				     <#else>
+				 	   <#assign uncertainty = 0>
+	                 </#if>
+
+					  <!-- Leaflet map: -->
+	                  <div id="map" style="width: 100%; height: 400px"></div>
+	                   <script src="http://leafletjs.com/dist/leaflet.js"></script>
+					   <script>
+							var map = L.map('map').setView([${latitude}, ${longitude}], 10);
+							L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2liYnIiLCJhIjoiOTE2MTBjNDNmY2M0YWJhYTU0YjMzOTM0YzFjNzdkNGIifQ.cBomlrmbSqAkjlsg83mufw', {
+								maxZoom: 18,
+								id: 'sibbr.cieg1r2r302ikrvm8goa4nlgv'
+							}).addTo(map);
+							<!-- Add the point marker -->
+						   	L.marker([${latitude}, ${longitude}]).addTo(map);
+						   	<!-- Add point radius -->
+						   	L.circle([${latitude}, ${longitude}], ${uncertainty}, {
+								color: 'red',
+								fillColor: '#f03',
+								fillOpacity: 0.5
+							}).addTo(map);
+						</script>
+                    </#if>
+			     <tbody>
                      <#if page.occModel.minimumelevationinmeters?has_content>
                      <tr>
                         <th scope="row">${rc.getMessage("occ.minimumelevationinmeters")}</th>
@@ -140,20 +167,6 @@
                   </tbody>
                   </#if>	
                </table>
-               <!--   content-->
-               <div id="occpage_map" class="round">
-                  <#-- Map injected, will remove span element -->
-                  <span>
-                     <table class="occpage_group">
-                        <tbody>
-                           <tr>
-                              <th scope="row">${rc.getMessage("filter.hascoordinates")}</th>
-                              <td>${rc.getMessage("occpage.nogeo")}</td>
-                           </tr>
-                        </tbody>
-                     </table>
-                  </span>
-               </div>
                <!-- Date information -->
                <#if page.occModel.syear?has_content && page.occModel.smonth?has_content && page.occModel.sday?has_content>
                <h2>${rc.getMessage("occpage.group.date")}</h2>
@@ -223,7 +236,7 @@
 	                     <th scope="row">${rc.getMessage("occpage.other.data.citation")}</th>
 	                     <td>
 	                     	<#if page.occModel.getBibliographiccitation()?has_content>
-	                     		${occModel.getBibliographiccitation()}
+	                     		${page.occModel.getBibliographiccitation()}
 	                     	<#else>
 	                     		${rc.getMessage("occ.not.provided.citation")}</br>
 	                     		<#if page.information.getCitation()?has_content>
@@ -296,7 +309,7 @@
             <div id="contact"></div>
          </div>
       </div>
-      <!-- END TAB content_tab -->	
+      <!-- END TAB content_tab -->
    </div>
    <#-- content -->
 </div>
@@ -307,15 +320,10 @@
 </#if>
 <#-- JavaScript handling -->
 <content tag="local_script">
-   <script src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
    <@jsLibAsset libName="sorttable.js"/>
    <@jsAsset fileName="explorer" version=page.currentVersion! useMinified=page.useMinified/>
    <@jsAsset fileName="explorer.portal" version=page.currentVersion! useMinified=page.useMinified/>
-   <script>
-      $(function() {
-        EXPLORER.details.setupSingleOccurrenceMap('occpage_map',${safeNumber(page.occModel.decimallatitude!"","undefined")},${safeNumber(page.occModel.decimallongitude!"","undefined")},${coordinateuncertaintyinmeters?c});
-      });
-   </script>
    <!--  Script to remove the right button mouse options for images -->
    <script>
 		document.oncontextmenu = function(e){
