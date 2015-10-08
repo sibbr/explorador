@@ -31,7 +31,7 @@ public class OccurrenceSearchableFieldBuilder {
 
 	/**
 	 * Internal check to make sure we only return valid
-	 * OccurrenceSearchableField. Since there is many way to configure a
+	 * OccurrenceSearchableField. Since there is many way to configure a"scientificname",
 	 * OccurrenceSearchableField we need to make at the end that the object is
 	 * valid.
 	 * 
