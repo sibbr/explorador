@@ -8,7 +8,7 @@
 <@jsLibAsset libName="sorttable.js"/>
 
 <!-- Leaflet related configuration-->
-<link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
+<link rel="stylesheet" href="http://gbif.sibbr.gov.br/style//leaflet.css" />
 </head>
 <div id="body">
 	<a id="main-content"></a>
@@ -16,7 +16,7 @@
 	    <div id="content" class="clear_fix no_side_bar">
 			<h1>${rc.getMessage("publisherspage.publisherlist",  [page.totalPublishers])}</h1>
 			<div id="map" style="width: 100%; height: 480px"></div>
-	      <script src="http://leafletjs.com/dist/leaflet.js"></script>
+	      <script src="http://gbif.sibbr.gov.br/style/leaflet.js"></script>
 	      <script>
 		    	var map = L.map('map').setView([-16.0, -50.0], 4);
 				

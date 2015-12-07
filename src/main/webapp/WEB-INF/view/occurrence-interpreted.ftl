@@ -5,7 +5,7 @@
    <title>${rc.getMessage("occpage.title")}</title>
    <@cssAsset fileName="occportal" version=page.currentVersion! useMinified=false/>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-   <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
+   <link rel="stylesheet" href="http://gbif.sibbr.gov.br/style/leaflet.css" />
    <style>
       .boxcontent {margin: 0 0 20px;background: rgb(255,255,255);border-radius: 0px 5px 5px 5px;-webkit-box-shadow: rgb(240,240,240) 3px 0px 3px 2px;box-shadow: rgb(223,223,223) 3px 0px 3px 2px;border-right: 1px solid #ddd;border-left: 1px solid #ddd;border-top: none!important;}
       .round {background-color: #fff!important;border: none!important;}
@@ -127,7 +127,7 @@
 
 					  <!-- Leaflet map: -->
 	                  <div id="map" style="width: 100%; height: 400px"></div>
-	                   <script src="http://leafletjs.com/dist/leaflet.js"></script>
+	                   <script src="http://gbif.sibbr.gov.br/style/leaflet.js"></script>
 					   <script>
 							var map = L.map('map').setView([${latitude}, ${longitude}], 10);
 							L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2liYnIiLCJhIjoiOTE2MTBjNDNmY2M0YWJhYTU0YjMzOTM0YzFjNzdkNGIifQ.cBomlrmbSqAkjlsg83mufw', {
