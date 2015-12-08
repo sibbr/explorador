@@ -60,9 +60,8 @@ $(document).ready(function(){
         <!-- NAME TAB -->
         <div id="name" class="current">
           <ul>
-            <li><a href="?view=nvv" id="nvvlink">${rc.getMessage("occpage.other.namecheck")}</a></li>
-            <li><a href="?view=bhl" id="bhllink">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
             <li><a href="?view=eol" id="eollink">${rc.getMessage("occpage.other.enciclopedia.of.life")}</a></li>
+            <li><a href="?view=bhl" id="bhllink">${rc.getMessage("occpage.other.biodiversity.heritage.library")}</a></li>
           </ul>
           <div id="servicecontent"></div>
         </div>
